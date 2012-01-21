@@ -1,0 +1,27 @@
+# Test data
+
+School(SST):
+    schoolName:    SST
+  
+    
+Teacher(cbrady):
+    username:    cbrady
+    aschool:    SST
+      
+    
+Classroom(FirstPeriodMath):
+    classname:    FirstPeriodMath
+    teacher:    cbrady
+    startYear:    2012
+    
+    
+Classroom(FirstPeriodMathOld):
+    classname:    FirstPeriodMath
+    teacher:    cbrady
+    startYear:    2010
+
+
+StudentUser(astudent):
+    username:    astudent
+    classroom:    FirstPeriodMath
+    

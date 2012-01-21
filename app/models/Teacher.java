@@ -1,0 +1,44 @@
+package models;
+
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+
+import play.data.validation.Required;
+import play.db.jpa.Model;
+
+@Entity
+public class Teacher extends Model {
+	
+
+	@Required
+	public String username;
+	
+	@Required
+	@ManyToOne
+	public School aschool;
+	
+	public String firstnames;
+	public String lastnames;
+	
+	@Lob
+    public String annotation;
+	
+	
+	public static Teacher connect(String uname, School tschool) {
+		return find("byUsernameAndSchool", uname, tschool).first();
+	}
+	
+	public String toString() {
+		String add = ":";
+		if ( firstnames != null )
+			add += firstnames;
+		if ( lastnames != null )
+			add += lastnames;
+		String toReturn = username;
+		if (add.length() > 1)
+			toReturn += add;
+		return toReturn;
+	}
+
+}
