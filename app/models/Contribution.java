@@ -3,9 +3,13 @@ package models;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -13,43 +17,49 @@ import play.db.jpa.Model;
 @Entity
 public class Contribution extends Model {
 
+	@Required
+	public ContributionType type;
 	
 	@Required
 	@ManyToOne
 	public StudentUser student;
 	
 	@Required
-	public String context;
+	@ManyToOne
+	public Activity activity;
 	
 	@Required
 	public Date timestamp;
 	
 	@Required
-	public String contents;
+	public String objectID;
 	
-	public static final String DATE_FORMAT_NOW = "yyyy-MM-dd_HH-mm-ss";
-	public static final SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
-
-	public static String getStringForDate( Date d ) {
-	    return sdf.format(d);
-	  }
-
+	@Required
+	public String body;
 	
-	public static Date getTstamp() {
-		Calendar cal = Calendar.getInstance();
-	    return cal.getTime();
-	}
+	@Required
+	public String separator = ";";
 	
-	public Contribution( StudentUser stud, String ctxt, String content )
+	
+	@OneToMany(mappedBy="taggedContrib", cascade=CascadeType.ALL)
+	public List<Tag> tags;
+	
+	@Lob
+    public String annotation;
+	
+	
+	public Contribution( ContributionType type, StudentUser stud, Activity act, String id, String body )
 	{
+		this.type = type;
 		this.student = stud;
-		this.context = ctxt;
-		this.timestamp = getTstamp();
-		this.contents = content;
+		this.activity = act;
+		this.timestamp = Utilities.getTstamp();
+		this.objectID = id;
+		this.body = body;
 	}
 	
 	public String toString()
 	{
-		return getStringForDate(timestamp) + " :: " + student.toString() + " :: " + contents + " :: in context " + context;
+		return Utilities.getStringForDate(timestamp) + " :: " + student.toString() + " :: " + body + " :: in activity " + activity.toString();
 	}
 }

@@ -9,9 +9,25 @@ POST	/login									Application.login
 
 POST 	/contribution							Application.logContribution
 
+POST	/startActivity							Application.startActivity
+
 GET  	/getAllContributions					Application.getAllContributions
 
+GET		/getAllTeachers							Application.getAllTeachers
+
+GET		/getAllSchools							Application.getAllSchools
+
+GET		/getAllClassroomsMatching				Application.getAllClassroomsMatching
+
+GET		/dummyClassroomQuery					Application.getAllClassroomsDummy
+
+GET		/getAllStudents							Application.getAllStudents
+
+GET		/getAllStudentsInClassroom				Application.getAllStudentsInClassrooom
+
 GET		/executeSQL								Application.execute
+
+
 
 *      /admin              						module:crud
 

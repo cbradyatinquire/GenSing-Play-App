@@ -1,6 +1,7 @@
 package models;
 
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 import play.data.validation.Required;
@@ -16,7 +17,12 @@ public class StudentUser extends Model {
 	@Required
 	@ManyToOne
 	public Classroom classroom;
+	
+	public String firstnames;
+	public String lastnames;
 
+	@Lob
+    public String annotation;
 
 	public StudentUser( String uname, Classroom croom )
 	{

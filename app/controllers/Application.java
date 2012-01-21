@@ -5,6 +5,8 @@ import play.mvc.*;
 
 import java.util.*;
 
+import com.sun.org.apache.bcel.internal.generic.Select;
+
 import models.*;
 
 public class Application extends Controller {
@@ -12,16 +14,32 @@ public class Application extends Controller {
     public static void index() {
         render();
     }
+        
+    
+    public static void startActivity( String classname, int classyear, String activityname ) {
+    	String ret = "FAIL";
+    	Classroom c = Classroom.connect(classname, classyear);
+    	ActivityType at = ActivityType.FUNCTION_ACTIVITY;
+    	Activity a = new Activity( c, at );
+    	a.sessionMessage = activityname;
+    	a.save();
+    	if ( a != null)
+    		ret = "SUCCESS";
+    	renderJSON(ret);
+    }
     
     
-    public static void login(String username, String classname ) {
+    //login with username, classname AND classyear.  COULD have an "open classroom" that allows us to return the classroom object's ID in the JSON...
+    public static void login(String username, String classname, int classyear ) {
     	
-		System.err.println("Received login request for user: " + username + "\n      attempting to enter class: " + classname );
+		System.err.println("Received login request for user: " + username + "\n      attempting to enter class: " + classname + " with classyear = " + classyear);
 
-		Classroom croom = Classroom.connect( classname );
+		 
+		Classroom croom = Classroom.connect( classname, classyear );
+		
 		if ( croom == null )
 		{
-			renderJSON("FAILURE-CLASSROOM -- no classroom: '" + classname + "'");
+			renderJSON("FAILURE-CLASSROOM -- no classroom: '" + classname + "' -- or MORE than one (implement classyear");
 		}
 		else
 		{
@@ -38,28 +56,149 @@ public class Application extends Controller {
     }
     
     
-    public static void logContribution(String username, String classname, String contribution ) {
-    	Classroom croom = Classroom.connect( classname );
+    public static void logContribution(String stype, String username, String classname, int classyear, String id, String contribution ) {
+    	Classroom croom = Classroom.connect( classname, classyear );
 		if ( croom == null )
 		{
 			renderJSON("FAILURE-CLASSROOM -- no classroom: '" + classname + "'");
 		}
 		else
 		{
-	    	StudentUser theGuy = StudentUser.connect(username, croom);
-	    	if ( theGuy == null )
-	    	{
-	    		renderJSON("FAILURE-STUDENT -- no student '" + username + "' in class '" + classname + "'");
-	    	}
-	    	else
-	    	{
-	    		Contribution c = new Contribution(theGuy, "Test Context", contribution );
-	    		c.save();
-	    		renderJSON("Received contribution from user: " + username + ":" + classname +  "\nContents: " + contribution + 
-	    				"\nNOTE:  THIS IS NOW SAVED IN THE DATABASE!");
-	    	}
+			Activity act = Activity.connectCurrent(croom);
+			//THIS COULD BE OPTIMIZED TO CACHE THE CURRENT ACTIVITY (NO DB QUERY)
+			if (act == null )
+			{
+				renderJSON("FAILURE-no current activity");
+			}
+			else
+			{
+		    	StudentUser theGuy = StudentUser.connect(username, croom);
+		    	if ( theGuy == null )
+		    	{
+		    		renderJSON("FAILURE-STUDENT -- no student '" + username + "' in class '" + classname + "'");
+		    	}
+		    	else
+		    	{
+		    		ContributionType ct = ContributionType.POINT;
+		    		if (stype == "EQUATION")
+		    			ct = ContributionType.EQUATION;
+		    			
+		    		Contribution c = new Contribution(ct, theGuy, act, id, contribution );
+		    		c.save();
+		    		renderJSON("Received contribution from user: " + username + ":" + classname +  "\nContents: " + contribution + 
+		    				"\nNOTE:  THIS IS NOW SAVED IN THE DATABASE!");
+		    	}
+			}
 		}	 
     }
+    
+    //test methods...
+    public static void getAllTeachers()
+    {
+    	List<Teacher> teachers = Teacher.find("select t from Teacher t").fetch();
+    	String reply = "Teachers:\n";
+    	if (teachers.isEmpty())
+    		reply = "NO TEACHERS";
+    	for ( Teacher t: teachers)
+    	{
+    		reply += t.toString() + "\n";
+    	}
+    	renderJSON( reply );
+    }
+    
+    public static void getAllSchools()
+    {
+    	List<School> schools = School.find("select s from School s").fetch();
+    	String reply = "Schools:\n";
+    	if (schools.isEmpty())
+    		reply = "NO Schools";
+    	for ( School s: schools)
+    	{
+    		reply += s.toString() + "\n";
+    	}
+    	renderJSON( reply );
+    }
+    
+    public static void getAllStudents()
+    {
+    	List<StudentUser> ss = StudentUser.find("select s from StudentUser s").fetch();
+    	String reply = "Students:\n";
+    	if (ss.isEmpty())
+    		reply = "NO Students";
+    	for ( StudentUser s: ss)
+    	{
+    		reply += s.toString() + "\n";
+    	}
+    	renderJSON( reply );
+    }
+    
+    //with null name argument, this one returns a list
+    public static void getAllClassroomsMatching( String cname  )
+    {
+    	String reply = "NO Matching Classrooms Found";
+    	List<Classroom> cs = null;
+    	if (cname == null)
+    	{
+    		cs = Classroom.find( "select c from Classroom c" ).fetch();
+    	}
+    	else
+    	{
+    		cs = Classroom.find("select c from Classroom c where c.classname like '"+cname+"' order by c.startYear").fetch();
+    	}
+    	
+    	if (cs != null && cs.size() > 0)
+    	{
+    		reply = "Matching Classrooms:\n";
+    		for ( Classroom c : cs )
+    		{
+    		
+    			reply += "Name=" + c.classname + "; Teacher=" + c.teacher + "; Starting Year=" + c.startYear + "\n";
+    		}
+    	}
+    	renderJSON( reply );
+    }
+    
+    //with null name argument this one puts in "firstperiodmath" -- for testing.
+    public static void getAllClassroomsDummy( String cname )
+    {
+    	if ( cname == null )
+    	{
+    		cname = "FirstPeriodMath";
+    	}
+    	String reply = "NO Matching Classrooms Found";
+    	List<Classroom> cs = Classroom.find("select c from Classroom c where c.classname like '"+cname+"' order by c.startYear").fetch();
+    	if ( cs != null && cs.size() > 0)
+    	{
+    		reply = "Matching Classroom(s):\n";
+	    	for ( Classroom c : cs )
+			{
+					reply += "Name=" + c.classname + "; Teacher=" + c.teacher + "; Starting Year=" + c.startYear + "\n";
+			}
+    	}
+    	
+    	renderJSON( reply );
+    }
+    
+    public static void getAllStudentsInClassroom( String cname, int year )
+    {
+    	String reply = "NO Matching Classrooms Found";
+    	List<Classroom> cs = Classroom.find("select c from Classroom c where c.classname like '"+cname+"'").fetch();
+    	for ( Classroom c : cs )
+		{
+			if ( c.startYear == year )
+			{
+				int i = 0;
+				reply = "Classroom Found:  Name=" + c.classname + "; Year=" + c.startYear + "\n";
+				for ( StudentUser s : c.students)
+				{
+					i++;
+					reply += "#" + i + "Username: " + s.username + "\n";
+				}
+			}
+		}
+    	renderJSON( reply );
+    }
+    
     
     public static void getAllContributions( )
     {
@@ -76,7 +215,45 @@ public class Application extends Controller {
     
     public static void execute( String sql )
     {
-    	renderJSON( "would send you the result of executing " + sql );
+    	try
+    	{
+    		List<Object> results = Utilities.executeQuery(sql);
+    		String retn = "";
+    		for (Object result : results )
+    			retn += result.toString();
+    		renderJSON( retn );
+    	}
+    	catch (Exception e )
+    	{
+    		String reply =  "ERROR in executing query: " + sql + "\n" + e.getMessage();
+    		renderJSON( reply);
+    	}
     }
+    
+    
+//  public static void login(String username, String classname ) {
+//	
+//	System.err.println("Received login request for user: " + username + "\n      attempting to enter class: " + classname );
+//
+//	 
+//	Classroom croom = Classroom.connect( classname );
+//	
+//	if ( croom == null )
+//	{
+//		renderJSON("FAILURE-CLASSROOM -- no classroom: '" + classname + "' -- or MORE than one (implement classyear");
+//	}
+//	else
+//	{
+//    	StudentUser theGuy = StudentUser.connect(username, croom);
+//    	if ( theGuy == null )
+//    	{
+//    		renderJSON("FAILURE-STUDENT -- no student '" + username + "' in class '" + classname + "'");
+//    	}
+//    	else
+//    	{
+//    		renderJSON("SUCCESS");
+//    	}
+//	}	
+//}
 
 }
