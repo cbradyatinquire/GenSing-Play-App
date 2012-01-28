@@ -60,6 +60,6 @@ public class Contribution extends Model {
 	
 	public String toString()
 	{
-		return Utilities.getStringForDate(timestamp) + " :: " + student.toString() + " :: " + body + " :: in activity " + activity.toString();
+		return timestamp.toString() + " : by : " + student.toString() + " : with contents : " + body + " : in activity : " + activity.toString();
 	}
 }

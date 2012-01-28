@@ -11,6 +11,10 @@ POST 	/contribution							Application.logContribution
 
 POST	/startActivity							Application.startActivity
 
+POST	/nameActivity							Application.nameActivity
+
+POST	/annotateActivity						Application.appendAnnotationToActivity
+
 GET  	/getAllContributions					Application.getAllContributions
 
 GET		/getAllTeachers							Application.getAllTeachers

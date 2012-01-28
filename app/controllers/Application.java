@@ -16,16 +16,36 @@ public class Application extends Controller {
     }
         
     
-    public static void startActivity( String classname, int classyear, String activityname ) {
+    public static void startActivity( String classname, int classyear, String activityname, String atype ) {
     	String ret = "FAIL";
     	Classroom c = Classroom.connect(classname, classyear);
     	ActivityType at = ActivityType.FUNCTION_ACTIVITY;
+    	if ( atype.equals("POINT") )
+    		at = ActivityType.POINT;
+    	else if ( atype.equals("EQUATION"))
+    		at = ActivityType.EQUATION;
     	Activity a = new Activity( c, at );
     	a.sessionMessage = activityname;
     	a.save();
     	if ( a != null)
     		ret = "SUCCESS";
     	renderJSON(ret);
+    }
+    
+    public static void nameActivity( String classname, int classyear, String activityname )
+    {
+    	Classroom c = Classroom.connect(classname, classyear);
+    	Activity a = Activity.connectCurrent(c);
+    	a.sessionMessage = activityname;
+    	a.save();
+    }
+    
+    public static void appendAnnotationToActivity( String classname, int classyear, String annotation )
+    {
+    	Classroom c = Classroom.connect(classname, classyear);
+    	Activity a = Activity.connectCurrent(c);
+    	a.annotation += "\n" + annotation;
+    	a.save();
     }
     
     
@@ -80,7 +100,7 @@ public class Application extends Controller {
 		    	else
 		    	{
 		    		ContributionType ct = ContributionType.POINT;
-		    		if (stype == "EQUATION")
+		    		if ( stype.equals("EQUATION") )
 		    			ct = ContributionType.EQUATION;
 		    			
 		    		Contribution c = new Contribution(ct, theGuy, act, id, contribution );
