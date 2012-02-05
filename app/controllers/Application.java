@@ -38,6 +38,7 @@ public class Application extends Controller {
     	Activity a = Activity.connectCurrent(c);
     	a.sessionMessage = activityname;
     	a.save();
+	renderJSON( "Renamed Activity To: " + activityname );
     }
     
     public static void appendAnnotationToActivity( String classname, int classyear, String annotation )
@@ -46,6 +47,7 @@ public class Application extends Controller {
     	Activity a = Activity.connectCurrent(c);
     	a.annotation += "\n" + annotation;
     	a.save();
+	renderJSON( "Added Annotation: '" + annotation + "' to this activity." );
     }
     
     
