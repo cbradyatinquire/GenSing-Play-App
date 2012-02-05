@@ -27,12 +27,15 @@ public class Activity extends Model {
 
 	@Lob
     public String annotation;
+	
+	public int sequenceCounter = 0;
 
 	public Activity( Classroom c, ActivityType at )
 	{
 		this.classroom = c;
 		this.type = at;
 		this.startTime = Utilities.getTstamp();
+		this.sequenceCounter = 0;
 	}
 	
 	public static Activity connect(Classroom croom, Date thedate ) {
@@ -43,6 +46,12 @@ public class Activity extends Model {
 	{
 		return  type.name() + " " + classroom.toString() + " " + startTime.toString() + " msg:" + sessionMessage;
 		
+	}
+	
+	public int getNextSequenceNumber( ) { 
+		sequenceCounter++; 
+		this.save();
+		return sequenceCounter;
 	}
 
 	public static Activity connectCurrent(Classroom croom) {
@@ -57,4 +66,16 @@ public class Activity extends Model {
 		}
 		return latest;
 	}
+	
+	public List<Contribution> getContributionsAfterNumber( int i )
+	{
+				
+		String indx = String.valueOf(i);
+		String qu = "select c from Contribution c WHERE c.sequenceNumber > "+indx+" and c.activity = ? order by c.sequenceNumber";
+		List<Contribution> recents = Contribution.find(qu, this).fetch();
+		
+		
+		return recents;
+	}
+	
 }

@@ -220,6 +220,7 @@ public class Application extends Controller {
     }
     
     
+    /*stupid method -- need to specify classsroom , then get current activity, etc.*/
     public static void getAllContributions( )
     {
     	List<Contribution> allcontribs = Contribution.find("select c from Contribution c order by c.timestamp").fetch();
@@ -229,6 +230,28 @@ public class Application extends Controller {
     	for ( Contribution c : allcontribs )
     	{
     		reply += c.toString() + "\n";
+    	}
+    	renderJSON(reply);
+    }
+    
+    public static void getContributionsAfterSequenceNumber( String cname, int year, int ind )
+    {
+    	String reply = "OOPS";
+    	Classroom cs = null;
+    	cs = Classroom.find("select c from Classroom c where c.classname like '"+cname+"' and c.startYear = "+year).first();
+    	if (cs == null)
+    		reply = "NO MATCH ON CLASS NAME + YEAR";
+    	else
+    	{
+	    	Activity a = Activity.connectCurrent(cs);
+	    	List<Contribution> afteri = a.getContributionsAfterNumber(ind);
+	    	reply = "Contributions:\n";
+	    	if (afteri.isEmpty())
+	    		reply = "NO CONTRIBUTIONS MATCHING CONDITION";
+	    	for ( Contribution c : afteri )
+	    	{
+	    		reply += c.toString() + "\n";
+	    	}
     	}
     	renderJSON(reply);
     }

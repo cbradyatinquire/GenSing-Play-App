@@ -17,6 +17,8 @@ POST	/annotateActivity						Application.appendAnnotationToActivity
 
 GET  	/getAllContributions					Application.getAllContributions
 
+*  	/getAllContributionsAfter				Application.getContributionsAfterSequenceNumber
+
 GET		/getAllTeachers							Application.getAllTeachers
 
 GET		/getAllSchools							Application.getAllSchools

@@ -47,6 +47,9 @@ public class Contribution extends Model {
 	@Lob
     public String annotation;
 	
+	@Required
+	public int sequenceNumber;
+	
 	
 	public Contribution( ContributionType type, StudentUser stud, Activity act, String id, String body )
 	{
@@ -56,10 +59,15 @@ public class Contribution extends Model {
 		this.timestamp = Utilities.getTstamp();
 		this.objectID = id;
 		this.body = body;
+		System.err.println("Activity's current sequence number is " + act.sequenceCounter );
+		this.sequenceNumber = act.getNextSequenceNumber();
+		System.err.println( "mine is now " + sequenceNumber );
+		
 	}
+	
 	
 	public String toString()
 	{
-		return timestamp.toString() + " : by : " + student.toString() + " : with contents : " + body + " : in activity : " + activity.toString();
+		return timestamp.toString() +  " : seq# : " + sequenceNumber + " : by : " + student.toString() + " : with contents : " + body + " : in activity : " + activity.toString();
 	}
 }
