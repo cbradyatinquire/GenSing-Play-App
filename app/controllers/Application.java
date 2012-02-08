@@ -112,8 +112,7 @@ public class Application extends Controller {
 		    			
 		    		Contribution c = new Contribution(ct, theGuy, act, id, contribution );
 		    		c.save();
-		    		renderJSON("Received contribution from user: " + username + ":" + classname +  "\nContents: " + contribution + 
-		    				"\nNOTE:  THIS IS NOW SAVED IN THE DATABASE!");
+		    		renderJSON("Logged contribution from user: " + username + ":" + classname +  "\nContents: " + contribution );
 		    	}
 			}
 		}	 
