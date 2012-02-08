@@ -25,8 +25,10 @@ public class Application extends Controller {
     	else if ( atype.equals("EQUATION"))
     		at = ActivityType.EQUATION;
     	Activity a = new Activity( c, at );
+    	c.setCurrentActivity(a);
     	a.sessionMessage = activityname;
     	a.save();
+    	c.save();
     	if ( a != null)
     		ret = "SUCCESS";
     	renderJSON(ret);
@@ -35,7 +37,8 @@ public class Application extends Controller {
     public static void nameActivity( String classname, int classyear, String activityname )
     {
     	Classroom c = Classroom.connect(classname, classyear);
-    	Activity a = Activity.connectCurrent(c);
+    	Activity a = c.getCurrentActivity();
+    	//Activity a = Activity.connectCurrent(c);
     	a.sessionMessage = activityname;
     	a.save();
 	renderJSON( "Renamed Activity To: " + activityname );
@@ -44,7 +47,8 @@ public class Application extends Controller {
     public static void appendAnnotationToActivity( String classname, int classyear, String annotation )
     {
     	Classroom c = Classroom.connect(classname, classyear);
-    	Activity a = Activity.connectCurrent(c);
+    	Activity a = c.getCurrentActivity();
+    	//Activity a = Activity.connectCurrent(c);
     	a.annotation += "\n" + annotation;
     	a.save();
 	renderJSON( "Added Annotation: '" + annotation + "' to this activity." );
@@ -86,7 +90,8 @@ public class Application extends Controller {
 		}
 		else
 		{
-			Activity act = Activity.connectCurrent(croom);
+			//Activity act = Activity.connectCurrent(croom);
+			Activity act = croom.getCurrentActivity();
 			//THIS COULD BE OPTIMIZED TO CACHE THE CURRENT ACTIVITY (NO DB QUERY)
 			if (act == null )
 			{
@@ -232,6 +237,7 @@ public class Application extends Controller {
     	for ( Contribution c : allcontribs )
     	{
     		reply += c.toString() + "\n";
+    		reply += c.toTSVLine() + "\n";
     	}
     	renderJSON(reply);
     }
@@ -245,7 +251,8 @@ public class Application extends Controller {
     		reply = "NO MATCH ON CLASS NAME + YEAR";
     	else
     	{
-	    	Activity a = Activity.connectCurrent(cs);
+	    	//Activity a = Activity.connectCurrent(cs);
+	    	Activity a = cs.getCurrentActivity();
 	    	List<Contribution> afteri = a.getContributionsAfterNumber(ind);
 	    	reply = "Contributions:\n";
 	    	if (afteri.isEmpty())
@@ -253,6 +260,7 @@ public class Application extends Controller {
 	    	for ( Contribution c : afteri )
 	    	{
 	    		reply += c.toString() + "\n";
+	    		reply += c.toTSVLine() + "\n";
 	    	}
     	}
     	renderJSON(reply);

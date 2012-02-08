@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -30,11 +31,25 @@ public class Classroom extends Model {
 
 	@Lob
     public String annotation;
+	
+	@Required
+	@OneToOne // (mappedBy="classroom", cascade=CascadeType.ALL)
+	public Activity current = null;
+	
 
 	public Classroom( String name )
 	{
 		this.classname = name;
 		students = new ArrayList<StudentUser>();
+	}
+	
+	public void setCurrentActivity( Activity curr )
+	{
+		current = curr;
+	}
+	public Activity getCurrentActivity()
+	{
+		return current;
 	}
 
 

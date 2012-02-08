@@ -54,7 +54,7 @@ public class Activity extends Model {
 		return sequenceCounter;
 	}
 
-	public static Activity connectCurrent(Classroom croom) {
+	public static Activity connectLatest(Classroom croom) {
 		List<Activity> acts = find("byClassroom", croom ).fetch();
 		if ( acts.isEmpty() )
 			return null;
@@ -66,6 +66,7 @@ public class Activity extends Model {
 		}
 		return latest;
 	}
+	
 	
 	public List<Contribution> getContributionsAfterNumber( int i )
 	{

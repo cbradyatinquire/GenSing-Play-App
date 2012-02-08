@@ -29,6 +29,11 @@ public class StudentUser extends Model {
 		this.username = uname;
 		this.classroom = croom;
 	}
+	
+	public String getUserName()
+	{
+		return "[" + username + "]";
+	}
 
 	public static StudentUser connect(String uname, Classroom croom) {
 		return find("byUsernameAndClassroom", uname, croom).first();

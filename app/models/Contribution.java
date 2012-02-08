@@ -59,9 +59,9 @@ public class Contribution extends Model {
 		this.timestamp = Utilities.getTstamp();
 		this.objectID = id;
 		this.body = body;
-		System.err.println("Activity's current sequence number is " + act.sequenceCounter );
+		//System.err.println("Activity's current sequence number is " + act.sequenceCounter );
 		this.sequenceNumber = act.getNextSequenceNumber();
-		System.err.println( "mine is now " + sequenceNumber );
+		//System.err.println( "mine is now " + sequenceNumber );
 		
 	}
 	
@@ -69,5 +69,17 @@ public class Contribution extends Model {
 	public String toString()
 	{
 		return timestamp.toString() +  " : seq# : " + sequenceNumber + " : by : " + student.toString() + " : with contents : " + body + " : in activity : " + activity.toString();
+	}
+	
+	public String toTSVLine()
+	{
+		String line = String.valueOf(sequenceNumber) + "\t" + timestamp.toString() + "\t" + student.getUserName() + "\t" + type + "\t" + objectID + "\t" + body;
+		for (Tag t : tags )
+		{
+			line += t + "\t";
+		}
+		if (annotation != null)
+			line += annotation;
+		return line;
 	}
 }
