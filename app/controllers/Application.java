@@ -236,7 +236,7 @@ public class Application extends Controller {
     		reply = "NO CONTRIBUTIONS";
     	for ( Contribution c : allcontribs )
     	{
-    		reply += c.toString() + "\n";
+    		//reply += c.toString() + "\n";
     		reply += c.toTSVLine() + "\n";
     	}
     	renderJSON(reply);
@@ -259,7 +259,7 @@ public class Application extends Controller {
 	    		reply = "NO CONTRIBUTIONS MATCHING CONDITION";
 	    	for ( Contribution c : afteri )
 	    	{
-	    		reply += c.toString() + "\n";
+	    		//reply += c.toString() + "\n";
 	    		reply += c.toTSVLine() + "\n";
 	    	}
     	}
