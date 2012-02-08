@@ -68,7 +68,7 @@ public class Classroom extends Model {
 	}
 
 	@Override
-	public String toString() { return classname;  }
+	public String toString() { return classname + ":" + startYear;  }
 
 	public String getName() { return classname; }
 	

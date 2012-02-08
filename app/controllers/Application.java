@@ -119,6 +119,19 @@ public class Application extends Controller {
 		}	 
     }
     
+    
+    public static void getAllActivities()
+    {
+    	String toReturn = "ACTIVITIES:\n";
+    	List<Activity> acts = Activity.findAll();
+    	for (Activity a : acts)
+    	{
+    		toReturn += a.toString() + "\n";
+    	}
+    	renderJSON( toReturn );
+    }
+    
+    
     //test methods...
     public static void getAllTeachers()
     {

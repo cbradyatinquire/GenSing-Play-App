@@ -30,14 +30,14 @@ public class Teacher extends Model {
 	}
 	
 	public String toString() {
-		String add = ":";
+		String add = "[";
 		if ( firstnames != null )
 			add += firstnames;
 		if ( lastnames != null )
-			add += lastnames;
+			add += " " + lastnames;
 		String toReturn = username;
 		if (add.length() > 1)
-			toReturn += add;
+			toReturn += add + "]";
 		return toReturn;
 	}
 

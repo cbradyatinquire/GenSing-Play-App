@@ -25,6 +25,8 @@ GET		/getAllSchools							Application.getAllSchools
 
 GET		/getAllClassroomsMatching				Application.getAllClassroomsMatching
 
+GET 	/getAllActivities						Application.getAllActivities
+
 GET		/dummyClassroomQuery					Application.getAllClassroomsDummy
 
 GET		/getAllStudents							Application.getAllStudents
