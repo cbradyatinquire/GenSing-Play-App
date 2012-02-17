@@ -83,8 +83,10 @@ public class Application extends Controller {
     
     
     public static void logContribution(String stype, String username, String classname, int classyear, String id, String contribution ) {
+    	System.err.println("contribution logged");
     	Classroom croom = Classroom.connect( classname, classyear );
-		if ( croom == null )
+		
+    	if ( croom == null )
 		{
 			renderJSON("FAILURE-CLASSROOM -- no classroom: '" + classname + "'");
 		}

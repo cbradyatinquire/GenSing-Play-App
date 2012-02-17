@@ -16,6 +16,8 @@ public class School extends Model {
 	@Lob
     public String annotation;
 	
+	public String getAnnotation() { return annotation; }
+	
 	 public static School connect(String name) {
 		return find("bySchoolname", name).first();
 	 }
