@@ -32,6 +32,9 @@ public class Contribution extends Model {
 	public Date timestamp;
 	
 	@Required
+	public double secondsIn;
+	
+	@Required
 	public String objectID;
 	
 	@Required
@@ -57,6 +60,7 @@ public class Contribution extends Model {
 		this.student = stud;
 		this.activity = act;
 		this.timestamp = Utilities.getTstamp();
+		this.secondsIn = (this.timestamp.getTime() - act.startTime.getTime()) / 1000;
 		this.objectID = id;
 		this.body = body;
 		//System.err.println("Activity's current sequence number is " + act.sequenceCounter );
@@ -68,12 +72,14 @@ public class Contribution extends Model {
 	
 	public String toString()
 	{
-		return timestamp.toString() +  " : seq# : " + sequenceNumber + " : by : " + student.toString() + " : with contents : " + body + " : in activity : " + activity.toString();
+		//return timestamp.toString() +  " : seq# : " + sequenceNumber + " : by : " + student.toString() + " : with contents : " + body + " : in activity : " + activity.toString();
+		return String.valueOf(sequenceNumber) + "|" + type + "|" + secondsIn + "|" + student.getUserName() + "|" + objectID + "|" + body;
+		
 	}
 	
 	public String toTSVLine()
 	{
-		String line = String.valueOf(sequenceNumber) + "\t" + timestamp.toString() + "\t" + student.getUserName() + "\t" + type + "\t" + objectID + "\t" + body;
+		String line = String.valueOf(sequenceNumber) + "\t" + type + "\t" + secondsIn + "\t" + student.getUserName() + "\t" + objectID + "\t" + body;
 		for (Tag t : tags )
 		{
 			line += t + "\t";
