@@ -60,7 +60,7 @@ public class Contribution extends Model {
 		this.student = stud;
 		this.activity = act;
 		this.timestamp = Utilities.getTstamp();
-		this.secondsIn = (this.timestamp.getTime() - act.startTime.getTime()) / 1000;
+		this.secondsIn = (this.timestamp.getTime() - act.startTime.getTime()) / 1000.0;
 		this.objectID = id;
 		this.body = body;
 		//System.err.println("Activity's current sequence number is " + act.sequenceCounter );
