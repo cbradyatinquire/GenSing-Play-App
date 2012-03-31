@@ -56,7 +56,7 @@ public class Activity extends Model {
 	
 	public String toString()
 	{
-		return classroom.teacher.aschool.toString() + "\t" + classroom.teacher.toString() + "\t" + classroom.toString() + "\t" + startTime.toString();
+		return classroom.teacher.aschool.toString() + "\t" + classroom.teacher.toString() + "\t" + classroom.toString() + "\t" + startTime.toString() + "\t" + id;
 		//return  type.name() + " " + classroom.toString() + " " + startTime.toString() + " msg:" + sessionMessage;
 	}
 	
