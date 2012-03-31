@@ -23,6 +23,9 @@ public class Activity extends Model {
 	@ManyToOne
 	public Classroom classroom;
 	
+	
+	public String source = ""; //the software or model that created this.
+	
 	public String sessionMessage = "";
 
 	@Lob
@@ -30,12 +33,21 @@ public class Activity extends Model {
 	
 	public int sequenceCounter = 0;
 
-	public Activity( Classroom c, ActivityType at )
+	//public Activity( Classroom c, ActivityType at )
+	public Activity( Classroom c, String src )
 	{
 		this.classroom = c;
-		this.type = at;
+		//this.type = at;
+		this.source = src;
 		this.startTime = Utilities.getTstamp();
 		this.sequenceCounter = 0;
+	}
+	
+	public Long getId( ) { return this.id; }
+	
+	public static Activity getActivity( Long id )
+	{
+		return find("byId", id).first();
 	}
 	
 	public static Activity connect(Classroom croom, Date thedate ) {
@@ -44,10 +56,8 @@ public class Activity extends Model {
 	
 	public String toString()
 	{
-		
 		return classroom.teacher.aschool.toString() + "\t" + classroom.teacher.toString() + "\t" + classroom.toString() + "\t" + startTime.toString();
 		//return  type.name() + " " + classroom.toString() + " " + startTime.toString() + " msg:" + sessionMessage;
-		
 	}
 	
 	public int getNextSequenceNumber( ) { 
@@ -56,19 +66,19 @@ public class Activity extends Model {
 		return sequenceCounter;
 	}
 
-	public static Activity connectLatest(Classroom croom) {
-		List<Activity> acts = find("byClassroom", croom ).fetch();
-		if ( acts.isEmpty() )
-			return null;
-		Activity latest = acts.get(0);
-		for (Activity act : acts)
-		{
-			if (act.startTime.after( latest.startTime ) )
-				latest = act;
-		}
-		return latest;
-	}
-	
+//	public static Activity connectLatest(Classroom croom) {
+//		List<Activity> acts = find("byClassroom", croom ).fetch();
+//		if ( acts.isEmpty() )
+//			return null;
+//		Activity latest = acts.get(0);
+//		for (Activity act : acts)
+//		{
+//			if (act.startTime.after( latest.startTime ) )
+//				latest = act;
+//		}
+//		return latest;
+//	}
+//	
 	
 	public List<Contribution> getContributionsAfterNumber( int i )
 	{

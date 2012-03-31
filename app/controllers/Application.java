@@ -15,43 +15,54 @@ public class Application extends Controller {
         render();
     }
         
-    
-    public static void startActivity( String classname, int classyear, String activityname, String atype ) {
+ 
+    public static void startActivity( String classname, int classyear, String activityname, String src ) {
     	String ret = "FAIL";
     	Classroom c = Classroom.connect(classname, classyear);
-    	ActivityType at = ActivityType.FUNCTION_ACTIVITY;
-    	if ( atype.equals("POINT") )
-    		at = ActivityType.POINT;
-    	else if ( atype.equals("EQUATION"))
-    		at = ActivityType.EQUATION;
-    	Activity a = new Activity( c, at );
-    	c.setCurrentActivity(a);
-    	a.sessionMessage = activityname;
-    	a.save();
-    	c.save();
-    	if ( a != null)
-    		ret = "SUCCESS";
+ 
+    	if ( c != null)
+    	{
+	    	Activity a = new Activity( c, src );
+	    	if ( a != null )
+	    	{
+		    	a.sessionMessage = activityname;
+		    	a.save();
+		    	Long aid = a.getId();
+		    	ret = String.valueOf(aid);
+	    	}
+    	}
     	renderJSON(ret);
     }
     
-    public static void nameActivity( String classname, int classyear, String activityname )
+    
+    public static void nameActivity( Long aid,  String activityname )
     {
-    	Classroom c = Classroom.connect(classname, classyear);
-    	Activity a = c.getCurrentActivity();
-    	//Activity a = Activity.connectCurrent(c);
-    	a.sessionMessage = activityname;
-    	a.save();
-	renderJSON( "Renamed Activity To: " + activityname );
+    	Activity a = Activity.getActivity(aid);
+    	if ( a == null)
+    	{
+    		renderJSON("FAIL");
+    	}
+    	else
+    	{
+	    	a.sessionMessage = activityname;
+	    	a.save();
+	    	renderJSON( "Renamed Activity To: " + activityname );
+    	}
     }
     
-    public static void appendAnnotationToActivity( String classname, int classyear, String annotation )
+    public static void appendAnnotationToActivity( Long aid, String annotation )
     {
-    	Classroom c = Classroom.connect(classname, classyear);
-    	Activity a = c.getCurrentActivity();
-    	//Activity a = Activity.connectCurrent(c);
-    	a.annotation += "\n" + annotation;
-    	a.save();
-	renderJSON( "Added Annotation: '" + annotation + "' to this activity." );
+    	Activity a = Activity.getActivity(aid);
+    	if ( a == null )
+    	{
+    		renderJSON("FAIL");
+    	}
+    	else
+    	{
+    		a.annotation += "\n" + annotation;
+	    	a.save();
+	    	renderJSON( "Added Annotation: '" + annotation + "' to this activity." );
+    	}
     }
     
     
@@ -82,29 +93,21 @@ public class Application extends Controller {
     }
     
     
-    public static void logContribution(String stype, String username, String classname, int classyear, String id, String contribution ) {
+    public static void logContribution(String stype, String username, Long actid, String contribid, String contribution ) {
     	System.err.println("contribution logged");
-    	Classroom croom = Classroom.connect( classname, classyear );
-		
-    	if ( croom == null )
-		{
-			renderJSON("FAILURE-CLASSROOM -- no classroom: '" + classname + "'");
-		}
-		else
-		{
-			//Activity act = Activity.connectCurrent(croom);
-			Activity act = croom.getCurrentActivity();
-			//THIS COULD BE OPTIMIZED TO CACHE THE CURRENT ACTIVITY (NO DB QUERY)
+    	Activity act = Activity.getActivity(actid);
+    	
 			if (act == null )
 			{
-				renderJSON("FAILURE-no current activity");
+				renderJSON("FAILURE-no  activity with id = " + actid);
 			}
 			else
 			{
+				Classroom croom = act.classroom;
 		    	StudentUser theGuy = StudentUser.connect(username, croom);
 		    	if ( theGuy == null )
 		    	{
-		    		renderJSON("FAILURE-STUDENT -- no student '" + username + "' in class '" + classname + "'");
+		    		renderJSON("FAILURE-STUDENT -- no student '" + username + "' in classroom '" + croom.toString() + "'");
 		    	}
 		    	else
 		    	{
@@ -112,12 +115,12 @@ public class Application extends Controller {
 		    		if ( stype.equals("EQUATION") )
 		    			ct = ContributionType.EQUATION;
 		    			
-		    		Contribution c = new Contribution(ct, theGuy, act, id, contribution );
+		    		Contribution c = new Contribution(ct, theGuy, act, contribid, contribution );
 		    		c.save();
-		    		renderJSON("Logged contribution from user: " + username + ":" + classname +  "\nContents: " + contribution );
+		    		renderJSON("Logged contribution from user: " + username + ":" + croom.toString() +  "\nContents: " + contribution );
 		    	}
 			}
-		}	 
+	 
     }
     
     
@@ -256,24 +259,21 @@ public class Application extends Controller {
     	renderJSON(reply);
     }
     
-    public static void getContributionsAfterSequenceNumber( String cname, int year, int ind )
+
+    
+    public static void getContributionsAfterSequenceNumber( Long aid, int ind )
     {
-    	String reply = "OOPS";
-    	Classroom cs = null;
-    	cs = Classroom.find("select c from Classroom c where c.classname like '"+cname+"' and c.startYear = "+year).first();
-    	if (cs == null)
-    		reply = "NO MATCH ON CLASS NAME + YEAR";
-    	else
-    	{
-	    	//Activity a = Activity.connectCurrent(cs);
-	    	Activity a = cs.getCurrentActivity();
+    	String reply = "OOPS -- problem in looking up Activtity with id:" + aid;
+
+	    Activity a = Activity.getActivity(aid);
+	    if ( a != null )
+	    {
 	    	List<Contribution> afteri = a.getContributionsAfterNumber(ind);
 	    	reply = "Contributions:\n";
 	    	if (afteri.isEmpty())
 	    		reply = "NO CONTRIBUTIONS MATCHING CONDITION";
 	    	for ( Contribution c : afteri )
 	    	{
-	    		//reply += c.toString() + "\n";
 	    		reply += c.toTSVLine() + "\n";
 	    	}
     	}
@@ -298,29 +298,5 @@ public class Application extends Controller {
     }
     
     
-//  public static void login(String username, String classname ) {
-//	
-//	System.err.println("Received login request for user: " + username + "\n      attempting to enter class: " + classname );
-//
-//	 
-//	Classroom croom = Classroom.connect( classname );
-//	
-//	if ( croom == null )
-//	{
-//		renderJSON("FAILURE-CLASSROOM -- no classroom: '" + classname + "' -- or MORE than one (implement classyear");
-//	}
-//	else
-//	{
-//    	StudentUser theGuy = StudentUser.connect(username, croom);
-//    	if ( theGuy == null )
-//    	{
-//    		renderJSON("FAILURE-STUDENT -- no student '" + username + "' in class '" + classname + "'");
-//    	}
-//    	else
-//    	{
-//    		renderJSON("SUCCESS");
-//    	}
-//	}	
-//}
 
 }

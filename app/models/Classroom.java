@@ -32,9 +32,9 @@ public class Classroom extends Model {
 	@Lob
     public String annotation;
 	
-	@Required
-	@OneToOne // (mappedBy="classroom", cascade=CascadeType.ALL)
-	public Activity current = null;
+//	@Required
+//	@OneToOne // (mappedBy="classroom", cascade=CascadeType.ALL)
+//	public Activity current = null;
 	
 
 	public Classroom( String name )
@@ -43,14 +43,14 @@ public class Classroom extends Model {
 		students = new ArrayList<StudentUser>();
 	}
 	
-	public void setCurrentActivity( Activity curr )
-	{
-		current = curr;
-	}
-	public Activity getCurrentActivity()
-	{
-		return current;
-	}
+//	public void setCurrentActivity( Activity curr )
+//	{
+//		current = curr;
+//	}
+//	public Activity getCurrentActivity()
+//	{
+//		return current;
+//	}
 
 
 	public static Classroom connect( String cname )
