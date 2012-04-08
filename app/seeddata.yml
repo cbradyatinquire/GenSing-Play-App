@@ -47,12 +47,12 @@ StudentUser(bstudent):
  
  
 Activity(functionactivity):
-    type:  "!!app.models.ActivityType.FUNCTION_ACTIVITY"
+    type:  FUNCTION_ACTIVITY
     startTime: !!timestamp "2002-02-02 21:59:43.10 -5"
     classroom: FPM
 
 Contribution(c1):
-    type: "!!app.models.ActivityType.POINT"
+    type: POINT
     student: astudent
     activity: functionactivity
     timestamp: !!timestamp "2002-02-02 22:00:13.10 -5"
@@ -61,7 +61,7 @@ Contribution(c1):
     sequenceNumber: 1
     
 Contribution(c2):
-    type: "!!app.models.ActivityType.POINT"
+    type: POINT
     student: astudent
     activity: functionactivity
     timestamp: !!timestamp "2002-02-02 22:00:22.10 -5"
@@ -70,7 +70,7 @@ Contribution(c2):
     sequenceNumber: 2
     
 Contribution(c3):
-    type: "!!app.models.ActivityType.FUNCTION"
+    type: EQUATION
     student: astudent
     activity: functionactivity
     timestamp: !!timestamp "2002-02-02 22:00:32.10 -5"
