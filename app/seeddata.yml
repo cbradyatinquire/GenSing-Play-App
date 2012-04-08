@@ -3,6 +3,10 @@
 School(SST):
     schoolName:    SST
     annotation: School of Science and Technology
+    
+School(School2):
+    schoolName:    SchoolTwo
+    annotation: Not the School of Science and Technology
   
     
 Teacher(cbrady):
@@ -10,27 +14,42 @@ Teacher(cbrady):
     aschool:    SST
       
     
-Classroom(FirstPeriodMath):
+Classroom(FPM):
     classname:    FirstPeriodMath
     teacher:    cbrady
     startYear:    2012
+    aschool:    SST
+    
+Classroom(SPM):
+    classname:    SecondPeriodMath
+    teacher:    cbrady
+    startYear:    2012
+    aschool:    SST
     
     
-Classroom(FirstPeriodMathOld):
+    
+Classroom(FPMO):
     classname:    FirstPeriodMath
     teacher:    cbrady
     startYear:    2010
+    aschool:    SST
+    
 
 
 StudentUser(astudent):
     username:    astudent
-    classroom:    FirstPeriodMath
+    classroom:    FPM
     
     
+StudentUser(bstudent):
+    username:    bstudent
+    classroom:    SPM
+ 
+ 
 Activity(functionactivity):
     type:  "!!app.models.ActivityType.FUNCTION_ACTIVITY"
     startTime: !!timestamp "2002-02-02 21:59:43.10 -5"
-    classroom: FirstPeriodMath
+    classroom: FPM
 
 Contribution(c1):
     type: "!!app.models.ActivityType.POINT"
@@ -49,4 +68,13 @@ Contribution(c2):
     objectID: pt
     body: (-4,2)
     sequenceNumber: 2
+    
+Contribution(c3):
+    type: "!!app.models.ActivityType.FUNCTION"
+    student: astudent
+    activity: functionactivity
+    timestamp: !!timestamp "2002-02-02 22:00:32.10 -5"
+    objectID: f1
+    body: sin(x)
+    sequenceNumber: 3
     

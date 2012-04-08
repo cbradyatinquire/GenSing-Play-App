@@ -16,19 +16,23 @@ public class Application extends Controller {
     }
         
  
-    public static void startActivity( String classname, int classyear, String activityname, String src ) {
+    public static void startActivity( String schoolname, String classname, int classyear, String activityname, String src ) {
     	String ret = "FAIL";
-    	Classroom c = Classroom.connect(classname, classyear);
- 
-    	if ( c != null)
+    	School s = School.connect(schoolname);
+    	if (s != null)
     	{
-	    	Activity a = new Activity( c, src );
-	    	if ( a != null )
+	    	Classroom c = Classroom.connect(classname, classyear);
+	 
+	    	if ( c != null  &&  c.isSchool(s) )
 	    	{
-		    	a.sessionMessage = activityname;
-		    	a.save();
-		    	Long aid = a.getId();
-		    	ret = String.valueOf(aid);
+		    	Activity a = new Activity( c, src );
+		    	if ( a != null )
+		    	{
+			    	a.sessionMessage = activityname;
+			    	a.save();
+			    	Long aid = a.getId();
+			    	ret = String.valueOf(aid);
+		    	}
 	    	}
     	}
     	renderJSON(ret);
@@ -66,30 +70,44 @@ public class Application extends Controller {
     }
     
     
-    //login with username, classname AND classyear.  COULD have an "open classroom" that allows us to return the classroom object's ID in the JSON...
-    public static void login(String username, String classname, int classyear ) {
+    //login with username, schoolname, classname AND classyear.  COULD have an "open classroom" that allows us to return the classroom object's ID in the JSON...
+    public static void login(String username, String schoolname,  String classname, int classyear ) {
     	
 		System.err.println("Received login request for user: " + username + "\n      attempting to enter class: " + classname + " with classyear = " + classyear);
 
-		 
-		Classroom croom = Classroom.connect( classname, classyear );
-		
-		if ( croom == null )
+		School s = School.connect(schoolname);
+		if (s != null)
 		{
-			renderJSON("FAILURE-CLASSROOM -- no classroom: '" + classname + "' -- or MORE than one (implement classyear");
+			Classroom croom = Classroom.connect( classname, classyear );
+			if ( croom == null )
+			{
+				renderJSON("FAILURE-CLASSROOM -- no classroom/classyear combo: '" + classname + "/" + classyear);
+			}
+			else
+			{
+				if ( croom.isSchool( s ) )
+				{
+					StudentUser theGuy = StudentUser.connect(username, croom);
+					if ( theGuy == null )
+					{
+						renderJSON("FAILURE-STUDENT -- no student '" + username + "' in class '" + classname + "'");
+					}
+					else
+					{
+						renderJSON("SUCCESS");
+					}
+				}	
+				else
+				{
+					renderJSON("School/classroom mismatch - school name: " + schoolname + " classname/year: " + classname + "/" + classyear );
+				}
+			}
+
 		}
-		else
+		else 
 		{
-	    	StudentUser theGuy = StudentUser.connect(username, croom);
-	    	if ( theGuy == null )
-	    	{
-	    		renderJSON("FAILURE-STUDENT -- no student '" + username + "' in class '" + classname + "'");
-	    	}
-	    	else
-	    	{
-	    		renderJSON("SUCCESS");
-	    	}
-		}	
+			renderJSON("COULDNT FIND SCHOOL" + schoolname );
+		}
     }
     
     

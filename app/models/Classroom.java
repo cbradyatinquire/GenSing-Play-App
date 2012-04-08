@@ -21,6 +21,10 @@ public class Classroom extends Model {
 	
 	@Required
 	@ManyToOne
+	public School aschool;
+	
+	@Required
+	@ManyToOne
 	public Teacher teacher;
 	
 	@Required
@@ -52,6 +56,8 @@ public class Classroom extends Model {
 //		return current;
 //	}
 
+	public  void setSchool( School s ) { aschool = s; }
+	public  boolean isSchool( School s ) { return ( s.equals( aschool )); }
 
 	public static Classroom connect( String cname )
 	{

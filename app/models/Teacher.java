@@ -1,8 +1,12 @@
 package models;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -20,6 +24,9 @@ public class Teacher extends Model {
 	
 	public String firstnames;
 	public String lastnames;
+	
+	@OneToMany (mappedBy="teacher", cascade=CascadeType.ALL)
+	public List<Classroom>classrooms;
 	
 	@Lob
     public String annotation;

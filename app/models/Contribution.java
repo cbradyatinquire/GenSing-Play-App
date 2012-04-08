@@ -39,8 +39,8 @@ public class Contribution extends Model {
 	
 	@Required
 	public String body;
-	
-	@Required
+
+
 	public String separator = ";";
 	
 	
@@ -66,6 +66,7 @@ public class Contribution extends Model {
 		//System.err.println("Activity's current sequence number is " + act.sequenceCounter );
 		this.sequenceNumber = act.getNextSequenceNumber();
 		//System.err.println( "mine is now " + sequenceNumber );
+		this.separator = ";";
 		
 	}
 	
