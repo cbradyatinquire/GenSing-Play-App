@@ -54,15 +54,18 @@ StudentUser(bstudent):
 Session(functionactivity):
     activitytype:  "my version of the function activity"
     startTime: !!timestamp "2002-02-02 21:59:43.10 -5"
+    source: "seed data"
     classroom: FPM
     
 Session(collabgrapher):
     activitytype:  "test of the colllaborative grapher"
     startTime: !!timestamp "2002-04-02 21:59:43.10 -5"
+    source: "seed data"
     classroom: SPM
     
 Session(another):
     startTime: !!timestamp "2002-04-04 21:59:43.10 -5"
+    source: "seed data"
     classroom: SPM
     
 

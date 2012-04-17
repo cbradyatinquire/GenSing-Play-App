@@ -22,7 +22,7 @@ public class Session extends Model {
 	@ManyToOne
 	public Classroom classroom;
 	
-	
+	@Required
 	public String source = ""; //the software or model that created this.
 	
 	public String sessionMessage = "";
