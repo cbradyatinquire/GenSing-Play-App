@@ -26,7 +26,7 @@ public class Contribution extends Model {
 	
 	@Required
 	@ManyToOne
-	public Session activity;
+	public Session session;
 	
 	@Required
 	public Date timestamp;
@@ -58,7 +58,7 @@ public class Contribution extends Model {
 	{
 		this.type = type;
 		this.student = stud;
-		this.activity = act;
+		this.session = act;
 		this.timestamp = Utilities.getTstamp();
 		this.secondsIn = (this.timestamp.getTime() - act.startTime.getTime()) / 1000.0;
 		this.objectID = id;
@@ -73,7 +73,7 @@ public class Contribution extends Model {
 	
 	public String toString()
 	{
-		//return timestamp.toString() +  " : seq# : " + sequenceNumber + " : by : " + student.toString() + " : with contents : " + body + " : in activity : " + activity.toString();
+		//return timestamp.toString() +  " : seq# : " + sequenceNumber + " : by : " + student.toString() + " : with contents : " + body + " : in session : " + session.toString();
 		return String.valueOf(sequenceNumber) + "|" + type + "|" + secondsIn + "|" + student.getUserName() + "|" + objectID + "|" + body;
 		
 	}

@@ -51,15 +51,25 @@ StudentUser(bstudent):
     classroom:    SPM
  
  
-Activity(functionactivity):
-    type:  FUNCTION_ACTIVITY
+Session(functionactivity):
+    activitytype:  "my version of the function activity"
     startTime: !!timestamp "2002-02-02 21:59:43.10 -5"
     classroom: FPM
+    
+Session(collabgrapher):
+    activitytype:  "test of the colllaborative grapher"
+    startTime: !!timestamp "2002-04-02 21:59:43.10 -5"
+    classroom: SPM
+    
+Session(another):
+    startTime: !!timestamp "2002-04-04 21:59:43.10 -5"
+    classroom: SPM
+    
 
 Contribution(c1):
     type: POINT
     student: astudent
-    activity: functionactivity
+    session: functionactivity
     timestamp: !!timestamp "2002-02-02 22:00:13.10 -5"
     objectID: pt
     body: (3,-1)
@@ -68,7 +78,7 @@ Contribution(c1):
 Contribution(c2):
     type: POINT
     student: astudent
-    activity: functionactivity
+    session: functionactivity
     timestamp: !!timestamp "2002-02-02 22:00:22.10 -5"
     objectID: pt
     body: (-4,2)
@@ -77,7 +87,7 @@ Contribution(c2):
 Contribution(c3):
     type: EQUATION
     student: astudent
-    activity: functionactivity
+    session: functionactivity
     timestamp: !!timestamp "2002-02-02 22:00:32.10 -5"
     objectID: f1
     body: sin(x)

@@ -13,7 +13,6 @@ import play.db.jpa.Model;
 @Entity
 public class Session extends Model {
 
-	@Required
 	public String activitytype = "";
 	
 	@Required

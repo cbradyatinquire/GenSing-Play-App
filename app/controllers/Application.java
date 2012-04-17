@@ -72,7 +72,7 @@ public class Application extends Controller {
     	{
     		a.annotation += "\n" + annotation;
 	    	a.save();
-	    	renderJSON( "Added Annotation: '" + annotation + "' to this activity." );
+	    	renderJSON( "Added Annotation: '" + annotation + "' to this session." );
     	}
     }
     
@@ -124,7 +124,7 @@ public class Application extends Controller {
     	
 			if (act == null )
 			{
-				renderJSON("FAILURE-no  activity with id = " + actid);
+				renderJSON("FAILURE-no  session with id = " + actid);
 			}
 			else
 			{
@@ -269,7 +269,7 @@ public class Application extends Controller {
     }
     
     
-    /*stupid method -- need to specify classsroom , then get current activity, etc.*/
+    /*stupid method -- need to specify classsroom , then get current session, etc.*/
     public static void getAllContributions( )
     {
     	List<Contribution> allcontribs = Contribution.find("select c from Contribution c order by c.timestamp").fetch();
