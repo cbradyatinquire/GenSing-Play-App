@@ -21,7 +21,7 @@ public class Classroom extends Model {
 	
 	@Required
 	@ManyToOne
-	public School aschool;
+	public School school;
 	
 	@Required
 	@ManyToOne
@@ -30,6 +30,7 @@ public class Classroom extends Model {
 	@Required
 	public int startYear;
 
+	@Required
 	@OneToMany (mappedBy="classroom", cascade=CascadeType.ALL)
 	public List<StudentUser>students;
 
@@ -41,9 +42,10 @@ public class Classroom extends Model {
 //	public Activity current = null;
 	
 
-	public Classroom( String name )
+	public Classroom( String name, int start )
 	{
 		this.classname = name;
+		this.startYear = start;
 		students = new ArrayList<StudentUser>();
 	}
 	
@@ -56,8 +58,8 @@ public class Classroom extends Model {
 //		return current;
 //	}
 
-	public  void setSchool( School s ) { aschool = s; }
-	public  boolean isSchool( School s ) { return ( s.equals( aschool )); }
+	public  void setSchool( School s ) { school = s; }
+	public  boolean isSchool( School s ) { return ( s.equals( school )); }
 
 	public static Classroom connect( String cname )
 	{
@@ -76,6 +78,6 @@ public class Classroom extends Model {
 	@Override
 	public String toString() { return classname + ":" + startYear;  }
 
-	public String getName() { return classname; }
+	//public String getName() { return classname; }
 	
 }

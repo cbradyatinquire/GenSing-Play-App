@@ -12,7 +12,14 @@ import models.*;
 public class Application extends Controller {
 
     public static void index() {
-        render();
+    	List<School> schools = School.findAll();
+    	Long cschools = School.count();
+    	Long cteachers = Teacher.count();
+    	Long cclassrms = Classroom.count();
+    	Long cstudents = StudentUser.count();
+    	String noticias = "Currently the system contains " + cschools + " schools, " + cteachers + " teachers, " + cclassrms + " classrooms, and " + cstudents + " students.";
+    	
+        render( schools, noticias );
     }
         
  

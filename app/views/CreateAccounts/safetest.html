@@ -1,0 +1,24 @@
+#{extends 'main.html' /}
+#{set title:'CN-ECT for Maths Account Manager' /}
+
+#{if flash.error}
+    <p style="color:#c00">
+        ${flash.error}
+    </p>
+#{/if}
+
+
+
+${teachername}
+<br>
+TEST<br>
+
+<ul>
+#{list items:classrooms, as:'classrm'}
+   <li>${classrm}</li>
+    #{/list}
+   </ul> 
+<h4>
+
+Go back to the <a href="/">Home Screen</a>.
+</h4>

@@ -35,6 +35,11 @@ GET		/getAllStudentsInClassroom				Application.getAllStudentsInClassrooom
 
 GET		/executeSQL								Application.execute
 
+GET		/schoolaccount							CreateAccounts.schoolaccount
+
+GET		/teacheraccount							CreateAccounts.teacheraccount
+
+GET		/classroomaccount						CreateAccounts.classroomaccount
 
 
 *      /admin              						module:crud

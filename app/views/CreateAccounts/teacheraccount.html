@@ -1,0 +1,32 @@
+#{extends 'main.html' /}
+#{set title:'CN-ECT for Maths Account Manager' /}
+
+#{if flash.error}
+    <p style="color:#c00">
+        ${flash.error}
+    </p>
+#{/if}
+
+
+
+<h2>
+Create a new teacher account:<br>
+</h2>
+<form action="@{CreateAccounts.addTeacher()}" method="POST">
+    <p>
+   <b> Username:</b> <input type="text" name="uname" /> <br>
+<b>Your school:</b><br>
+	#{list items:schools, as:'school'}
+    <input type="radio" name="schoolname" value='${school}'/>${school}<br>
+    #{/list}
+
+    </p>
+    <input type="submit" value="Create Teacher Database Account Entry" />
+    <br>
+ </form>
+ <br>
+
+<h4>
+
+Or, go back to the <a href="/">Home Screen</a>.
+</h4>

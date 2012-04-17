@@ -1,0 +1,39 @@
+#{extends 'main.html' /}
+#{set title:'CN-ECT for Maths Account Manager' /}
+
+#{if flash.error}
+    <p style="color:#c00">
+        ${flash.error}
+    </p>
+#{/if}
+
+
+
+<h2>
+Edit one of your existing classrooms, or Add a new one:<br>
+</h2>
+<form action="@{CreateAccounts.addClassroom()}" method="POST">
+    <p>
+    <b>Your classrooms:</b><br>
+	#{list items:classrooms, as:'classrm'}
+    <input type="radio" name="classroom" value='${classrm}'/>${classrm}<br>
+    #{/list}
+    <input type="submit" value="Edit Classroom" />
+    </form>
+    
+    
+    <form action="@{CreateAccounts.addClassroom()}" method="POST">
+    <p>or...<br><b>Add a new Classroom<br>
+	Name:
+	&nbsp; <input type="text" name="classname" value="">&nbsp; Start year: </b>
+	<input type="text" name="startyear" value="2012"><br> 
+	
+  
+    <input type="submit" value="Add New Classroom" />
+      </p>
+ </form>
+
+
+<h4>
+Or, go back to the <a href="/">Home Screen</a>.
+</h4>

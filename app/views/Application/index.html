@@ -1,4 +1,37 @@
 #{extends 'main.html' /}
-#{set title:'Home' /}
+#{set title:'CN-ECT for Maths' /}
 
-#{welcome /}
+#{if flash.error}
+    <p style="color:#c00">
+        ${flash.error}
+    </p>
+#{/if}
+
+
+<img src="@{'/public/images/SST_logo.png'}" alt="SST" height="99" width="220" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<img src="@{'/public/images/nie-logo.png'}" alt="NIE" height="101" width="130" style="align:right" />
+
+<h3>
+NEWS: 
+${noticias}
+</h3>
+<p>
+<h2>Login as teacher: </h2>
+
+<form action="@{CreateAccounts.teacherLogin()}" method="GET">
+    <p>
+       <b> Username:</b> <input type="text" name="uname" /> <br>
+<b>Your school:</b><br>
+	#{list items:schools, as:'school'}
+    <input type="radio" name="schoolname" value='${school}'/>${school}<br>
+    #{/list}
+
+    </p>
+	<input type="submit" value="Sign In" />
+
+</form>
+<br>
+
+<h4>Or, create a new <a href="/schoolaccount">school</a> account.<br>
+<br>Or, create a new <a href="/teacheraccount">teacher</a> account.
+</h4>

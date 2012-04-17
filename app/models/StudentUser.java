@@ -42,7 +42,7 @@ public class StudentUser extends Model {
 
 	public String toString()
 	{
-		return username+":"+classroom.getName();
+		return username+", in "+classroom.toString();
 	}
 
 }

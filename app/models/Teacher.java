@@ -20,7 +20,7 @@ public class Teacher extends Model {
 	
 	@Required
 	@ManyToOne
-	public School aschool;
+	public School school;
 	
 	public String firstnames;
 	public String lastnames;
@@ -31,6 +31,12 @@ public class Teacher extends Model {
 	@Lob
     public String annotation;
 	
+	public Teacher( String uname, School aschool ) {
+		username = uname;
+		school = aschool;
+	}
+	
+	public List<Classroom> getClassrooms( ) { return classrooms; }
 	
 	public static Teacher connect(String uname, School tschool) {
 		return find("byUsernameAndSchool", uname, tschool).first();

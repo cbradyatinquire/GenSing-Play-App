@@ -1,0 +1,27 @@
+#{extends 'main.html' /}
+#{set title:'CN-ECT for Maths Account Manager' /}
+
+#{if flash.error}
+    <p style="color:#c00">
+        ${flash.error}
+    </p>
+#{/if}
+
+
+
+<h2>
+Create a new school account:<br>
+</h2>
+<form action="@{CreateAccounts.addSchool()}" method="POST">
+    <p>
+    School Name: <input type="text" name="schoolname" /> <br>
+    </p>
+    <input type="submit" value="Create School Database Entry" />
+    <br>
+ </form>
+ <br>
+
+<h4>
+
+Or, go back to the <a href="/">Home Screen</a>.
+</h4>

@@ -1,0 +1,31 @@
+#{extends 'main.html' /}
+#{set title:'CN-ECT for Maths Account Manager' /}
+
+#{if flash.error}
+    <p style="color:#c00">
+        ${flash.error}
+    </p>
+#{/if}
+
+
+<h4>Adding students to class:</h4><h3>${classidentifier}</h3>
+
+<b>Current Students: </b>
+	<ul>
+	#{list items:studentnames, as:'student'}
+    <li>${student}</li>
+    #{/list}
+</ul>
+
+<h4>Add a new student:</h4>
+<form action="@{CreateAccounts.addStudent()}" method="POST">
+    <p>
+   <b> Username:</b> <input type="text" name="uname" /> <br>
+   </p>
+   <input type="submit" value="Add Student"/>
+   </form>
+
+
+<h4>
+Or, go back to the <a href="/">Home Screen</a>.
+</h4>

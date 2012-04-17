@@ -11,20 +11,25 @@ School(School2):
     
 Teacher(cbrady):
     username:    cbrady
-    aschool:    SST
+    school:    SST
+    
+    
+Teacher(sdavis):
+    username:    sdavis
+    school:    SST
       
     
 Classroom(FPM):
     classname:    FirstPeriodMath
     teacher:    cbrady
     startYear:    2012
-    aschool:    SST
+    school:    SST
     
 Classroom(SPM):
     classname:    SecondPeriodMath
     teacher:    cbrady
     startYear:    2012
-    aschool:    SST
+    school:    SST
     
     
     
@@ -32,7 +37,7 @@ Classroom(FPMO):
     classname:    FirstPeriodMath
     teacher:    cbrady
     startYear:    2010
-    aschool:    SST
+    school:    SST
     
 
 
