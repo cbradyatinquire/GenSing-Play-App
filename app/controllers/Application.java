@@ -32,7 +32,7 @@ public class Application extends Controller {
 	 
 	    	if ( c != null  &&  c.isSchool(s) )
 	    	{
-		    	Activity a = new Activity( c, src );
+		    	Session a = new Session( c, src );
 		    	if ( a != null )
 		    	{
 			    	a.sessionMessage = activityname;
@@ -48,7 +48,7 @@ public class Application extends Controller {
     
     public static void nameActivity( Long aid,  String activityname )
     {
-    	Activity a = Activity.getActivity(aid);
+    	Session a = Session.getActivity(aid);
     	if ( a == null)
     	{
     		renderJSON("FAIL");
@@ -57,13 +57,13 @@ public class Application extends Controller {
     	{
 	    	a.sessionMessage = activityname;
 	    	a.save();
-	    	renderJSON( "Renamed Activity To: " + activityname );
+	    	renderJSON( "Renamed Session To: " + activityname );
     	}
     }
     
     public static void appendAnnotationToActivity( Long aid, String annotation )
     {
-    	Activity a = Activity.getActivity(aid);
+    	Session a = Session.getActivity(aid);
     	if ( a == null )
     	{
     		renderJSON("FAIL");
@@ -120,7 +120,7 @@ public class Application extends Controller {
     
     public static void logContribution(String stype, String username, Long actid, String contribid, String contribution ) {
     	System.err.println("contribution logged");
-    	Activity act = Activity.getActivity(actid);
+    	Session act = Session.getActivity(actid);
     	
 			if (act == null )
 			{
@@ -152,8 +152,8 @@ public class Application extends Controller {
     public static void getAllActivities()
     {
     	String toReturn = "ACTIVITIES:\n";
-    	List<Activity> acts = Activity.findAll();
-    	for (Activity a : acts)
+    	List<Session> acts = Session.findAll();
+    	for (Session a : acts)
     	{
     		toReturn += a.toString() + "\n";
     	}
@@ -290,7 +290,7 @@ public class Application extends Controller {
     {
     	String reply = "OOPS -- problem in looking up Activtity with id:" + aid;
 
-	    Activity a = Activity.getActivity(aid);
+	    Session a = Session.getActivity(aid);
 	    if ( a != null )
 	    {
 	    	List<Contribution> afteri = a.getContributionsAfterNumber(ind);

@@ -26,7 +26,7 @@ public class Contribution extends Model {
 	
 	@Required
 	@ManyToOne
-	public Activity activity;
+	public Session activity;
 	
 	@Required
 	public Date timestamp;
@@ -54,7 +54,7 @@ public class Contribution extends Model {
 	public int sequenceNumber;
 	
 	
-	public Contribution( ContributionType type, StudentUser stud, Activity act, String id, String body )
+	public Contribution( ContributionType type, StudentUser stud, Session act, String id, String body )
 	{
 		this.type = type;
 		this.student = stud;
@@ -63,7 +63,7 @@ public class Contribution extends Model {
 		this.secondsIn = (this.timestamp.getTime() - act.startTime.getTime()) / 1000.0;
 		this.objectID = id;
 		this.body = body;
-		//System.err.println("Activity's current sequence number is " + act.sequenceCounter );
+		//System.err.println("Session's current sequence number is " + act.sequenceCounter );
 		this.sequenceNumber = act.getNextSequenceNumber();
 		//System.err.println( "mine is now " + sequenceNumber );
 		this.separator = ";";

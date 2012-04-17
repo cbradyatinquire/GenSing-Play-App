@@ -11,10 +11,10 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 
 @Entity
-public class Activity extends Model {
+public class Session extends Model {
 
 	@Required
-	public ActivityType type;
+	public String activitytype = "";
 	
 	@Required
 	public Date startTime;
@@ -33,8 +33,8 @@ public class Activity extends Model {
 	
 	public int sequenceCounter = 0;
 
-	//public Activity( Classroom c, ActivityType at )
-	public Activity( Classroom c, String src )
+	//public Session( Classroom c, ActivityType at )
+	public Session( Classroom c, String src )
 	{
 		this.classroom = c;
 		//this.type = at;
@@ -45,19 +45,19 @@ public class Activity extends Model {
 	
 	public Long getId( ) { return this.id; }
 	
-	public static Activity getActivity( Long id )
+	public static Session getActivity( Long id )
 	{
 		return find("byId", id).first();
 	}
 	
-	public static Activity connect(Classroom croom, Date thedate ) {
+	public static Session connect(Classroom croom, Date thedate ) {
 		return find( "byClassroomAndDate", croom, thedate).first();
 	}
 	
 	public String toString()
 	{
 		return classroom.teacher.school.toString() + "\t" + classroom.teacher.toString() + "\t" + classroom.toString() + "\t" + startTime.toString() + "\t" + id;
-		//return  type.name() + " " + classroom.toString() + " " + startTime.toString() + " msg:" + sessionMessage;
+		//return  activitytype.name() + " " + classroom.toString() + " " + startTime.toString() + " msg:" + sessionMessage;
 	}
 	
 	public int getNextSequenceNumber( ) { 
@@ -66,12 +66,12 @@ public class Activity extends Model {
 		return sequenceCounter;
 	}
 
-//	public static Activity connectLatest(Classroom croom) {
-//		List<Activity> acts = find("byClassroom", croom ).fetch();
+//	public static Session connectLatest(Classroom croom) {
+//		List<Session> acts = find("byClassroom", croom ).fetch();
 //		if ( acts.isEmpty() )
 //			return null;
-//		Activity latest = acts.get(0);
-//		for (Activity act : acts)
+//		Session latest = acts.get(0);
+//		for (Session act : acts)
 //		{
 //			if (act.startTime.after( latest.startTime ) )
 //				latest = act;

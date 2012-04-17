@@ -39,7 +39,7 @@ public class Classroom extends Model {
 	
 //	@Required
 //	@OneToOne // (mappedBy="classroom", cascade=CascadeType.ALL)
-//	public Activity current = null;
+//	public Session current = null;
 	
 
 	public Classroom( String name, int start )
@@ -49,11 +49,11 @@ public class Classroom extends Model {
 		students = new ArrayList<StudentUser>();
 	}
 	
-//	public void setCurrentActivity( Activity curr )
+//	public void setCurrentActivity( Session curr )
 //	{
 //		current = curr;
 //	}
-//	public Activity getCurrentActivity()
+//	public Session getCurrentActivity()
 //	{
 //		return current;
 //	}
