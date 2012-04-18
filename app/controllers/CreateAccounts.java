@@ -61,8 +61,21 @@ public class CreateAccounts extends Controller {
 		
 		Teacher t = new Teacher(uname, s);
 		//Add Practice classroom, with start year 2012.
-		
+		Classroom practice = new Classroom( "Practice Class", 2012 );
+		practice.teacher = t;
+		practice.school = t.school;
+		StudentUser aaa = new StudentUser("aaa", practice);
+		StudentUser bbb = new StudentUser("bbb", practice);
+		StudentUser ccc = new StudentUser("ccc", practice);
+		StudentUser ddd = new StudentUser("ddd", practice);
 		t.save();
+		practice.save();
+		aaa.save();
+		bbb.save();
+		ccc.save();
+		ddd.save();
+		
+		
 		flash.error("SUCCESS: the teacher " + uname + " has been created in school " + schoolname + ".");
 		teacheraccount();
 	}
