@@ -23,10 +23,10 @@ public class Application extends Controller {
     }
         
  
-    public static void startActivity( String uname, String schoolname, String classname, int classyear, String activityname, String src ) {
+    public static void startActivity( String tuname, String schoolname, String classname, int classyear, String activityname, String src ) {
     	String ret = "FAIL";
     	School s = School.connect(schoolname);
-    	Teacher t = Teacher.connect(uname, s);
+    	Teacher t = Teacher.connect(tuname, s);
     	if (s != null)
     	{
 	    	Classroom c = Classroom.connect(s, t, classname, classyear);
@@ -49,7 +49,7 @@ public class Application extends Controller {
     
     public static void nameActivity( Long aid,  String activityname )
     {
-    	Session a = Session.getActivity(aid);
+    	Session a = Session.getActivitySession(aid);
     	if ( a == null)
     	{
     		renderJSON("FAIL");
@@ -64,7 +64,7 @@ public class Application extends Controller {
     
     public static void appendAnnotationToActivity( Long aid, String annotation )
     {
-    	Session a = Session.getActivity(aid);
+    	Session a = Session.getActivitySession(aid);
     	if ( a == null )
     	{
     		renderJSON("FAIL");
@@ -123,7 +123,7 @@ public class Application extends Controller {
     
     public static void logContribution(String stype, String username, Long actid, String contribid, String contribution ) {
     	System.err.println("contribution logged");
-    	Session act = Session.getActivity(actid);
+    	Session act = Session.getActivitySession(actid);
     	
 			if (act == null )
 			{
@@ -293,7 +293,7 @@ public class Application extends Controller {
     {
     	String reply = "OOPS -- problem in looking up Activtity with id:" + aid;
 
-	    Session a = Session.getActivity(aid);
+	    Session a = Session.getActivitySession(aid);
 	    if ( a != null )
 	    {
 	    	List<Contribution> afteri = a.getContributionsAfterNumber(ind);

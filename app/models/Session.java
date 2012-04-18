@@ -44,7 +44,7 @@ public class Session extends Model {
 	
 	public Long getId( ) { return this.id; }
 	
-	public static Session getActivity( Long id )
+	public static Session getActivitySession( Long id )
 	{
 		return find("byId", id).first();
 	}
@@ -83,7 +83,7 @@ public class Session extends Model {
 	{
 				
 		String indx = String.valueOf(i);
-		String qu = "select c from Contribution c WHERE c.sequenceNumber > "+indx+" and c.activity = ? order by c.sequenceNumber";
+		String qu = "select c from Contribution c WHERE c.sequenceNumber > "+indx+" and c.session = ? order by c.sequenceNumber";
 		List<Contribution> recents = Contribution.find(qu, this).fetch();
 		
 		
