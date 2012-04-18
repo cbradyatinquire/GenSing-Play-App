@@ -61,9 +61,8 @@ public class CreateAccounts extends Controller {
 		
 		Teacher t = new Teacher(uname, s);
 		//Add Practice classroom, with start year 2012.
-		Classroom practice = new Classroom( "Practice Class", 2012 );
-		practice.teacher = t;
-		practice.school = t.school;
+		Classroom practice = new Classroom(s, t,  "Practice Class", 2012 );
+		
 		StudentUser aaa = new StudentUser("aaa", practice);
 		StudentUser bbb = new StudentUser("bbb", practice);
 		StudentUser ccc = new StudentUser("ccc", practice);
@@ -74,7 +73,8 @@ public class CreateAccounts extends Controller {
 		bbb.save();
 		ccc.save();
 		ddd.save();
-		
+		practice.save();
+		t.save();
 		
 		flash.error("SUCCESS: the teacher " + uname + " has been created in school " + schoolname + ".");
 		teacheraccount();
@@ -89,7 +89,22 @@ public class CreateAccounts extends Controller {
 			{
 				String name = cinfo[0];
 				int year = Integer.valueOf(cinfo[1].trim());
-				Classroom c = Classroom.connect(name, year);
+				String teachid = Controller.session.get("teacherid");
+				if ( teachid == null )
+				{
+					flash.error("ERROR: invalid state -- no teacher session object");
+			         Application.index();
+				}
+				Long tid = Long.valueOf( teachid  );
+				Teacher t = Teacher.findById(tid);
+				
+				if ( t == null )
+				{
+					flash.error("ERROR: invalid state -- no teacher session object");
+			         Application.index();
+				}
+				School s = t.school;
+				Classroom c = Classroom.connect(s, t, name, year);
 				if ( c == null )
 				{
 					flash.error( "ERROR:  no classroom in system with name:year = " + classname + ":" + startyear);
@@ -120,7 +135,6 @@ public class CreateAccounts extends Controller {
 			{
 				e.printStackTrace();
 			}
-			Classroom c = new Classroom( classname, year);
 			String teachid = Controller.session.get("teacherid");
 			if ( teachid == null )
 			{
@@ -136,8 +150,7 @@ public class CreateAccounts extends Controller {
 		         Application.index();
 			}
 			School s = t.school;
-			c.school = s;
-			c.teacher = t;
+			Classroom c = new Classroom( s, t, classname, year);
 			c.save();
 			Controller.session.put("classroomid", c.getId().toString());
 		

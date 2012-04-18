@@ -42,10 +42,12 @@ public class Classroom extends Model {
 //	public Session current = null;
 	
 
-	public Classroom( String name, int start )
+	public Classroom( School aschool, Teacher ateacher, String name, int start )
 	{
 		this.classname = name;
 		this.startYear = start;
+		this.school = aschool;
+		this.teacher = ateacher;
 		students = new ArrayList<StudentUser>();
 	}
 	
@@ -61,18 +63,10 @@ public class Classroom extends Model {
 	public  void setSchool( School s ) { school = s; }
 	public  boolean isSchool( School s ) { return ( s.equals( school )); }
 
-	public static Classroom connect( String cname )
-	{
-		List<Classroom> classes = find( "byClassname", cname ).fetch();
-		if (classes.size() == 1)
-			return classes.get(0);
-		else
-			return null;
-	}
 	
-	public static Classroom connect( String cname, int year )
+	public static Classroom connect( School s, Teacher t, String cname, int year )
 	{
-		return find( "byClassnameAndStartyear", cname, year).first();
+		return find( "bySchoolAndTeacherAndClassnameAndStartyear", s, t, cname, year).first();
 	}
 
 	@Override

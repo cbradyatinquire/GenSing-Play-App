@@ -23,12 +23,13 @@ public class Application extends Controller {
     }
         
  
-    public static void startActivity( String schoolname, String classname, int classyear, String activityname, String src ) {
+    public static void startActivity( String uname, String schoolname, String classname, int classyear, String activityname, String src ) {
     	String ret = "FAIL";
     	School s = School.connect(schoolname);
+    	Teacher t = Teacher.connect(uname, s);
     	if (s != null)
     	{
-	    	Classroom c = Classroom.connect(classname, classyear);
+	    	Classroom c = Classroom.connect(s, t, classname, classyear);
 	 
 	    	if ( c != null  &&  c.isSchool(s) )
 	    	{
@@ -78,14 +79,16 @@ public class Application extends Controller {
     
     
     //login with username, schoolname, classname AND classyear.  COULD have an "open classroom" that allows us to return the classroom object's ID in the JSON...
-    public static void login(String username, String schoolname,  String classname, int classyear ) {
+    public static void login(String username, String tuname, String schoolname,  String classname, int classyear ) {
     	
 		System.err.println("Received login request for user: " + username + "\n      attempting to enter class: " + classname + " with classyear = " + classyear);
 
 		School s = School.connect(schoolname);
-		if (s != null)
+		Teacher t = Teacher.connect(tuname, s);
+		
+		if (s != null && t != null)
 		{
-			Classroom croom = Classroom.connect( classname, classyear );
+			Classroom croom = Classroom.connect( s, t, classname, classyear );
 			if ( croom == null )
 			{
 				renderJSON("FAILURE-CLASSROOM -- no classroom/classyear combo: '" + classname + "/" + classyear);
