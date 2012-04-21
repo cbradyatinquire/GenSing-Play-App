@@ -165,9 +165,11 @@ public class Application extends Controller {
     
     
     //test methods...
-    public static void getAllTeachers()
+    public static void getAllTeachers( String  schoolname )
     {
-    	List<Teacher> teachers = Teacher.find("select t from Teacher t").fetch();
+    	School s = School.connect(schoolname);
+    	
+    	List<Teacher> teachers = s.teachers;
     	String reply = "Teachers:\n";
     	if (teachers.isEmpty())
     		reply = "NO TEACHERS";
