@@ -39,6 +39,13 @@ Classroom(FPMO):
     startYear:    2010
     school:    SST
     
+    
+Classroom(SD):
+    classname:    PracticeClassSarah
+    teacher:    sdavis
+    startYear:    2012
+    school:    SST
+    
 
 
 StudentUser(astudent):
@@ -49,8 +56,13 @@ StudentUser(astudent):
 StudentUser(bstudent):
     username:    bstudent
     classroom:    SPM
- 
- 
+
+
+StudentUser(sds):
+    username:    aaa
+    classroom:    SD
+
+
 Session(functionactivity):
     activitytype:  "my version of the function activity"
     startTime: !!timestamp "2002-02-02 21:59:43.10 -5"
