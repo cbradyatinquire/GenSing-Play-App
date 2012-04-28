@@ -226,7 +226,7 @@ public class Application extends Controller {
     		for ( Classroom c : cs )
     		{
     		
-    			reply += "Name=" + c.classname + "; School=" +c.school +"; Teacher=" + c.teacher + "; Starting Year=" + c.startYear + "\n";
+    			reply += "School=" +c.school +"; Teacher=" +c.teacher +"; Name=" + c.classname + "; Starting Year=" + c.startYear + "\n";
     		}
     	}
     	renderJSON( reply );
