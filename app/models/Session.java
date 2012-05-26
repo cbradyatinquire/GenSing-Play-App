@@ -61,6 +61,12 @@ public class Session extends Model {
 		//return  activitytype.name() + " " + classroom.toString() + " " + startTime.toString() + " msg:" + sessionMessage;
 	}
 	
+	public String toAltString()
+	{
+		String s = this.toString();
+		return s.replace('\t', ';'); //replaceAll("\t", ";");
+	}
+	
 	public int getNextSequenceNumber( ) { 
 		sequenceCounter++; 
 		this.save();

@@ -167,13 +167,49 @@ public class Application extends Controller {
     
     //methods for getting visualizers...
     
-    public static void requestVizPage(String act, String viz, String cnameandcyear, String tuname, String schoolname)
+    public static void requestVizPage(String actid, String viz, String cnameandcyear, String tuname, String schoolname)
     {
-    	renderJSON("WORKING ON IT!");
+    	String[] allfields = actid.split(";");
+    	String id = allfields[ allfields.length - 1];
+    	Long aid = Long.valueOf(id);
+    	
+    	Session s = Session.findById(aid);
+    	if (s == null ){
+    		flash.error("ERROR: No session was found with ID:"+id);
+    		jumpPageMaker(  cnameandcyear,  tuname,  schoolname);
+    	}
+    	Date st = s.startTime;
+    	String hostip = Http.Request.current().host;
+    	String functioncall = "getAllContributionsAfter";
+    	
+    	if (viz.equalsIgnoreCase("Wave"))
+    	{
+    		wave(st, hostip, aid, cnameandcyear, tuname, schoolname, functioncall );
+    	}
+    	else if (viz.equalsIgnoreCase("Spiral"))
+    	{
+    		spiral(st, hostip, aid, cnameandcyear, tuname, schoolname, functioncall);
+    	}
+    	else //if (viz.equalsIgnoreCase("Spiral"))
+    	{
+    		renderJSON("NO VISUALIZER BY THE NAME: " + viz);
+    	}
+    	
+    }
+    
+    public static void wave(Date starttime, String hostip, Long aid, String cnameandcyear, String tuname, String schoolname, String functioncall) //, String fullrequesturl)
+    {
+    	render(starttime, hostip, aid, cnameandcyear, tuname, schoolname, functioncall); //, fullrequesturl);
+    }
+    
+    public static void spiral(Date starttime, String hostip, Long aid, String cnameandcyear, String tuname, String schoolname, String functioncall) //, String fullrequesturl)
+    {
+    	render(starttime, hostip, aid, cnameandcyear, tuname, schoolname, functioncall); //, fullrequesturl);
     }
     
     public static void jumpPageMaker( String cnameandcyear, String tuname, String schoolname)
     {
+    	
     	if(cnameandcyear.startsWith("Select a")) {
             flash.error("ERROR: Please choose a classroom");
             classroomPicker(tuname, schoolname);
@@ -181,14 +217,21 @@ public class Application extends Controller {
     	String[] ny = cnameandcyear.split(":");
     	String cname = ny[0];
     	String cyear = ny[1];
-    	System.err.println("teach " + tuname + " and school " + schoolname);
+    	//System.err.println("teach " + tuname + " and school " + schoolname);
 
     	School s = School.connect(schoolname);
     	Teacher t = Teacher.connect(tuname, s); 
     	Classroom c = Classroom.connect(s, t, cname, Integer.valueOf(cyear) );
+    	if (c == null) {
+    		flash.error("ERROR: No classroom found with identifier: " + cnameandcyear);
+    		classroomPicker(tuname, schoolname);
+    	}
     	List<Session> acts = c.sessions;
+    	List<String>actids = new ArrayList<String>();
+    	for (Session se : acts )
+    		actids.add(se.toAltString() );
     	List<String>visualizers = Visualizers.getNames();
-    	render(acts, visualizers, cnameandcyear, tuname, schoolname);
+    	render(actids, acts, visualizers, cnameandcyear, tuname, schoolname);
     }
     
     public static void classroomPicker( String tuname, String schoolname )
@@ -199,6 +242,10 @@ public class Application extends Controller {
         }
     	School s = School.connect(schoolname);
     	Teacher t = Teacher.connect(tuname, s);
+    	if ( t == null ) {
+    		flash.error("ERROR: No teacher was found with user name " + tuname + " in school " + schoolname + ".");
+            teacherPicker(schoolname);
+    	}
     	List<Classroom> crooms = t.classrooms;
     	render(crooms, tuname, schoolname);
     }
