@@ -33,6 +33,10 @@ public class Classroom extends Model {
 	@Required
 	@OneToMany (mappedBy="classroom", cascade=CascadeType.ALL)
 	public List<StudentUser>students;
+	
+	@Required
+	@OneToMany (mappedBy="classroom", cascade=CascadeType.ALL)
+	public List<Session>sessions;
 
 	@Lob
     public String annotation;

@@ -164,7 +164,67 @@ public class Application extends Controller {
     }
     
     
-    //test methods...
+    
+    //methods for getting visualizers...
+    
+    public static void requestVizPage(String act, String viz, String cnameandcyear, String tuname, String schoolname)
+    {
+    	renderJSON("WORKING ON IT!");
+    }
+    
+    public static void jumpPageMaker( String cnameandcyear, String tuname, String schoolname)
+    {
+    	if(cnameandcyear.startsWith("Select a")) {
+            flash.error("ERROR: Please choose a classroom");
+            classroomPicker(tuname, schoolname);
+        }
+    	String[] ny = cnameandcyear.split(":");
+    	String cname = ny[0];
+    	String cyear = ny[1];
+    	System.err.println("teach " + tuname + " and school " + schoolname);
+
+    	School s = School.connect(schoolname);
+    	Teacher t = Teacher.connect(tuname, s); 
+    	Classroom c = Classroom.connect(s, t, cname, Integer.valueOf(cyear) );
+    	List<Session> acts = c.sessions;
+    	List<String>visualizers = Visualizers.getNames();
+    	render(acts, visualizers, cnameandcyear, tuname, schoolname);
+    }
+    
+    public static void classroomPicker( String tuname, String schoolname )
+    {
+    	if(tuname.startsWith("Select a")) {
+            flash.error("ERROR: Please choose a teacher");
+            teacherPicker(schoolname);
+        }
+    	School s = School.connect(schoolname);
+    	Teacher t = Teacher.connect(tuname, s);
+    	List<Classroom> crooms = t.classrooms;
+    	render(crooms, tuname, schoolname);
+    }
+    
+    public static void teacherPicker( String schoolname )
+    {
+    	if(schoolname.startsWith("Select a")) {
+            flash.error("ERROR: Please choose a school");
+            schoolPicker();
+        }
+    	School s = School.connect(schoolname);
+    	List<Teacher> teachers = s.teachers;
+    	render(teachers, schoolname);
+    }
+    
+    public static void schoolPicker( )
+    {	
+    	List<School> schools = School.all().fetch();
+    	render(schools);
+    }
+    
+    
+   
+    
+    
+  //test methods...
     public static void getAllTeachers( String  schoolname )
     {
     	School s = School.connect(schoolname);

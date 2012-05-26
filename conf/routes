@@ -17,7 +17,13 @@ POST	/annotateActivity						Application.appendAnnotationToActivity
 
 GET  	/getAllContributions					Application.getAllContributions
 
-*  	/getAllContributionsAfter				Application.getContributionsAfterSequenceNumber
+*  		/getAllContributionsAfter				Application.getContributionsAfterSequenceNumber
+
+
+*		/schoolPicker							Application.schoolPicker
+*		/teacherPicker							Application.teacherPicker
+*		/classroomPicker						Application.classroomPicker
+*		/jumpPageMaker							Application.jumpPageMaker
 
 GET		/getAllTeachers							Application.getAllTeachers
 

@@ -53,6 +53,8 @@ public class Session extends Model {
 		return find( "byClassroomAndDate", croom, thedate).first();
 	}
 	
+	
+	
 	public String toString()
 	{
 		return classroom.teacher.school.toString() + "\t" + classroom.teacher.toString() + "\t" + classroom.toString() + "\t" + startTime.toString() + "\t" + id;

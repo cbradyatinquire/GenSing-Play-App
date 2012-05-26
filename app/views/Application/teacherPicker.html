@@ -1,0 +1,39 @@
+#{extends 'main.html' /}
+#{set title:'CN-ECT for Maths' /}
+
+#{if flash.error}
+    <p style="color:#c00">
+        ${flash.error}
+    </p>
+#{/if}
+
+
+
+<h2>
+Choose a Teacher:
+</h2>
+<form action="@{Application.classroomPicker()}" method="POST">
+    <p>
+    School:
+    <select name="schoolname">
+    <option>${schoolname}</option>
+    </select>
+    </p>
+    <p>
+    <b>Available teachers in school "<i>${schoolname}</i>":</b><br>
+	
+	<select name="tuname">
+	<option>Select a teacher:</option>
+	#{list items:teachers, as:'teach'}
+    <option>${teach}</option>
+    #{/list}
+	</select>
+    <input type="submit" value="Choose" />
+    </form>
+    
+    
+ 
+
+<h4>
+Or, go back to the <a href="/schoolPicker">School Chooser Page</a>.
+</h4>

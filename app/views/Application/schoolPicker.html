@@ -1,0 +1,34 @@
+#{extends 'main.html' /}
+#{set title:'CN-ECT for Maths' /}
+
+#{if flash.error}
+    <p style="color:#c00">
+        ${flash.error}
+    </p>
+#{/if}
+
+
+
+<h2>
+Choose a school:
+</h2>
+<form action="@{Application.teacherPicker()}" method="POST">
+    <p>
+    <b>Available schools:</b><br>
+	
+	<select name="schoolname">
+	<option>Select a school</option>
+	#{list items:schools, as:'school'}
+    <option>${school}</option>
+    #{/list}
+    
+	</select>
+    <input type="submit" value="Choose" />
+    </form>
+    
+    
+ 
+
+<h4>
+Or, go back to the <a href="/">Home Screen</a>.
+</h4>

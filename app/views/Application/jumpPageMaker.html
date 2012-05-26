@@ -1,0 +1,65 @@
+#{extends 'main.html' /}
+#{set title:'CN-ECT for Maths' /}
+
+#{if flash.error}
+    <p style="color:#c00">
+        ${flash.error}
+    </p>
+#{/if}
+
+
+
+<h2>
+Jump Page for Classroom
+</h2>
+
+<b>Choose a Session and Visualizer.  Submitting the form will launch this view in a new tab.</b><br>
+
+<form action="@{Application.requestVizPage()}" method="POST" target="_blank">
+
+	<p>
+    School:
+    <select name="schoolname">
+    <option>${schoolname}</option>
+    </select>
+    </p>
+    <p>
+    Teacher:
+    <select name="tuname">
+    <option>${tuname}</option>
+    </select>
+    </p>
+    <p>
+    Class:
+    <select name="cnameandcyear">
+    <option>${cnameandcyear}</option>
+    </select>
+    </p>
+    <p>
+    
+    
+    <p>
+  	<select name="act">
+	<option>Select a Session:</option>
+	#{list items:acts, as:'act'}
+    <option>${act}</option>
+    #{/list}
+	</select>
+    <p>
+	
+	<select name="viz">
+	<option>Select a Visualizer:</option>
+	#{list items:visualizers, as:'viz'}
+    <option>${viz}</option>
+    #{/list}
+	</select>
+    <input type="submit" value="Choose" />
+    </form>
+    
+    
+ 
+
+
+<h4>
+Or, go back to the <a href="/schoolPicker">School Chooser Page</a>.
+</h4>
