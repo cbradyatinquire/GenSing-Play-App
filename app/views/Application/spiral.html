@@ -6,53 +6,12 @@ Spiral Visualizer:<br>
     <div id="content">
       <div id="LiveSpiral_container">
 
-	<!-- This version plays nicer with older browsers, 
-	     but requires JavaScript to be enabled. 
-	     http://java.sun.com/javase/6/docs/technotes/guides/jweb/deployment_advice.html
-	     http://download.oracle.com/javase/tutorial/deployment/deploymentInDepth/ -->
-	<script type="text/javascript"
-		src="http://www.java.com/js/deployJava.js"></script>
-	<script type="text/javascript">
-	  /* <![CDATA[ */
-
-	  var attributes = { 
-            code: 'LiveSpiral.class',
-            codebase: '@{'/public/applet/spiral'}',
-            archive: '@{'/public/applet/spiral/LiveSpiral.jar'},@{'/public/applet/spiral/RXTXcomm.jar'},@{'/public/applet/spiral/serial.jar'},@{'/public/applet/spiral/simpleML.jar'},@{'/public/applet/spiral/core.jar'}',
-            width: 1180, 
-            height: 1000,
-          };
-          var parameters = { 
-            image: 'loading.gif',
-            centerimage: 'true',
-            hostip: '${hostip}',
-            actid: '${aid}',
-            school: '${schoolname}',
-            teacher: '${tuname}',
-            cnameandcyear: '${cnameandcyear}',
-            starttime: '${starttime}',
-            functioncall: '${functioncall}',            
-          };
-          var version = '1.5';
-          deployJava.runApplet(attributes, parameters, version);
-
-          /* ]]> */
-        </script>
-        
-	<noscript> <div>
-	  <!--[if !IE]> -->
-	  <object classid="java:LiveSpiral.class" 
-            	  type="application/x-java-applet"
-            	  archive="LiveSpiral.jar,RXTXcomm.jar,serial.jar,simpleML.jar,core.jar"
-            	  width="1180" height="1000"
-            	  standby="Loading Processing software..." >
-            
-	    <param name="archive" value="LiveSpiral.jar,RXTXcomm.jar,serial.jar,simpleML.jar,core.jar" />
-	    
-	    <param name="mayscript" value="true" />
-	    <param name="scriptable" value="true" />
-       
-	     <param name="hostip" value="${hostip}">
+<div>
+<applet id="spiral" name="spiralvisualizer" 
+	code="Tester.class"
+	codebase="@{'/public/applet'}"	
+    archive="@{'/public/applet/LiveSpiral.jar'}"
+        <param name="hostip" value="${hostip}">
          <param name="actid" value="${aid}">
          <param name="school" value="${schoolname}">
         <param name="teacher" value="${tuname}">
