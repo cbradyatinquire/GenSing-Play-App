@@ -3,18 +3,123 @@
 
 Wave Visualizer:<br>
 
-<div>
-<applet id="wave" name="wavevisualizer" 
-	code="Tester.class"
-	codebase="@{'/public/applet'}"	
-    archive="@{'/public/applet/Tester.jar'},@{'/public/applet/pdf.jar'},@{'/public/applet/itext.jar'},@{'/public/applet/RXTXcomm.jar'},@{'/public/applet/simpleML.jar'},@{'/public/applet/core.jar'}"
-    width="1200" height="700">
-        <param name="hostip" value="${hostip}">
+    <div id="content">
+      <div id="LiveWave_container">
+
+	<!-- This version plays nicer with older browsers, 
+	     but requires JavaScript to be enabled. 
+	     http://java.sun.com/javase/6/docs/technotes/guides/jweb/deployment_advice.html
+	     http://download.oracle.com/javase/tutorial/deployment/deploymentInDepth/ -->
+	<script type="text/javascript"
+		src="http://www.java.com/js/deployJava.js"></script>
+	<script type="text/javascript">
+	  /* <![CDATA[ */
+
+	  var attributes = { 
+            code: 'LiveWave.class',
+            codebase: '@{'/public/applet/wave'}',
+            archive: '@{'/public/applet/wave/LiveWave.jar'},@{'/public/applet/wave/simpleML.jar'},@{'/public/applet/wave/core.jar'}',
+            
+            width: 1180, 
+            height: 1000,
+          };
+          var parameters = { 
+            image: 'loading.gif',
+            centerimage: 'true',
+             hostip: '${hostip}',
+            actid: '${aid}',
+            school: '${schoolname}',
+            teacher: '${tuname}',
+            cnameandcyear: '${cnameandcyear}',
+            starttime: '${starttime}',
+            functioncall: '${functioncall}',    
+            
+          };
+          var version = '1.5';
+          deployJava.runApplet(attributes, parameters, version);
+
+          /* ]]> */
+        </script>
+        
+	<noscript> <div>
+	  <!--[if !IE]> -->
+	  <object classid="java:LiveWave.class" 
+            	  type="application/x-java-applet"
+            	  archive="LiveWave.jar,simpleML.jar,core.jar"
+            	  width="1180" height="1000"
+            	  standby="Loading Processing software..." >
+            
+	    <param name="archive" value="LiveWave.jar,simpleML.jar,core.jar" />
+	    
+	    <param name="mayscript" value="true" />
+	    <param name="scriptable" value="true" />
+	    <param name="hostip" value="${hostip}">
          <param name="actid" value="${aid}">
          <param name="school" value="${schoolname}">
         <param name="teacher" value="${tuname}">
         <param name="cnameandcyear" value="${cnameandcyear}">
          <param name="starttime" value="${starttime}">
-         <param name="functioncall" value"${functioncall}">
-</applet>
-</div>
+         <param name="functioncall" value="${functioncall}">
+	    <param name="image" value="loading.gif" />
+	    <param name="boxmessage" value="Loading Processing software..." />
+	    <param name="boxbgcolor" value="#FFFFFF" />
+	  <!--<![endif]-->
+
+	    <!-- For more instructions on deployment, 
+		 or to update the CAB file listed here, see:
+		 http://java.sun.com/javase/6/webnotes/family-clsid.html
+		 http://java.sun.com/javase/6/webnotes/install/jre/autodownload.html -->
+	    <object classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"
+		    codebase="http://java.sun.com/update/1.6.0/jinstall-6u20-windows-i586.cab"
+		    width="1180" height="1000"
+		    standby="Loading Processing software..."  >
+	      
+	      <param name="code" value="LiveWave" />
+	      <param name="archive" value="LiveWave.jar,simpleML.jar,core.jar" />
+	      
+	      <param name="mayscript" value="true" />
+	      <param name="scriptable" value="true" />
+	      <param name="hostip" value="${hostip}">
+         <param name="actid" value="${aid}">
+         <param name="school" value="${schoolname}">
+        <param name="teacher" value="${tuname}">
+        <param name="cnameandcyear" value="${cnameandcyear}">
+         <param name="starttime" value="${starttime}">
+         <param name="functioncall" value="${functioncall}">
+	      <param name="image" value="loading.gif" />
+	      <param name="boxmessage" value="Loading Processing software..." />
+	      <param name="boxbgcolor" value="#FFFFFF" />
+	      
+	      <p>
+		<strong>
+		  This browser does not have a Java Plug-in.
+		  <br />
+		  <a href="http://www.java.com/getjava" 
+		     title="Download Java Plug-in">
+		    Get the latest Java Plug-in here.
+		  </a>
+		</strong>
+	      </p>
+	      
+	    </object>
+	    
+	  <!--[if !IE]> -->
+	  </object>
+	  <!--<![endif]-->
+
+	</div> </noscript>
+
+      </div>
+      
+      <p>
+	
+      </p>
+      
+      <p>
+	Source code: <a href="LiveWave.pde">LiveWave</a> <a href="AUI.pde">AUI</a> <a href="Activity.pde">Activity</a> <a href="Button.pde">Button</a> <a href="DistribPt.pde">DistribPt</a> <a href="Divider.pde">Divider</a> <a href="Dropdown.pde">Dropdown</a> <a href="Function.pde">Function</a> <a href="LVActivity.pde">LVActivity</a> <a href="Post_Time.pde">Post_Time</a> <a href="Ribbon.pde">Ribbon</a> <a href="ScrollPosButton.pde">ScrollPosButton</a> <a href="Section.pde">Section</a> <a href="SpButton.pde">SpButton</a> <a href="Strat.pde">Strat</a> <a href="Student.pde">Student</a> <a href="Tab.pde">Tab</a> <a href="Table.pde">Table</a> <a href="View.pde">View</a> <a href="Wave.pde">Wave</a> <a href="WaveActivity.pde">WaveActivity</a> <a href="WavePt.pde">WavePt</a> <a href="WaveUI.pde">WaveUI</a> 
+      </p>
+      
+      <p>
+	Built with <a href="http://processing.org" title="Processing.org">Processing</a>
+      </p>
+    </div>
