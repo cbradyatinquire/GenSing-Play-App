@@ -190,11 +190,21 @@ public class Application extends Controller {
     	{
     		spiral(st, hostip, aid, cnameandcyear, tuname, schoolname, functioncall);
     	}
+    	else if (viz.equalsIgnoreCase("Graphical"))
+    	{
+    		gensingViz(aid ); //(st, hostip, aid, cnameandcyear, tuname, schoolname, functioncall);
+    	}
     	else //if (viz.equalsIgnoreCase("Spiral"))
     	{
     		renderJSON("NO VISUALIZER BY THE NAME: " + viz);
     	}
-    	
+    }
+    
+    public static void gensingViz(Long aid)
+    {
+    	Session se = Session.getActivitySession(aid);
+    	List<Contribution> conts = se.getContributionsAfterNumber( 0);
+    	render(conts);
     }
     
     public static void wave(Date starttime, String hostip, Long aid, String cnameandcyear, String tuname, String schoolname, String functioncall) //, String fullrequesturl)

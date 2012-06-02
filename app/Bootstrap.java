@@ -40,6 +40,17 @@ public class Bootstrap extends Job {
             //Application.startActivity("Johari", "SST", "Test Class", 2012, "Test Activity", "Dummy Loader");
             Session se = new Session(c, "Fake Source");
             se.save();
+            
+            StudentUser csu = new StudentUser("contributor", c);
+            csu.save();
+            
+            for (int i=1; i<100; i++)
+            {
+            	double co = i / 10.0;
+            	String fn = String.valueOf(co) + "sin(x)";
+            	Contribution con = new Contribution(ContributionType.EQUATION, csu, se, "Y"+i, fn );
+	    		con.save();
+            }
         }
         
     }
