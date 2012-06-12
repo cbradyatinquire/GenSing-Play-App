@@ -278,7 +278,7 @@ public class Application extends Controller {
     }
     
     
-   
+    
     
     
   //test methods...
@@ -426,6 +426,40 @@ public class Application extends Controller {
     	}
     	renderJSON(reply);
     }
+    
+    
+    private static String getFakeCodes( int i, int j  )
+    {
+    	String[] codes = { "ASMD", "BN", "R1", "MT|BN", "R1|BN", "R1", "VASM|ASMD", "M1|A0", "MT","VASM", "A0", "M1" };
+    	String[] annotations = { "Cool idea","Write a paper|Wow that's cool|Hi mom", "I don't know|What does this mean?" } ;
+    	int ind = i % codes.length;
+    	int dex = j % annotations.length;
+    	return "\t"+codes[ ind ]+"\t"+annotations[dex];
+    }
+    
+    public static void getContributionsAfterSequenceNumberVerbose( Long aid, int ind )
+    {
+    	String reply = "OOPS -- problem in looking up Activtity with id:" + aid;
+
+	    Session a = Session.getActivitySession(aid);
+	    if ( a != null )
+	    {
+	    	List<Contribution> afteri = a.getContributionsAfterNumber(ind);
+	    	reply = "Contributions:\n";
+	    	if (afteri.isEmpty())
+	    		reply = "NO CONTRIBUTIONS MATCHING CONDITION";
+	    	int i = 0;
+	    	for ( Contribution c : afteri )
+	    	{
+	    		String fakes = getFakeCodes( i, i);
+	    		reply += c.toTSVLine() + fakes + "\n";
+	    		i++;
+	    	}
+    	}
+    	renderJSON(reply);
+    }
+    
+    
     
     public static void execute( String sql )
     {
