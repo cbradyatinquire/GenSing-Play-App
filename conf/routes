@@ -19,6 +19,8 @@ GET  	/getAllContributions					Application.getAllContributions
 
 *  		/getAllContributionsAfter				Application.getContributionsAfterSequenceNumber
 
+*  		/getAllContributionsAfterVerbose		Application.getContributionsAfterSequenceNumberVerbose
+
 
 *		/schoolPicker							Application.schoolPicker
 *		/teacherPicker							Application.teacherPicker
