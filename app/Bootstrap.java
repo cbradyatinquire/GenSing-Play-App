@@ -51,6 +51,33 @@ public class Bootstrap extends Job {
             	Contribution con = new Contribution(ContributionType.EQUATION, csu, se, "Y"+i, fn );
 	    		con.save();
             }
+            
+            CodeCategory cca = new CodeCategory("Math");
+            CodeCategory ccb = new CodeCategory("Social");
+            CodeCategory ccc = new CodeCategory("Correctness");
+            CodeDescriptor cda = new CodeDescriptor(cca, "ASMD");
+            CodeDescriptor cdb = new CodeDescriptor(cca, "R1");
+            CodeDescriptor cdc = new CodeDescriptor(cca, "VASM");
+            CodeDescriptor cde = new CodeDescriptor(cca, "A0");
+            CodeDescriptor cdf = new CodeDescriptor(ccb, "BN");
+            CodeDescriptor cdg = new CodeDescriptor(ccb, "MT");
+            CodeDescriptor cdh = new CodeDescriptor(ccc, "CORRECT");
+            CodeDescriptor cdi = new CodeDescriptor(ccc, "INCORRECT");
+            
+            cca.save();
+            ccb.save();
+            ccc.save();
+            cda.save();
+            cdb.save();
+            cdc.save();
+            cde.save();
+            cdf.save();
+            cdg.save();
+            cdh.save();
+            cdi.save();
+            
+            
+            
         }
         
     }

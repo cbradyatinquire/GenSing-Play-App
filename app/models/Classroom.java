@@ -39,7 +39,7 @@ public class Classroom extends Model {
 	public List<Session>sessions;
 
 	@Lob
-    public String annotation;
+    public String note;
 	
 //	@Required
 //	@OneToOne // (mappedBy="classroom", cascade=CascadeType.ALL)

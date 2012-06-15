@@ -22,7 +22,7 @@ public class StudentUser extends Model {
 	public String lastnames;
 
 	@Lob
-    public String annotation;
+    public String note;
 
 	public StudentUser( String uname, Classroom croom )
 	{

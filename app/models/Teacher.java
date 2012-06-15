@@ -29,7 +29,7 @@ public class Teacher extends Model {
 	public List<Classroom>classrooms;
 	
 	@Lob
-    public String annotation;
+    public String note;
 	
 	public Teacher( String uname, School aschool ) {
 		username = uname;

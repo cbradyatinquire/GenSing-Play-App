@@ -44,11 +44,12 @@ public class Contribution extends Model {
 	public String separator = ";";
 	
 	
-	@OneToMany(mappedBy="taggedContrib", cascade=CascadeType.ALL)
-	public List<Tag> tags;
+	@OneToMany(mappedBy="annotatedContrib", cascade=CascadeType.ALL)
+	public List<Annotation> annotations;
 	
-	@Lob
-    public String annotation;
+	@OneToMany(mappedBy="codedContrib", cascade=CascadeType.ALL)
+	public List<Coding> codings;
+	
 	
 	@Required
 	public int sequenceNumber;
@@ -78,15 +79,27 @@ public class Contribution extends Model {
 		
 	}
 	
+	
 	public String toTSVLine()
 	{
 		String line = String.valueOf(sequenceNumber) + "\t" + type + "\t" + secondsIn + "\t" + student.getUserName() + "\t" + objectID + "\t" + body;
-		for (Tag t : tags )
+		
+		for (Annotation a : annotations )
 		{
-			line += t + "\t";
+			line += "|" + a.theAnnotation;
 		}
-		if (annotation != null)
-			line += annotation;
+		line += "\t";
+		
+		for (Coding c: codings)
+		{
+			if ( c.descrip != null )
+			{
+				line += "|" + c.categ + ":";
+				line += c.descrip;
+			}
+		}
+		//add codings too.
+		
 		return line;
 	}
 }

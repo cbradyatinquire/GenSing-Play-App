@@ -16,11 +16,13 @@ POST	/nameActivity							Application.nameActivity
 POST	/annotateActivity						Application.appendAnnotationToActivity
 
 GET  	/getAllContributions					Application.getAllContributions
-
 *  		/getAllContributionsAfter				Application.getContributionsAfterSequenceNumber
-
 *  		/getAllContributionsAfterVerbose		Application.getContributionsAfterSequenceNumberVerbose
 
+*		/addCodingToContribution				Application.addCodingToContribution
+*		/addAnnotationToContribution			Application.addAnnotationToContribution
+*		/getCodeDictionary						Application.getCodeDictionary
+* 		/getContributionsWtihSequenceNumber		Application.getContributionsWtihSequenceNumber
 
 *		/schoolPicker							Application.schoolPicker
 *		/teacherPicker							Application.teacherPicker

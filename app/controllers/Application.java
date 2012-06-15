@@ -1,6 +1,7 @@
 package controllers;
 
 import play.*;
+import play.db.jpa.GenericModel.JPAQuery;
 import play.mvc.*;
 
 import java.util.*;
@@ -46,6 +47,7 @@ public class Application extends Controller {
     	renderJSON(ret);
     }
     
+        
     
     public static void nameActivity( Long aid,  String activityname )
     {
@@ -62,7 +64,7 @@ public class Application extends Controller {
     	}
     }
     
-    public static void appendAnnotationToActivity( Long aid, String annotation )
+    public static void appendAnnotationToActivity( Long aid, String note )
     {
     	Session a = Session.getActivitySession(aid);
     	if ( a == null )
@@ -71,9 +73,9 @@ public class Application extends Controller {
     	}
     	else
     	{
-    		a.annotation += "\n" + annotation;
+    		a.note += "\n" + note;
 	    	a.save();
-	    	renderJSON( "Added Annotation: '" + annotation + "' to this session." );
+	    	renderJSON( "Added Annotation: '" + note + "' to this session." );
     	}
     }
     
@@ -278,8 +280,73 @@ public class Application extends Controller {
     }
     
     
+    public static void addAnnotationToContribution( Long sessionId, int sequence, String annot )
+    {
+    	String result = "Fail";
+    	Session se = Session.getActivitySession(sessionId);
+    	if (se == null ) { renderJSON(result); }
+    	Contribution c = se.getContributionWithSequence( sequence );
+    	if (c == null ) { renderJSON(result); }
+    	Annotation a = new Annotation( c, annot );
+    	c.annotations.add( a );
+    	a.save();
+    	c.save();
+    	result = "Success";
+    	renderJSON(result);
+    }
+
     
+    public static void addCodingToContribution( Long sessionId, int sequence, String descriptor, String category )
+    {
+    	//TODO: stub
+    	String result = "Fail";
+    	Session se = Session.getActivitySession(sessionId);
+    	if (se == null ) { renderJSON(result); }
+    	Contribution c = se.getContributionWithSequence( sequence );
+    	if (c == null ) { renderJSON(result); }
+    	//CodeCategory cc = CodeCategory.findByName( category );
+    	//if (cc == null ) { renderJSON(result); }
+    	//CodeDescriptor cd = CodeDescriptor.findByCategoryAndName( cc, descriptor );
+    	//if (cd == null ) { renderJSON(result); }
+    	//System.err.println( cc.toString() );
+    	//System.err.println( cd.toString() );
+    	Coding co = new Coding( c, category, descriptor );
+    	//System.err.println( co.toString() );
+    	c.codings.add( co );
+    	co.save();
+    	c.save();
+    	result = "Success";
+    	renderJSON(result);
+    }
     
+    public static void getCodeDictionary()
+    {
+    	String alist = "";
+    	JPAQuery q = CodeCategory.all();
+    	List<Object>cats = q.fetch();
+    	if (cats.size() == 0) { alist = "NO CODING DICTIONARY ENTRIES"; }
+    	for ( Object o : cats )
+    	{
+    		if (o instanceof CodeCategory)
+    		{
+    			CodeCategory cc = (CodeCategory)o;
+    			alist += "CATEGORY: " + cc.category + "\n";
+    			List<CodeDescriptor> descs = cc.descriptors;
+    			for ( CodeDescriptor d : descs )
+    			{
+    				alist += "DESCRIPTOR: " + d.desc + "\n";
+    			}
+    			alist +=  "\n";
+    		}
+    		else
+    		{
+    			alist += "OOPS: got " + o.toString() + "\n";
+    		}
+    	}
+    	
+    	renderJSON(alist);
+    }
+
     
   //test methods...
     public static void getAllTeachers( String  schoolname )
@@ -407,6 +474,12 @@ public class Application extends Controller {
     }
     
 
+    public static void getContributionsWtihSequenceNumber( Long aid, int ind )
+    {
+    	Session s = Session.getActivitySession(aid);
+    	Contribution c = s.getContributionWithSequence(ind);
+    	renderJSON( c.toTSVLine() );
+    }
     
     public static void getContributionsAfterSequenceNumber( Long aid, int ind )
     {

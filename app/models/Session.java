@@ -28,7 +28,7 @@ public class Session extends Model {
 	public String sessionMessage = "";
 
 	@Lob
-    public String annotation;
+    public String note;
 	
 	public int sequenceCounter = 0;
 
@@ -46,7 +46,8 @@ public class Session extends Model {
 	
 	public static Session getActivitySession( Long id )
 	{
-		return find("byId", id).first();
+		return Session.findById(id);
+		//return find("byId", id).first();
 	}
 	
 	public static Session connect(Classroom croom, Date thedate ) {
@@ -96,6 +97,12 @@ public class Session extends Model {
 		
 		
 		return recents;
+	}
+
+	public Contribution getContributionWithSequence(int sequence) {
+		String qu = "select c from Contribution c WHERE c.sequenceNumber = "+sequence+" and c.session = ?";
+		Contribution c = Contribution.find(qu, this).first();
+		return c;
 	}
 	
 }

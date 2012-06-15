@@ -25,9 +25,9 @@ public class School extends Model {
 	
 	
 	@Lob
-    public String annotation;
+    public String note;
 	
-	public String getAnnotation() { return annotation; }
+	public String getNote() { return note; }
 	
 	public School( String sname ) {
 		schoolName = sname;
