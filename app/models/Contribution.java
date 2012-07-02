@@ -84,11 +84,7 @@ public class Contribution extends Model {
 	{
 		String line = String.valueOf(sequenceNumber) + "\t" + type + "\t" + secondsIn + "\t" + student.getUserName() + "\t" + objectID + "\t" + body;
 		
-		line += "\t";
-		for (Annotation a : annotations )
-		{
-			line += "|" + a.theAnnotation;
-		}
+		
 		line += "\t";
 		
 		for (Coding c: codings)
@@ -99,7 +95,13 @@ public class Contribution extends Model {
 				line += c.descrip;
 			}
 		}
-		//add codings too.
+		
+		line += "\t";
+		for (Annotation a : annotations )
+		{
+			line += "|" + a.theAnnotation;
+		}
+		
 		
 		return line;
 	}
