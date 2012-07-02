@@ -57,6 +57,7 @@ public class Bootstrap extends Job {
             CodeCategory ccc = new CodeCategory("Correctness");
             CodeDescriptor cda = new CodeDescriptor(cca, "ASMD");
             CodeDescriptor cdb = new CodeDescriptor(cca, "R1");
+            CodeDescriptor cdb1 = new CodeDescriptor(cca, "M1");
             CodeDescriptor cdc = new CodeDescriptor(cca, "VASM");
             CodeDescriptor cde = new CodeDescriptor(cca, "A0");
             CodeDescriptor cdf = new CodeDescriptor(ccb, "BN");
@@ -69,6 +70,7 @@ public class Bootstrap extends Job {
             ccc.save();
             cda.save();
             cdb.save();
+            cdb1.save();
             cdc.save();
             cde.save();
             cdf.save();

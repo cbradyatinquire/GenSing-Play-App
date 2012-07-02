@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -23,7 +24,8 @@ public class Coding extends Model {
 	public String descrip;
 	public String categ;
 	
-	//public CodeDescriptor descriptor;
+	//@ManyToMany(cascade=CascadeType.PERSIST)
+	public CodeDescriptor descriptor;
 	
 	//public CodeCategory category;
 	
@@ -50,8 +52,8 @@ public class Coding extends Model {
 		
 	}
 	
-//	public Coding(Contribution c, String descrip) {
-//		CodeDescriptor descrip = CodeDescriptor.findByName(descrip);
+//	public Coding(Contribution c, CodeDescriptor cd) {
+//		//CodeDescriptor descrip = CodeDescriptor.findByName(descrip);
 //		this.codedContrib = c;
 //		this.descriptor = cd;
 //	}

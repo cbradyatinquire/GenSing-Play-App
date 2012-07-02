@@ -304,12 +304,39 @@ public class Application extends Controller {
     	if (se == null ) { renderJSON(result); }
     	Contribution c = se.getContributionWithSequence( sequence );
     	if (c == null ) { renderJSON(result); }
+    	JPAQuery q = CodeCategory.all();
+    	List<Object>cats = q.fetch();
+    	boolean badcat = true;
+    	boolean baddes = true;
+    	for ( Object o : cats )
+    	{
+    		if (o instanceof CodeCategory)
+    		{
+    			CodeCategory cca = (CodeCategory)o;
+    			if ( category.equals( cca.category ) )
+    			{
+    				badcat = false;
+    				for (CodeDescriptor d : cca.descriptors )
+    				{
+    					if (descriptor.equals(d.desc) )
+    						baddes = false;
+    				}
+    				
+    			}
+    		}
+    	}
+    	if (badcat) { renderJSON("NON-EXISTENT CATEGORY: "+category); }
+    	if (baddes) { renderJSON("NON-EXISTENT DESCRIPTOR: "+descriptor); }
+    	
     	//CodeCategory cc = CodeCategory.findByName( category );
-    	//if (cc == null ) { renderJSON(result); }
+    	//if (cc == null ) { renderJSON("NON-EXISTENT CATEGORY: "+category); }
+    	//CodeDescriptor cd = CodeDescriptor.connect(cc, descriptor);
     	//CodeDescriptor cd = CodeDescriptor.findByCategoryAndName( cc, descriptor );
-    	//if (cd == null ) { renderJSON(result); }
+    	//if (cd == null ) { renderJSON("NON-EXISTENT DESCRIPTOR: "+descriptor); }
     	//System.err.println( cc.toString() );
     	//System.err.println( cd.toString() );
+    	
+    	//WORKING FROM BEFORE
     	Coding co = new Coding( c, category, descriptor );
     	//System.err.println( co.toString() );
     	c.codings.add( co );
