@@ -84,6 +84,7 @@ public class Contribution extends Model {
 	{
 		String line = String.valueOf(sequenceNumber) + "\t" + type + "\t" + secondsIn + "\t" + student.getUserName() + "\t" + objectID + "\t" + body;
 		
+		line += "\t";
 		for (Annotation a : annotations )
 		{
 			line += "|" + a.theAnnotation;
