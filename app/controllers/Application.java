@@ -298,7 +298,8 @@ public class Application extends Controller {
     
     public static void setAnnotationsForContribution( Long sessionId, int sequence, String annotations )
     {
-    	String result = "Fail";
+    	System.err.println("STARTED");
+    	String result = "Fail\n";
     	Session se = Session.getActivitySession(sessionId);
     	if (se == null ) { renderJSON(result); }
     	Contribution c = se.getContributionWithSequence( sequence );
@@ -334,11 +335,64 @@ public class Application extends Controller {
     		annot.save();
     	}
     	c.save();
-    	result = "Success";
+    	System.err.println("about to send response....");
+    	result = "Success\n\n";
     	renderJSON(result);
     }
     
     
+    private boolean isValidCategoryDescriptor( String category, String descriptor )
+    {
+    	return true;
+    	//TODO: do this check.
+    }
+    
+    public static void setCodingsForContribution( Long sessionId, int sequence, String codings )
+    {
+    	String result = "Fail";
+    	Session se = Session.getActivitySession(sessionId);
+    	if (se == null ) { renderJSON(result); }
+    	Contribution c = se.getContributionWithSequence( sequence );
+    	if (c == null ) { renderJSON(result); }
+    	
+    	//this splits out each code:descriptor pair
+    	String[] codepairs = codings.split("\\|");
+ 
+    	ArrayList<Coding>codingList = new ArrayList<Coding>();
+    	
+    	
+    	for ( int i = 0; i<codepairs.length; i++ )
+    	{
+    		String codingpair = codepairs[i];
+    		String[] parts = codingpair.split("\\:");
+    		if ( parts.length > 2 ) { renderJSON("FAIL error in parsing: " + codingpair); }
+    		String category = parts[0];
+    		String descriptor = parts[1];
+    		Coding cod = new Coding(c, category, descriptor);
+    		codingList.add(cod);
+    	}
+    	
+    	List<Coding>oldones = c.codings;
+    	for ( Coding todelete : oldones )
+    	{
+    		todelete.delete();
+    	}
+    	c.codings.clear();
+    	c.save();
+    	for ( Coding toadd : codingList )
+    	{
+        	c.codings.add( toadd );
+    	}
+    	c.save();
+    	for ( Coding co : codingList )
+    	{
+    		co.save();
+    	}
+    	c.save();
+    	System.err.println("about to send response....");
+    	result = "Success\n\n";
+    	renderJSON(result);
+    }
     
     
 
@@ -571,6 +625,7 @@ public class Application extends Controller {
 	    		reply += c.toTSVLine() + "\n";
 	    	}
     	}
+	    System.err.println("about to send " + reply);
     	renderJSON(reply);
     }
     

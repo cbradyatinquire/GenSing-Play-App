@@ -22,6 +22,7 @@ GET  	/getAllContributions					Application.getAllContributions
 *		/addCodingToContribution				Application.addCodingToContribution
 *		/addAnnotationToContribution			Application.addAnnotationToContribution
 *		/setAnnotationsForContribution			Application.setAnnotationsForContribution
+*		/setCodingsForContribution				Application.setCodingsForContribution
 
 *		/getCodeDictionary						Application.getCodeDictionary
 * 		/getContributionsWtihSequenceNumber		Application.getContributionsWtihSequenceNumber
