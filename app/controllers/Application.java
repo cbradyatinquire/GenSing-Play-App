@@ -294,6 +294,53 @@ public class Application extends Controller {
     	result = "Success";
     	renderJSON(result);
     }
+    
+    
+    public static void setAnnotationsForContribution( Long sessionId, int sequence, String annotations )
+    {
+    	String result = "Fail";
+    	Session se = Session.getActivitySession(sessionId);
+    	if (se == null ) { renderJSON(result); }
+    	Contribution c = se.getContributionWithSequence( sequence );
+    	if (c == null ) { renderJSON(result); }
+    	String[] annots = annotations.split("\\|");
+    	//System.err.println(annotations);
+ 
+    	ArrayList<Annotation>annotationList = new ArrayList<Annotation>();
+    	
+    	
+    	for ( int i = 0; i<annots.length; i++ )
+        //for ( int i = annots.length - 1; i>=0; i-- )
+    	{
+    		String an = annots[i];
+    		//System.err.println( an );
+    		Annotation a = new Annotation(c, an);
+    		annotationList.add( a );
+    	}
+    	List<Annotation>oldones = c.annotations;
+    	for ( Annotation todelete : oldones )
+    	{
+    		todelete.delete();
+    	}
+    	c.annotations.clear();
+    	c.save();
+    	for (Annotation toadd : annotationList )
+    	{
+        	c.annotations.add( toadd );
+    	}
+    	c.save();
+    	for ( Annotation annot : annotationList )
+    	{
+    		annot.save();
+    	}
+    	c.save();
+    	result = "Success";
+    	renderJSON(result);
+    }
+    
+    
+    
+    
 
     
     public static void addCodingToContribution( Long sessionId, int sequence, String descriptor, String category )
