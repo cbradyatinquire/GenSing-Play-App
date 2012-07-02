@@ -304,20 +304,24 @@ public class Application extends Controller {
     	if (se == null ) { renderJSON(result); }
     	Contribution c = se.getContributionWithSequence( sequence );
     	if (c == null ) { renderJSON(result); }
-    	String[] annots = annotations.split("\\|");
-    	//System.err.println(annotations);
  
     	ArrayList<Annotation>annotationList = new ArrayList<Annotation>();
-    	
-    	
-    	for ( int i = 0; i<annots.length; i++ )
-        //for ( int i = annots.length - 1; i>=0; i-- )
+
+    	if ( annotations != null &&  annotations.length() > 0 )
     	{
-    		String an = annots[i];
-    		//System.err.println( an );
-    		Annotation a = new Annotation(c, an);
-    		annotationList.add( a );
+	    	String[] annots = annotations.split("\\|");
+	    	
+	    	for ( int i = 0; i<annots.length; i++ )
+	    	{
+	    		String an = annots[i];
+	    		if ( an != null && an.length() >0)
+	    		{
+		    		Annotation a = new Annotation(c, an);
+		    		annotationList.add( a );
+	    		}
+	    	}
     	}
+    	
     	List<Annotation>oldones = c.annotations;
     	for ( Annotation todelete : oldones )
     	{
@@ -355,23 +359,28 @@ public class Application extends Controller {
     	Contribution c = se.getContributionWithSequence( sequence );
     	if (c == null ) { renderJSON(result); }
     	
-    	//this splits out each code:descriptor pair
-    	String[] codepairs = codings.split("\\|");
- 
+    	
     	ArrayList<Coding>codingList = new ArrayList<Coding>();
-    	
-    	
-    	for ( int i = 0; i<codepairs.length; i++ )
-    	{
-    		String codingpair = codepairs[i];
-    		String[] parts = codingpair.split("\\:");
-    		if ( parts.length > 2 ) { renderJSON("FAIL error in parsing: " + codingpair); }
-    		String category = parts[0];
-    		String descriptor = parts[1];
-    		Coding cod = new Coding(c, category, descriptor);
-    		codingList.add(cod);
+
+    	if (codings != null && codings.length() > 0) 
+    	{ 
+	    	//this splits out each code:descriptor pair
+	    	String[] codepairs = codings.split("\\|");
+	
+	    	for ( int i = 0; i<codepairs.length; i++ )
+	    	{
+	    		String codingpair = codepairs[i];
+	    		String[] parts = codingpair.split("\\:");
+	    		if ( parts.length != 2 ) { renderJSON("FAIL error in parsing: " + codingpair); }
+	    		else
+	    		{
+		    		String category = parts[0];
+		    		String descriptor = parts[1];
+		    		Coding cod = new Coding(c, category, descriptor);
+		    		codingList.add(cod);
+	    		}
+	    	}
     	}
-    	
     	List<Coding>oldones = c.codings;
     	for ( Coding todelete : oldones )
     	{
