@@ -345,6 +345,37 @@ public class Application extends Controller {
     }
     
     
+    public static void saveWaveState(String selcodes, String name, Long sid, String selstring )
+    {
+    	WaveSaveState state = new WaveSaveState( selcodes, name, sid, selstring );
+    	state.save();
+    	Long theid = state.id;
+    	renderJSON( "Success: state id = " + theid );
+    }
+    
+    public static void getWaveStates()
+    {
+    	String retn = "";
+    	List<WaveSaveState> states = WaveSaveState.findAll();
+    	for ( WaveSaveState state : states )
+    	{
+    		retn += state.toString() + "\n";
+    	}
+    	renderJSON( retn );
+    }
+    
+    public static void retrieveWaveState( Long id )
+    {
+    	String toreturn = "";
+    	WaveSaveState thestate = WaveSaveState.findWaveSaveState(id);
+    	toreturn += thestate.selectedCodes + "\t";
+    	toreturn += thestate.name + "\t";
+    	toreturn += thestate.sessionId.toString() + "\t";
+    	toreturn += thestate.currentSelectionString;
+    	renderJSON( toreturn );
+    }
+    
+    
     private boolean isValidCategoryDescriptor( String category, String descriptor )
     {
     	return true;
@@ -662,8 +693,8 @@ public class Application extends Controller {
 	    	int i = 0;
 	    	for ( Contribution c : afteri )
 	    	{
-	    		String fakes = getFakeCodes( i, i);
-	    		reply += c.toTSVLine() + fakes + "\n";
+	    		//String fakes = getFakeCodes( i, i);
+	    		reply += c.toTSVLine() + "\n";  //+ fakes 
 	    		i++;
 	    	}
     	}

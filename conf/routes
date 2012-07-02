@@ -24,6 +24,10 @@ GET  	/getAllContributions					Application.getAllContributions
 *		/setAnnotationsForContribution			Application.setAnnotationsForContribution
 *		/setCodingsForContribution				Application.setCodingsForContribution
 
+* 		/saveWaveState							Application.saveWaveState
+*		/getWaveStates							Application.getWaveStates
+*		/retrieveWaveState						Application.retrieveWaveState
+
 *		/getCodeDictionary						Application.getCodeDictionary
 * 		/getContributionsWtihSequenceNumber		Application.getContributionsWtihSequenceNumber
 
