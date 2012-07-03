@@ -693,11 +693,10 @@ public class Application extends Controller {
 	    	int i = 0;
 	    	for ( Contribution c : afteri )
 	    	{
-	    		//String fakes = getFakeCodes( i, i);
-	    		reply += c.toTSVLine() + "\n";  //+ fakes 
-	    		i++;
+	    		reply += c.toTSVLineVerbose() + "\n";  
 	    	}
     	}
+	    System.err.println("about to send " + reply);
     	renderJSON(reply);
     }
     

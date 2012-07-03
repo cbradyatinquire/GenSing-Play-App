@@ -80,13 +80,12 @@ public class Contribution extends Model {
 	}
 	
 	
-	public String toTSVLine()
+	public String toTSVLineVerbose()
 	{
 		String line = String.valueOf(sequenceNumber) + "\t" + type + "\t" + secondsIn + "\t" + student.getUserName() + "\t" + objectID + "\t" + body;
 		
-		
+		//now codings, if there are any
 		line += "\t";
-		
 		for (Coding c: codings)
 		{
 			if ( c.descrip != null )
@@ -96,13 +95,22 @@ public class Contribution extends Model {
 			}
 		}
 		
+		//now annotations if there are any
 		line += "\t";
 		for (Annotation a : annotations )
 		{
 			line += "|" + a.theAnnotation;
 		}
 		
-		
+		return line;
+	}
+	
+	
+	
+	public String toTSVLine()
+	{
+		String line = String.valueOf(sequenceNumber) + "\t" + type + "\t" + secondsIn + "\t" + student.getUserName() + "\t" + objectID + "\t" + body;
+		//don't add any annotations or code information.
 		return line;
 	}
 }
