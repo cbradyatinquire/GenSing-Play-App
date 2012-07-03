@@ -298,13 +298,15 @@ public class Application extends Controller {
     
     public static void setAnnotationsForContribution( Long sessionId, int sequence, String annotations )
     {
-    	System.err.println("STARTED");
+    	System.err.println("STARTED -- going to add/update annotations for contrib sequence number " + sequence);
     	String result = "Fail\n";
+    	
     	Session se = Session.getActivitySession(sessionId);
     	if (se == null ) { renderJSON(result); }
     	Contribution c = se.getContributionWithSequence( sequence );
     	if (c == null ) { renderJSON(result); }
  
+    	System.err.println( "contribution number " + sequence + " has body " + c.body);
     	ArrayList<Annotation>annotationList = new ArrayList<Annotation>();
 
     	if ( annotations != null &&  annotations.length() > 0 )
@@ -642,11 +644,18 @@ public class Application extends Controller {
     }
     
 
-    public static void getContributionsWtihSequenceNumber( Long aid, int ind )
+    public static void getContributionWithSequenceNumber( Long aid, int ind )
     {
     	Session s = Session.getActivitySession(aid);
     	Contribution c = s.getContributionWithSequence(ind);
     	renderJSON( c.toTSVLine() );
+    }
+    
+    public static void getContributionWithSequenceNumberVerbose( Long aid, int ind )
+    {
+    	Session s = Session.getActivitySession(aid);
+    	Contribution c = s.getContributionWithSequence(ind);
+    	renderJSON( c.toTSVLineVerbose() );
     }
     
     public static void getContributionsAfterSequenceNumber( Long aid, int ind )
@@ -665,7 +674,7 @@ public class Application extends Controller {
 	    		reply += c.toTSVLine() + "\n";
 	    	}
     	}
-	    System.err.println("about to send " + reply);
+	    //debugging   System.err.println("about to send " + reply);
     	renderJSON(reply);
     }
     
@@ -678,6 +687,7 @@ public class Application extends Controller {
     	int dex = j % annotations.length;
     	return "\t"+codes[ ind ]+"\t"+annotations[dex];
     }
+    
     
     public static void getContributionsAfterSequenceNumberVerbose( Long aid, int ind )
     {
@@ -696,7 +706,7 @@ public class Application extends Controller {
 	    		reply += c.toTSVLineVerbose() + "\n";  
 	    	}
     	}
-	    System.err.println("about to send " + reply.replaceAll("\n", "<<\n").replaceAll("\t", "!"));
+	    //debugging   System.err.println("about to send " + reply.replaceAll("\n", "<<\n").replaceAll("\t", "!"));
     	renderJSON(reply);
     }
     

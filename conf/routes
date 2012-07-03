@@ -29,7 +29,8 @@ GET  	/getAllContributions					Application.getAllContributions
 *		/retrieveWaveState						Application.retrieveWaveState
 
 *		/getCodeDictionary						Application.getCodeDictionary
-* 		/getContributionsWtihSequenceNumber		Application.getContributionsWtihSequenceNumber
+* 		/getContributionWithSequenceNumber		Application.getContributionWithSequenceNumber
+* 		/getContributionWithSequenceNumberVerbose	Application.getContributionWithSequenceNumberVerbose
 
 *		/schoolPicker							Application.schoolPicker
 *		/teacherPicker							Application.teacherPicker
