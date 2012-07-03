@@ -696,7 +696,7 @@ public class Application extends Controller {
 	    		reply += c.toTSVLineVerbose() + "\n";  
 	    	}
     	}
-	    System.err.println("about to send " + reply.replaceAll("\n", "<<\n"));
+	    System.err.println("about to send " + reply.replaceAll("\n", "<<\n").replaceAll("\t", "!"));
     	renderJSON(reply);
     }
     
