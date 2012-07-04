@@ -356,6 +356,18 @@ public class Application extends Controller {
     	renderJSON( "Success: state id = " + theid );
     }
     
+    public static void updateWaveState( Long id, String selcodes, String name, Long sid, String selstring, String comments )
+    {
+    	WaveSaveState thestate = WaveSaveState.findWaveSaveState(id);
+    	if (thestate == null ) { renderJSON( "Failed to find state with id=" + id ); }
+    	thestate.selectedCodes = selcodes;
+    	thestate.name = name;
+    	thestate.currentSelectionString = selstring;
+    	thestate.comments = comments;
+    	thestate.save();
+    	renderJSON("Success");
+    }
+    
     public static void getWaveStates()
     {
     	String retn = "";
