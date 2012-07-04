@@ -347,9 +347,10 @@ public class Application extends Controller {
     }
     
     
-    public static void saveWaveState(String selcodes, String name, Long sid, String selstring )
+    public static void saveWaveState( String selcodes, String name, Long sid, String selstring, String comments )
     {
     	WaveSaveState state = new WaveSaveState( selcodes, name, sid, selstring );
+    	state.setComments(comments);
     	state.save();
     	Long theid = state.id;
     	renderJSON( "Success: state id = " + theid );
@@ -377,6 +378,13 @@ public class Application extends Controller {
     	renderJSON( toreturn );
     }
     
+    
+    public static void setCommentsForWaveState( Long id, String comments )
+    {
+    	WaveSaveState thestate = WaveSaveState.findWaveSaveState(id);
+    	thestate.setComments( comments );
+    	thestate.save();
+    }
     
     private boolean isValidCategoryDescriptor( String category, String descriptor )
     {
