@@ -359,6 +359,7 @@ public class Application extends Controller {
     public static void updateWaveState( Long id, String selcodes, String name, Long sid, String selstring, String comments )
     {
     	WaveSaveState thestate = WaveSaveState.findWaveSaveState(id);
+    	if ( name == null  || name.length() == 0 ) { renderJSON("Failed: name cannot be blank."); }
     	if (thestate == null ) { renderJSON( "Failed to find state with id=" + id ); }
     	thestate.selectedCodes = selcodes;
     	thestate.name = name;
