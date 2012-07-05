@@ -29,7 +29,8 @@ public class WaveSaveState extends Model {
 	@Required
 	public Long sessionId;
 	
-	public Session session;
+	//@Required
+	//public Session session;
 	
 	@Required
 	public String currentSelectionString;
@@ -42,14 +43,14 @@ public class WaveSaveState extends Model {
 		this.name = nam;
 		this.sessionId = sid;
 		this.currentSelectionString = selstring;
-		this.session = Session.getActivitySession(sid);
-		if (this.session == null )
+		Session check = Session.getActivitySession(sid);
+		if (check == null )
 		{
 			System.err.println("session id was bogus");
 		}
 		else
 		{
-			System.err.println( this.session.toString()  );
+			System.err.println( check.toString()  );
 		}
 		comments = "";
 	}
