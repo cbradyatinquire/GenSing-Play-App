@@ -384,6 +384,24 @@ public class Application extends Controller {
     {
     	String toreturn = "";
     	WaveSaveState thestate = WaveSaveState.findWaveSaveState(id);
+    	
+    	Long TheSessionId = thestate.sessionId;
+    	Session ourSession = Session.findById(TheSessionId);
+    	if (ourSession == null )
+    		renderJSON( " SESSION ID, " + TheSessionId.toString() + ", IS INVALID ");
+    	
+    	toreturn += ourSession.classroom.school.schoolName + "\t";
+    	toreturn += ourSession.classroom.teacher.username + "\t";
+    	toreturn += ourSession.classroom.classname +":"+ ourSession.classroom.startYear + "\t";
+    	toreturn += ourSession.startTime.toString() + "\t";
+    	
+    	/*
+    	 * school
+    	 * teacher
+    	 * cnameandcyear
+    	 * starttme
+    	 */
+    	
     	toreturn += thestate.selectedCodes + "\t";
     	toreturn += thestate.name + "\t";
     	toreturn += thestate.sessionId.toString() + "\t";
