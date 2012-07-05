@@ -39,6 +39,9 @@ public class Contribution extends Model {
 	
 	@Required
 	public String body;
+	
+	@Required
+	public boolean isValid = true;
 
 
 	public String separator = ";";
@@ -55,6 +58,21 @@ public class Contribution extends Model {
 	public int sequenceNumber;
 	
 	
+	public Contribution( ContributionType type, StudentUser stud, Session act, String id, String body, boolean validity )
+	{
+		this.type = type;
+		this.student = stud;
+		this.session = act;
+		this.timestamp = Utilities.getTstamp();
+		this.secondsIn = (this.timestamp.getTime() - act.startTime.getTime()) / 1000.0;
+		this.objectID = id;
+		this.body = body;
+		this.sequenceNumber = act.getNextSequenceNumber();
+		this.separator = ";";
+		this.isValid = validity;
+	}
+	
+	//keeping old contribution constructor for backwards compatibility -- all contributions here will be "valid"
 	public Contribution( ContributionType type, StudentUser stud, Session act, String id, String body )
 	{
 		this.type = type;
@@ -68,7 +86,6 @@ public class Contribution extends Model {
 		this.sequenceNumber = act.getNextSequenceNumber();
 		//System.err.println( "mine is now " + sequenceNumber );
 		this.separator = ";";
-		
 	}
 	
 	
@@ -82,7 +99,8 @@ public class Contribution extends Model {
 	
 	public String toTSVLineVerbose()
 	{
-		String line = String.valueOf(sequenceNumber) + "\t" + type + "\t" + secondsIn + "\t" + student.getUserName() + "\t" + objectID + "\t" + body;
+		
+		String line = String.valueOf(sequenceNumber) + "\t" + String.valueOf(isValid) + "\t" + type + "\t" + secondsIn + "\t" + student.getUserName() + "\t" + objectID + "\t" + body;
 		
 		//now codings, if there are any
 		line += "\t";
@@ -109,7 +127,7 @@ public class Contribution extends Model {
 	
 	public String toTSVLine()
 	{
-		String line = String.valueOf(sequenceNumber) + "\t" + type + "\t" + secondsIn + "\t" + student.getUserName() + "\t" + objectID + "\t" + body;
+		String line = String.valueOf(sequenceNumber) + "\t" + String.valueOf(isValid) + "\t" + type + "\t" + secondsIn + "\t" + student.getUserName() + "\t" + objectID + "\t" + body;
 		//don't add any annotations or code information.
 		return line;
 	}

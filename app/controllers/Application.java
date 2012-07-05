@@ -123,34 +123,33 @@ public class Application extends Controller {
     }
     
     
-    public static void logContribution(String stype, String username, Long actid, String contribid, String contribution ) {
+    public static void logContribution(String stype, String username, Long actid, String contribid, String contribution, boolean validity ) {
     	System.err.println("contribution logged");
     	Session act = Session.getActivitySession(actid);
-    	
-			if (act == null )
-			{
-				renderJSON("FAILURE-no  session with id = " + actid);
-			}
-			else
-			{
-				Classroom croom = act.classroom;
-		    	StudentUser theGuy = StudentUser.connect(username, croom);
-		    	if ( theGuy == null )
-		    	{
-		    		renderJSON("FAILURE-STUDENT -- no student '" + username + "' in classroom '" + croom.toString() + "'");
-		    	}
-		    	else
-		    	{
-		    		ContributionType ct = ContributionType.POINT;
-		    		if ( stype.equals("EQUATION") )
-		    			ct = ContributionType.EQUATION;
-		    			
-		    		Contribution c = new Contribution(ct, theGuy, act, contribid, contribution );
-		    		c.save();
-		    		renderJSON("Logged contribution from user: " + username + ":" + croom.toString() +  "\nContents: " + contribution );
-		    	}
-			}
-	 
+
+    	if (act == null )
+    	{
+    		renderJSON("FAILURE-no  session with id = " + actid);
+    	}
+    	else
+    	{
+    		Classroom croom = act.classroom;
+    		StudentUser theGuy = StudentUser.connect(username, croom);
+    		if ( theGuy == null )
+    		{
+    			renderJSON("FAILURE-STUDENT -- no student '" + username + "' in classroom '" + croom.toString() + "'");
+    		}
+    		else
+    		{
+    			ContributionType ct = ContributionType.POINT;
+    			if ( stype.equals("EQUATION") )
+    				ct = ContributionType.EQUATION;
+
+    			Contribution c = new Contribution(ct, theGuy, act, contribid, contribution, validity );
+    			c.save();
+    			renderJSON("Logged contribution from user: " + username + ":" + croom.toString() +  "\nContents: " + contribution );
+    		}
+    	}
     }
     
     
@@ -740,13 +739,58 @@ public class Application extends Controller {
 	    	reply = "Contributions:\n";
 	    	if (afteri.isEmpty())
 	    		reply = "NO CONTRIBUTIONS MATCHING CONDITION";
-	    	int i = 0;
 	    	for ( Contribution c : afteri )
 	    	{
 	    		reply += c.toTSVLineVerbose() + "\n";  
 	    	}
     	}
 	    //debugging   System.err.println("about to send " + reply.replaceAll("\n", "<<\n").replaceAll("\t", "!"));
+    	renderJSON(reply);
+    }
+    
+    public static void getValidContributionsAfterSequenceNumberVerbose( Long aid, int ind )
+    {
+    	String header =  "Contributions:\n";
+    	String reply = "OOPS -- problem in looking up Activtity with id:" + aid;
+	    Session a = Session.getActivitySession(aid);
+	    if ( a != null )
+	    {
+	    	List<Contribution> afteri = a.getContributionsAfterNumber(ind);
+	    	reply = header;
+	    	if (afteri.isEmpty())
+	    		reply = "NO CONTRIBUTIONS MATCHING CONDITION";
+	    	for ( Contribution c : afteri )
+	    	{
+	    		if ( c.isValid )
+	    			reply += c.toTSVLineVerbose() + "\n";  
+	    	}
+	    	if ( reply.equals(header) )
+	    		renderJSON("NO VALID CONTRIBUTIONS MATCHING CONDITION");
+    	}
+	    //debugging   System.err.println("about to send " + reply.replaceAll("\n", "<<\n").replaceAll("\t", "!"));
+    	renderJSON(reply);
+    }
+    
+    
+    public static void getInvalidContributionsAfterSequenceNumberVerbose( Long aid, int ind )
+    {
+    	String header =  "Contributions:\n";
+    	String reply = "OOPS -- problem in looking up Activtity with id:" + aid;
+	    Session a = Session.getActivitySession(aid);
+	    if ( a != null )
+	    {
+	    	List<Contribution> afteri = a.getContributionsAfterNumber(ind);
+	    	reply = header;
+	    	if (afteri.isEmpty())
+	    		reply = "NO CONTRIBUTIONS MATCHING CONDITION";
+	    	for ( Contribution c : afteri )
+	    	{
+	    		if ( ! c.isValid )
+	    			reply += c.toTSVLineVerbose() + "\n";  
+	    	}
+	    	if ( reply.equals(header) )
+	    		renderJSON("NO INVALID CONTRIBUTIONS MATCHING CONDITION");
+    	}
     	renderJSON(reply);
     }
     

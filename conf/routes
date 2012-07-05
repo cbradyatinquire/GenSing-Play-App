@@ -18,6 +18,8 @@ POST	/nameActivity							Application.nameActivity
 GET  	/getAllContributions					Application.getAllContributions
 *  		/getAllContributionsAfter				Application.getContributionsAfterSequenceNumber
 *  		/getAllContributionsAfterVerbose		Application.getContributionsAfterSequenceNumberVerbose
+*		/getAllValidContributionsAfterVerbose	Application.getValidContributionsAfterSequenceNumberVerbose
+*		/getAllInvalidContributionsAfterVerbose	Application.getInvalidContributionsAfterSequenceNumberVerbose
 
 *		/addCodingToContribution				Application.addCodingToContribution
 *		/addAnnotationToContribution			Application.addAnnotationToContribution
