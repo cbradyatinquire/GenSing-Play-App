@@ -48,7 +48,15 @@ public class Bootstrap extends Job {
             {
             	double co = i / 10.0;
             	String fn = String.valueOf(co) + "sin(x)";
-            	Contribution con = new Contribution(ContributionType.EQUATION, csu, se, "Y"+i, fn );
+            	Contribution con;
+            	if ( i % 10 == 0 )
+            	{
+            		con = new Contribution(ContributionType.EQUATION, csu, se, "Y"+i, "h" + fn + "g", false );
+            	}
+            	else
+            	{
+            		 con = new Contribution(ContributionType.EQUATION, csu, se, "Y"+i, fn, true );
+            	}
 	    		con.save();
             }
             
