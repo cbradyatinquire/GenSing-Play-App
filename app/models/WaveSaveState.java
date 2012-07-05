@@ -24,7 +24,7 @@ public class WaveSaveState extends Model {
 	public String name;
 	
 	@Lob
-	public String comments;
+	public String comments="";
 	
 	@Required
 	public Long sessionId;
@@ -43,6 +43,15 @@ public class WaveSaveState extends Model {
 		this.sessionId = sid;
 		this.currentSelectionString = selstring;
 		this.session = Session.getActivitySession(sid);
+		if (this.session == null )
+		{
+			System.err.println("session id was bogus");
+		}
+		else
+		{
+			System.err.println( this.session.toString()  );
+		}
+		comments = "";
 	}
 	
 	public void setComments( String com )
