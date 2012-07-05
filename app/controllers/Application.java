@@ -387,7 +387,8 @@ public class Application extends Controller {
     	toreturn += thestate.selectedCodes + "\t";
     	toreturn += thestate.name + "\t";
     	toreturn += thestate.sessionId.toString() + "\t";
-    	toreturn += thestate.currentSelectionString;
+    	toreturn += thestate.currentSelectionString + "\t";
+    	toreturn += thestate.comments;
     	renderJSON( toreturn );
     }
     
