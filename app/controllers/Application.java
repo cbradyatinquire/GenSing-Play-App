@@ -500,7 +500,7 @@ public class Application extends Controller {
     				badcat = false;
     				for (CodeDescriptor d : cca.descriptors )
     				{
-    					if (descriptor.equals(d.desc) )
+    					if (descriptor.equals(d.descri) )
     						baddes = false;
     				}
     				
@@ -543,7 +543,7 @@ public class Application extends Controller {
     			List<CodeDescriptor> descs = cc.descriptors;
     			for ( CodeDescriptor d : descs )
     			{
-    				alist += "DESCRIPTOR: " + d.desc + "\n";
+    				alist += "DESCRIPTOR: " + d.descri + "\n";
     			}
     			alist +=  "\n";
     		}

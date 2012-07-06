@@ -44,7 +44,7 @@ public class Contribution extends Model {
 	public boolean isValid = true;
 
 
-	public String separator = ";";
+	public String fieldseparator = ";";
 	
 	
 	@OneToMany(mappedBy="annotatedContrib", cascade=CascadeType.ALL)
@@ -68,7 +68,7 @@ public class Contribution extends Model {
 		this.objectID = id;
 		this.body = body;
 		this.sequenceNumber = act.getNextSequenceNumber();
-		this.separator = ";";
+		this.fieldseparator = ";";
 		this.isValid = validity;
 	}
 	
@@ -85,7 +85,7 @@ public class Contribution extends Model {
 		//System.err.println("Session's current sequence number is " + act.sequenceCounter );
 		this.sequenceNumber = act.getNextSequenceNumber();
 		//System.err.println( "mine is now " + sequenceNumber );
-		this.separator = ";";
+		this.fieldseparator = ";";
 	}
 	
 	

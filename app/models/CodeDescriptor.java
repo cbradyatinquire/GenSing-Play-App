@@ -10,7 +10,7 @@ import play.db.jpa.Model;
 public class CodeDescriptor extends Model {
 	
 	@Required
-	public String desc;
+	public String descri;
 	
 	@Required
 	@ManyToOne
@@ -19,7 +19,7 @@ public class CodeDescriptor extends Model {
 	
 	public CodeDescriptor( CodeCategory ca, String d)
 	{
-		this.desc = d;
+		this.descri = d;
 		this.ccategory = ca;
 	}
 
@@ -28,7 +28,7 @@ public class CodeDescriptor extends Model {
 		String qu = "select c from CodeDescriptor c WHERE c.ccategory = "+cc+" and c.desc = "+desc;
 		CodeDescriptor cd = CodeDescriptor.find(qu).first();
 		return cd;
-		//return find("byCategoryAndDescriptor", cc, desc).first();
+		//return find("byCategoryAndDescriptor", cc, descri).first();
 	}
 	
 	public static CodeDescriptor connect(CodeCategory cc, String desc) {
@@ -36,7 +36,7 @@ public class CodeDescriptor extends Model {
 	}
 	
 	public String toString() {
-		return ( ccategory.category + " " + desc );
+		return ( ccategory.category + " " + descri );
 	}
 	
 
