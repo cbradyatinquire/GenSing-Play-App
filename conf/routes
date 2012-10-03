@@ -63,6 +63,12 @@ GET		/teacheraccount							CreateAccounts.teacheraccount
 
 GET		/classroomaccount						CreateAccounts.classroomaccount
 
+POST 	/upload									UploadData.fileUpload
+GET 	/upload									UploadData.getForm
+*		/testUpload								UploadData.testUpload
+
+
+* 		/test									AjaxTesting.test
 
 *      /admin              						module:crud
 
