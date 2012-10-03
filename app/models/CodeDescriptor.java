@@ -24,15 +24,17 @@ public class CodeDescriptor extends Model {
 	}
 
 	public static CodeDescriptor findByCategoryAndName(CodeCategory cc,
-			String desc) {
-		String qu = "select c from CodeDescriptor c WHERE c.ccategory = "+cc+" and c.desc = "+desc;
-		CodeDescriptor cd = CodeDescriptor.find(qu).first();
-		return cd;
-		//return find("byCategoryAndDescriptor", cc, descri).first();
+			String descri) {
+		descri = descri.trim();
+//		String qu = "select c from CodeDescriptor c WHERE c.ccategory = "+cc+" and c.descri = "+descri;
+//		CodeDescriptor cd = CodeDescriptor.find(qu).first();
+//		return cd;
+		return find("byCcategoryAndDescri", cc, descri).first();
 	}
 	
 	public static CodeDescriptor connect(CodeCategory cc, String desc) {
-		return find("byCcategoryAndDesc", cc, desc).first();
+		desc = desc.trim();
+		return find("byCcategoryAndDescri", cc, desc).first();
 	}
 	
 	public String toString() {

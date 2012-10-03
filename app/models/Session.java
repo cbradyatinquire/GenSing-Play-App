@@ -51,7 +51,7 @@ public class Session extends Model {
 	}
 	
 	public static Session connect(Classroom croom, Date thedate ) {
-		return find( "byClassroomAndDate", croom, thedate).first();
+		return find( "byClassroomAndStartTime", croom, thedate).first();
 	}
 	
 	

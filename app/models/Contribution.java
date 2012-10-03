@@ -92,7 +92,14 @@ public class Contribution extends Model {
 	public String toString()
 	{
 		//return timestamp.toString() +  " : seq# : " + sequenceNumber + " : by : " + student.toString() + " : with contents : " + body + " : in session : " + session.toString();
-		return String.valueOf(sequenceNumber) + "|" + type + "|" + secondsIn + "|" + student.getUserName() + "|" + objectID + "|" + body;
+		String s = String.valueOf(sequenceNumber);
+		s +=  "|" + type + "|";
+		s += secondsIn + "|" ;
+		s += student.getUserName() + "|";
+		s += objectID + "|";
+		s += body;
+		return s;
+//		return String.valueOf(sequenceNumber) + "|" + type + "|" + secondsIn + "|" + student.getUserName() + "|" + objectID + "|" + body;
 		
 	}
 	

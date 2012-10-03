@@ -20,6 +20,7 @@ public class CodeCategory extends Model {
 	public List<CodeDescriptor>descriptors;
 
 	public static CodeCategory findByName(String cat) {
+		cat = cat.trim();
 		//String qu = "select c from CodeCategory c WHERE c.category = "+cat;
 		//CodeCategory cc = CodeCategory.find(qu).first();
 		//return cc;

@@ -65,27 +65,43 @@ public class Bootstrap extends Job {
             CodeCategory ccc = new CodeCategory("Correctness");
             CodeDescriptor cda = new CodeDescriptor(cca, "ASMD");
             CodeDescriptor cdb = new CodeDescriptor(cca, "R1");
+            CodeDescriptor cdb0 = new CodeDescriptor(cca, "R");
             CodeDescriptor cdb1 = new CodeDescriptor(cca, "M1");
             CodeDescriptor cdc = new CodeDescriptor(cca, "VASM");
             CodeDescriptor cde = new CodeDescriptor(cca, "A0");
-            CodeDescriptor cdf = new CodeDescriptor(ccb, "BN");
-            CodeDescriptor cdg = new CodeDescriptor(ccb, "MT");
-            CodeDescriptor cdh = new CodeDescriptor(ccc, "CORRECT");
-            CodeDescriptor cdi = new CodeDescriptor(ccc, "INCORRECT");
+            CodeDescriptor cdf = new CodeDescriptor(cca, "SNO");
+            CodeDescriptor cdf1 = new CodeDescriptor(cca, "S");
+            CodeDescriptor cdf2 = new CodeDescriptor(cca, "I");
+            
+            CodeDescriptor cdg = new CodeDescriptor(ccb, "BN");
+            CodeDescriptor cdh = new CodeDescriptor(ccb, "MT");
+            CodeDescriptor cdh1 = new CodeDescriptor(ccb, "N");
+            CodeDescriptor cdi = new CodeDescriptor(ccc, "CORRECT");
+            CodeDescriptor cdj = new CodeDescriptor(ccc, "INCORRECT");
             
             cca.save();
             ccb.save();
             ccc.save();
             cda.save();
             cdb.save();
+            cdb0.save();
             cdb1.save();
             cdc.save();
             cde.save();
             cdf.save();
+            cdf1.save();
+            cdf2.save();
+            
             cdg.save();
             cdh.save();
+            cdh1.save();
             cdi.save();
+            cdj.save();
             
+            CodeCategory cctest = CodeCategory.findByName("Math");
+            CodeDescriptor cdtest = CodeDescriptor.findByCategoryAndName(cctest, "VASM");
+            System.err.println("TEST - codedescriptor " + cdtest);
+            System.err.println("TEST - codecategory: " + cctest);
             
             
         }

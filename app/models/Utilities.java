@@ -1,5 +1,6 @@
 package models;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,6 +21,15 @@ public class Utilities extends Model {
 	public static Date getTstamp() {
 		Calendar cal = Calendar.getInstance();
 	    return cal.getTime();
+	}
+	
+	public static Date dateFromString( String input ) {
+		try {
+			return sdf.parse(input);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public static List<Object> executeQuery( String dbquery )

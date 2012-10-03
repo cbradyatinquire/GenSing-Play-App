@@ -45,4 +45,6 @@ public class StudentUser extends Model {
 		return username+", in "+classroom.toString() + " with teacher "+classroom.teacher+" in school "+classroom.school+".";
 	}
 
+	
+
 }
