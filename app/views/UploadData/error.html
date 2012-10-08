@@ -1,0 +1,13 @@
+#{extends 'main.html' /}
+#{set title:'ERROR in processing data file' /}
+
+
+#{if flash.error}
+    <p style="color:#c00">
+        ${flash.error}
+    </p>
+#{/if}
+
+
+<h4>Error was: ${message}</h4>
+

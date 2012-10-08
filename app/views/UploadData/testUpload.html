@@ -1,0 +1,11 @@
+#{extends 'main.html' /}
+#{set title:'testUpload.html' /}
+
+<h1>Use the BACK button on your browser to return to the upload form page...</h1>
+
+<h3>TEST RESULTS:  ${feedback.size()} lines of feedback...</h3>
+	<ul>
+	#{list items:feedback, as:'feedline'}
+    <li>${feedline}</li>
+    #{/list}
+	</ul>

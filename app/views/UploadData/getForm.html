@@ -1,0 +1,83 @@
+#{extends 'main.html' /}
+#{set title:'getForm.html' /}
+<script type="text/javascript" src="/public/javascripts/jquery-1.5.2.min.js"> </script>
+<script type="text/javascript">
+	
+	function parseIntoSDATE( adate ) {
+	   if (adate == null)
+	   { 
+	   	sessiondate.value = "?"; 
+	   }
+	   else
+	   {
+	      var str=adate; 
+		  var n=str.match(/\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}/g);
+		  sessiondate.value = n[0];
+	   }
+	
+	}
+	
+	
+	function handler( data ) {
+		$('#result').html(data);
+	}
+	
+	function testSend2() {
+	
+		$.getJSON("/testUpload", function(data) {
+        	//alert(data);
+        	//$('#result').html(data[0]);
+        	$.each(data, function(index, item) {
+                $("#result").append("<li>" + item + "</li>");
+            });
+    	});
+	}
+	
+	function testSend() {
+		alert("hi");
+		var pdata = {
+		  schoolname: schoolname.value,
+		  teachername: teachername.value,
+		  classname: classname.value,
+		  startyear: startyear.value,
+		  attachment: attachment.value
+		}
+		
+		$.post("/testUpload", pdata, function(data) {
+        	$.each(data, function(index, item) {
+                $("#result").append("<li>" + item + "</li>");
+            }, "multipart/form-data");
+    	});
+    	
+    	alert("there");
+		
+//		$.ajax({
+//			  url: "/testUpload",
+//			  data: JSON.stringify(pdata),
+//			  success: "handler",
+//			});
+	}
+</script>
+
+<h2>Form for uploading .csv files to database</h2>
+
+    	#{form @fileUpload(), enctype:'multipart/form-data'}
+        School Name: <input type="text" id="schoolname" name="schoolname" /><br>
+        Teacher Name: <input type="text" id="teachername" name="teachername" /><br>
+        Class Name: <input type="text" id="classname" name="classname" /><br>
+        Class Start Year: <input type="text" id="startyear" name="startyear" /><br>
+        <input type="file" id="attachment" name="attachment" />
+        <br>
+        <input type="button" value="Load Date from Filename" onclick="parseIntoSDATE(attachment.value)"/> <br> 
+        
+		Session Date-Timestamp (yyyy-MM-dd_HH-mm-ss): <input type="text" id="sessiondate" name="sessiondate" size="23"/><br>
+        <br>
+        <br>
+        <input type="checkbox" id="istest" checked="checked" name="istest"/>Test-parse before uploading? (Recommended)<br>
+        <input type="submit" value="Upload File" />
+    #{/}
+    
+    <br>
+   
+    <ul id="result">
+    </ul>

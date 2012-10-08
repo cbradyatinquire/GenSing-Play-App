@@ -1,0 +1,33 @@
+#{extends 'main.html' /}
+#{set title:'FILE UPLOADED' /}
+
+#{if flash.error}
+    <p style="color:#c00">
+        ${flash.error}
+    </p>
+#{/if}
+
+
+
+
+<h3>${newstudents.size()} new students added to database in this upload...</h3>
+	<ul>
+	#{list items:newstudents, as:'newstudent'}
+    <li>${newstudent}</li>
+    #{/list}
+	</ul>
+
+<b>${contributions.size()} contributions successfully created from the following lines: </b>
+	<ul>
+	#{list items:contributions, as:'contribution'}
+    <li>${contribution}</li>
+    #{/list}
+</ul>
+
+<h4>OTHER</h4>
+<b>${contribErrors.size()} non-contribution lines encountered in the file: </b>
+	<ul>
+	#{list items:contribErrors, as:'err'}
+    <li>${err}</li>
+    #{/list}
+</ul>
