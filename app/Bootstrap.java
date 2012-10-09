@@ -72,10 +72,14 @@ public class Bootstrap extends Job {
             CodeDescriptor cdf = new CodeDescriptor(cca, "SNO");
             CodeDescriptor cdf1 = new CodeDescriptor(cca, "S");
             CodeDescriptor cdf2 = new CodeDescriptor(cca, "I");
+            CodeDescriptor cdf3 = new CodeDescriptor(cca, "O");
+            
             
             CodeDescriptor cdg = new CodeDescriptor(ccb, "BN");
             CodeDescriptor cdh = new CodeDescriptor(ccb, "MT");
             CodeDescriptor cdh1 = new CodeDescriptor(ccb, "N");
+            CodeDescriptor cdh2 = new CodeDescriptor(ccb, "U");
+            
             CodeDescriptor cdi = new CodeDescriptor(ccc, "CORRECT");
             CodeDescriptor cdj = new CodeDescriptor(ccc, "INCORRECT");
             
@@ -91,10 +95,12 @@ public class Bootstrap extends Job {
             cdf.save();
             cdf1.save();
             cdf2.save();
+            cdf3.save();
             
             cdg.save();
             cdh.save();
             cdh1.save();
+            cdh2.save();
             cdi.save();
             cdj.save();
             
