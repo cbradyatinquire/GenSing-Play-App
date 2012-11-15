@@ -67,6 +67,14 @@ POST 	/upload									UploadData.fileUpload
 GET 	/upload									UploadData.getForm
 *		/testUpload								UploadData.testUpload
 
+* 		/query									QueryBuilder.qBuilder
+
+GET		/testGet								QueryBuilder.testGet
+GET		/basicSelector							QueryBuilder.basicSelector
+
+GET		/showViaGeo								QueryBuilder.geoRouter
+
+GET		/googleTable							QueryBuilder.googleTable
 
 * 		/test									AjaxTesting.test
 

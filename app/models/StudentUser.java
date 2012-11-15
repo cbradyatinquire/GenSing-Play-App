@@ -30,6 +30,12 @@ public class StudentUser extends Model {
 		this.classroom = croom;
 	}
 	
+	public Long getId( ) { return this.id; }
+	
+	public static StudentUser getStudentById( Long studid ){
+		return StudentUser.findById(studid);
+	}
+	
 	public String getUserName()
 	{
 		return "[" + username + "]";

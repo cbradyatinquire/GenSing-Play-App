@@ -2,6 +2,7 @@ package models;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -103,6 +104,36 @@ public class Contribution extends Model {
 		
 	}
 	
+	public String codingsShorthand()
+	{
+		
+		String blurb="";
+		for (Coding c: codings)
+		{
+			if ( c.descrip != null )
+			{
+				blurb += "|" + c.categ + ":";
+				blurb += c.descrip;
+			}
+		}
+		if (blurb.length()==0)
+			blurb += "--";
+		return blurb;
+	}
+
+	
+	public String annotationsShorthand()
+	{
+		String blurb="";
+		for (Annotation a : annotations )
+		{
+			blurb += "|" + a.theAnnotation;
+		}
+		if (blurb.length()==0)
+			blurb += "--";
+		return blurb;
+	}
+
 	
 	public String toTSVLineVerbose()
 	{
@@ -137,5 +168,11 @@ public class Contribution extends Model {
 		String line = String.valueOf(sequenceNumber) + "\t" + String.valueOf(isValid) + "\t" + type + "\t" + secondsIn + "\t" + student.getUserName() + "\t" + objectID + "\t" + body;
 		//don't add any annotations or code information.
 		return line;
+	}
+
+	public static Collection<? extends Contribution> getBySessionAndStudent(
+			Session s, StudentUser su) {
+		
+		return find( "bySessionAndStudent", s, su).fetch();
 	}
 }

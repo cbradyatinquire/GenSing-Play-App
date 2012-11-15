@@ -47,7 +47,7 @@ public class Bootstrap extends Job {
             for (int i=1; i<100; i++)
             {
             	double co = i / 10.0;
-            	String fn = String.valueOf(co) + "sin(x)";
+            	String fn = String.valueOf(co) + "sin(X)";
             	Contribution con;
             	if ( i % 10 == 0 )
             	{

@@ -1,0 +1,178 @@
+#{extends 'main.html' /}
+#{set title:'basicSelector.html' /}
+
+
+<head>
+
+  <script src="/public/javascript/dynatree/jquery/jquery.js" type="text/javascript"></script>
+  <script src="/public/javascript/dynatree/jquery/jquery-ui.custom.js" type="text/javascript"></script>
+  <script src="/public/javascript/dynatree/jquery/jquery.cookie.js" type="text/javascript"></script>
+
+  <link href="/public/javascript/dynatree/src/skin/ui.dynatree.css" rel="stylesheet" type="text/css">
+  <script src="/public/javascript/dynatree/src/jquery.dynatree.js" type="text/javascript"></script>
+
+    
+
+	<script type="text/javascript">
+	
+	$(document).ready(function () {
+
+	console.log( childarray );
+	 $("#tree").dynatree({
+      checkbox: true,
+      selectMode: 3,
+      children : childarray,
+      onSelect: function(select, node) {
+        // Get a list of all selected nodes, and convert to a key array:
+        var numStudents = 0;
+        var numSessions = 0;
+        sessIDs = [];
+        studIDs = [];
+        var selKeys = $.map(node.tree.getSelectedNodes(), function(node){
+          if (node.getLevel() == 5 )
+	      { 
+	      	if ( node.getParent().isFirstSibling() )
+	      	{ 
+	      		numSessions++;
+	      		sessIDs.push( node.data.key );
+	      		return node.data.title; 
+	        }
+	      	{ 
+	      		numStudents++;
+	      		studIDs.push( node.data.key );
+	      		return null;
+	      	}
+	      }
+	      else
+	      { return null; }
+        });
+        $("#numStudentsSelected").text(  numStudents );
+        $("#numSessionsSelected").text(  numSessions );
+        $("#echoSelection3").text(selKeys.join(", "));
+      },
+      onDblClick: function(node, event) {
+        node.toggleSelect();
+      },
+      onKeydown: function(node, event) {
+        if( event.which == 32 ) {
+          node.toggleSelect();
+          return false;
+        }
+      },
+      // The following options are only required, if we have more than one tree on one page:
+//        initId: "treeData",
+      cookieId: "dynatree-Cb3",
+      idPrefix: "dynatree-Cb3-"
+    });
+    
+   });
+    </script>
+    
+    
+    <script type="text/javascript">    
+    var sessIDs = [];
+    var studIDs = [];
+    var childarray = ${kiddos};
+    </script>
+
+	<script type="text/javascript">    
+    	function testQuery() {
+    		listAction =  #{jsAction @testQuery(':sessionIDs', ':studentIDs') /};
+			$('#querypreview').load(
+		       listAction({sessionIDs: sessIDs, studentIDs: studIDs}), 
+		       function( data ) {
+	       			//alert("hello there");
+           			//$('#testthree').html("loaded: " + data);  
+           		}
+   			);
+   		//	$('#doit').css('visibility', 'visible');
+   		//	$('#queryresults').html("-");
+   		//	$('#testit').css('visibility', 'hidden');
+   			
+   			
+    	}
+    	
+    	//var geogebraData;
+    	
+    	function executeQuery() {
+    		listAction =  #{jsAction @executeQuery(':sessionIDs', ':studentIDs') /};
+			$('#queryresults').load(
+		       listAction({sessionIDs: sessIDs, studentIDs: studIDs}), 
+		       function( data ) {
+	       			//alert("hello there");
+	       			//geogebraData = data;
+           			//$('#testthree').html("loaded: " + data);  
+           		}
+   			);
+   			
+  
+   			//$('#doit').css('visibility', 'hidden');
+   			//$('#testit').css('visibility', 'visible');
+   			
+    	}
+    	
+    	function sendToGeo() {
+    		anotherAction = #{jsAction @geoRouter(':sessionIDs', ':studentIDs') /};
+    		//alert("got to sendToGeo() ");
+    		$('#queryresults').load(
+		       anotherAction({sessionIDs: sessIDs, studentIDs: studIDs}),
+		       function( data ) {
+           			//$('#testthree').html("loaded: " + data);  
+           		}
+   			);
+    	}
+    	
+    	
+    	function ggT() {
+    		third = #{jsAction @googleTable(':sessionIDs', ':studentIDs') /};
+    		$('#queryresults').load(
+		       third({sessionIDs: sessIDs, studentIDs: studIDs}),
+		       function( data ) {
+           		}
+   			);
+    	}
+    	
+    		
+								    	
+								    	
+		</script>
+	
+
+    </head>
+    
+    
+    <body>
+    
+    <div id="tree">
+    
+    </div>
+    
+
+  <br>
+  <div>The selection contains <span id="numStudentsSelected">0</span> student(s).</div>
+  <div>...and <span id="numSessionsSelected">0</span> class session(s).</div>
+    <div>Selected class sessions: <span id="echoSelection3">[none]</span></div>
+    
+
+    
+    <input type="button" value="Run Query" id="runit" name="runit" onclick="executeQuery()"/>
+    &nbsp; <input type="button" value="Send To Geogebra" onclick="sendToGeo()"/>
+    
+    &nbsp; <input type="button" value="Test Table" onclick="ggT()"/><br>
+    
+    
+    
+    
+    <div id="queryresults"></div>
+    
+    
+    <iframe id="datatable" src="" width="500px" height="1000px" scrolling="no" seamless>
+  	<p>Your browser does not support iframes.</p>
+	</iframe>
+    
+    
+    </body>
+    
+    
+    
+    

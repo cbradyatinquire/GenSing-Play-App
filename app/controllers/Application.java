@@ -208,6 +208,11 @@ public class Application extends Controller {
     	render(conts);
     }
     
+    public static void gensingViz( List<Contribution> contribs )
+    {
+    	render(contribs);
+    }
+    
     public static void wave(Date starttime, String hostip, Long aid, String cnameandcyear, String tuname, String schoolname, String functioncall) //, String fullrequesturl)
     {
     	render(starttime, hostip, aid, cnameandcyear, tuname, schoolname, functioncall); //, fullrequesturl);

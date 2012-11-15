@@ -1,0 +1,70 @@
+#{extends 'main.html' /}
+#{set title:'qBuilder.html' /}
+
+<head>
+<script type="text/javascript" src="/public/javascripts/jquery-1.5.2.min.js"> </script>
+
+
+<script type="text/javascript">
+	var listAction;
+	function setupFunctions()
+	{
+		listAction =  #{jsAction @testGet(':name', ':value') /};
+		$('#testtwo').load(
+	       listAction({name: 'x', value: '10'}), 
+	       function( data ) {
+	       	//alert("hello there");
+           	$('#testthree').html("loaded: " + data);  
+           	}
+   		);
+   		$('#butn').css('visibility', 'visible');
+	}
+   
+</script>
+
+<script type="text/javascript" >
+var num = 0;
+var type = "school"
+$(document).ready(function(){
+  $("#theinput").keyup(function(){
+    txt=$("#theinput").val();
+    $.post("@{QueryBuilder.doQueryPretest()}",{search:txt},function(result){
+    	 //alert("hi");
+      $("#feedback").html(result);
+    });
+  });
+});
+</script>
+
+</head>
+<script>
+	
+	function checkHowMany( val)
+	{
+	  $("#feedback").html("There are " + num + type + "beginning with " + val );
+	}
+</script>
+
+<input type="button" name="next" id="butn" value="Press to test" onClick="setupFunctions()">
+
+<div id="form_area"> 
+	<form name="qbuilder" action="@{QueryBuilder.doQuery()}"> 
+	
+	<label for="theinput">School Name:</label> <input type="text" name="theinput" id="theinput" /> 
+	
+	<input type="submit" name="submit" class="button" id="submit" value="Submit" /> 
+</form> </div>
+
+<div id="feedback">
+#{list items:params, as:'param'}
+    <option>${param}</option>
+    #{/list}
+</div>
+
+<div id="testtwo">
+blah
+</div>
+
+<div id="testthree">
+asdf
+</div>
