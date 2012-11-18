@@ -6,10 +6,10 @@ import java.util.List;
 
 public class Visualizers {
 	
-	public static String spiralHTML = "<SPIRAL HTML WOULD GO HERE>";
-	public static String waveHTML = "<WAVE HTML WOULD GO HERE>";
-	public static String graphicalHTML = "<GRAPHICAL VIZ HTML WOULD GO HERE>";
-	public static String verboseHTML = "<VERBOSE VIZ HTML WOULD GO HERE>";
+	public static String spiralHTML = "Analyze a session's data with the <b>Spiral</b> visualizer";
+	public static String waveHTML = "Analyze a session's data with the <b>Wave</b> visualizer";
+	public static String graphicalHTML = "Analyze a session's data with the <b>Graphing</b> visualizer";
+	public static String verboseHTML = "Use the <b>Verbose Output</b> visualizer (testing)";
 	
 	
 	public static ArrayList<String> names = new ArrayList<String>();
@@ -23,7 +23,7 @@ public class Visualizers {
 		vizMap.put("Spiral", spiralHTML);
 		vizMap.put("Wave", waveHTML);
 		vizMap.put("TestVerbose", verboseHTML);
-		vizMap.put("Graphical", graphicalHTML);
+	//	vizMap.put("Graphical", graphicalHTML);
 	}
 
 	public static List<String>  getNames() {
