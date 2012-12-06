@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+<title>Load State</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<style>
+  .LeftPanel {
+    position: absolute;
+    left: 20px;
+    top: 0px;
+  }
+
+  .RightPanel {
+    position: absolute;
+    margin-left: 440px;
+    top: 0px;
+  }
+</style>
+
+<script type="text/javascript">
+//<![CDATA[
+
+var stateNames = [ 'state One', 'state Two', 'state Three' ];
+var stateDescriptions = [ 'desc one', 'desc two', 'desc three' ];
+
+
+
+
+function catchEvent(eventObj, event, eventHandler) {
+   if (eventObj.addEventListener) {
+      eventObj.addEventListener(event, eventHandler,false);
+   } else if (eventObj.attachEvent) {
+      event = "on" + event;
+      eventObj.attachEvent(event, eventHandler);
+   }
+}
+
+
+
+
+catchEvent(window,"load",setupEvents);
+
+
+
+
+function setupEvents(evnt) {
+  
+  for( var i = 0; i < stateNames.length; i++ ) {
+    var stateOpts = document.getElementById( "stateList" );
+    stateOpts[ i ] = new Option( stateNames[ i ], stateNames[ i ] ); 
+  }
+
+  catchEvent( stateList, "click", processClickedStateList );
+
+  catchEvent( document.getElementById( "loadB" ), "click", executeLoad );
+  catchEvent( document.getElementById( "cancelB" ), "click", executeCancel );
+}
+
+
+
+
+function processClickedStateList() {
+  var selIndex = document.getElementById( "stateList" ).options.selectedIndex;
+  var theValue = "";
+  if( selIndex != -1 ) {
+    theValue = stateDescriptions[ selIndex ];
+  }
+  document.getElementById( "stateDescription" ).value = theValue;
+}
+
+
+
+
+function updateStateDescription( theIndex ) {
+  alert( theIndex );
+  document.getElementById( "stateDescription" ).value = stateDescriptions[ theIndex ];
+}
+
+
+
+
+function executeLoad() {
+  var stateOpts = document.getElementById( "stateList" );
+  var selIndex = stateOpts.selectedIndex;
+  if( selIndex == -1 ) {
+    alert( "Please select one of the saved states from the list" );
+  } else {
+    alert( "loading state with \n name: " + stateOpts.options[ selIndex ].value );
+  }
+  self.close();
+}
+
+
+
+
+function executeSaveAs() {
+  alert( "saving state with \n name: " + document.getElementById( "stateName" ).value + " \n description: " + document.getElementById( "stateDescription" ).value );
+  self.close();
+}
+
+
+
+
+function executeCancel() {
+  alert( "User cancelled, nothing done." );
+  self.close();
+}
+
+
+
+
+//]]>
+</script>
+</head>
+
+<body>
+  <form id="loadStateForm" action="">
+  <div class="LeftPanel">
+    <p>
+      <label>Select a state:</label>
+      <br>
+      <select id="stateList" size=10 style="width: 400px"></select>
+    </p>
+  </div>
+
+  <div class="RightPanel">
+    <p>
+      <label>Description:</label>
+      <br>
+      <textarea id="stateDescription" value="" rows=16 cols=50 readonly=true></textarea>
+    </p>
+
+    <p>
+      <button id="loadB">Load</button>
+      &nbsp &nbsp &nbsp
+      <button id="cancelB">Cancel</button>
+    </p>
+  </div>
+
+  </form>
+</body>
+
+</html>

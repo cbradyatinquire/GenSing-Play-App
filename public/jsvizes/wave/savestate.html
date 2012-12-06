@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+<title>Save State</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<script type="text/javascript">
+//<![CDATA[
+
+var oldStateName = "this is an old state name";
+var oldStateDescription = "This is\nan old\nstate description";
+
+
+
+
+function catchEvent(eventObj, event, eventHandler) {
+   if (eventObj.addEventListener) {
+      eventObj.addEventListener(event, eventHandler,false);
+   } else if (eventObj.attachEvent) {
+      event = "on" + event;
+      eventObj.attachEvent(event, eventHandler);
+   }
+}
+
+
+
+
+catchEvent(window,"load",setupEvents);
+
+
+
+
+function setupEvents(evnt) {
+  document.getElementById( "stateName" ).value = oldStateName;
+  document.getElementById( "stateDescription" ).value = oldStateDescription;
+
+  catchEvent( document.getElementById( "saveB" ), "click", executeSave );
+  catchEvent( document.getElementById( "saveAsB" ), "click", executeSaveAs );
+  catchEvent( document.getElementById( "cancelB" ), "click", executeCancel );
+}
+
+
+
+
+function executeSave() {
+  alert( "saving state with \n name: " + oldStateName + " \n description: " + document.getElementById( "stateDescription" ).value );
+  self.close();
+}
+
+
+
+
+function executeSaveAs() {
+  alert( "saving state with \n name: " + document.getElementById( "stateName" ).value + " \n description: " + document.getElementById( "stateDescription" ).value );
+  self.close();
+}
+
+
+
+
+function executeCancel() {
+  alert( "User cancelled, nothing done." );
+  self.close();
+}
+
+
+
+
+//]]>
+</script>
+</head>
+
+<body>
+  <form id="saveStateForm" action="">
+    <p>
+      <label>Enter a name for the state:</label>
+      <br>
+      <input id="stateName" type="text" value="" maxlength=80/>
+    </p>
+
+    <p>
+      <label>Type a description for the state:</label>
+      <br>
+      <textarea id="stateDescription" value="" rows=10 cols=80></textarea>
+    </p>
+
+    <p>
+      <button id="saveB">Save</button>
+      &nbsp &nbsp &nbsp
+      <button id="saveAsB">Save As</button>
+      &nbsp &nbsp &nbsp
+      <button id="cancelB">Cancel</button>
+    </p>
+
+  </form>
+</body>
+
+</html>

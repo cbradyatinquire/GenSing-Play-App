@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+<title>Select Codes To Display</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+  select { vertical-align: top }
+</style>
+<script type="text/javascript">
+//<![CDATA[
+
+var codeCategoriesData = new Array();
+var codeItemsData = new Array();
+var selCodeItemsData = new Array(); 
+
+
+
+
+function catchEvent(eventObj, event, eventHandler) {
+  if (eventObj.addEventListener) {
+      eventObj.addEventListener(event, eventHandler,false);
+   } else if (eventObj.attachEvent) {
+      event = "on" + event;
+      eventObj.attachEvent(event, eventHandler);
+   }
+}
+
+
+
+
+function continueWithSelCodeCat() {
+  <!-- First find out which one is being selected -->
+  var opts = self.document.getElementById( "codeCat" ).options;
+  var selOption;
+  for( var i = 0; i < opts.length; i++ ) {
+    if( opts[ i ].selected ) {
+      selOption = opts[ i ].text;
+    }
+  }
+
+  <!-- Then populate the second dropdown based on what's selected -->
+  for( var i = 0; i < codeCategoriesData.length; i++ ) {
+    if( codeCategoriesData[ i ] [ 0 ] === selOption ) {
+      var ciSel = self.document.getElementById( "codeItems" );
+      ciSel.disabled = false;
+      ciSel.focus();
+      ciSel.options.length = 0;
+      ciSel.options = null;
+      for( var j = 0; j < codeCategoriesData[ i ] [ 1 ].length; j++ ) {
+
+        var optLabel = codeCategoriesData[ i ] [ 1 ] [ j ] [ 0 ];
+        var optIsSel = false;
+        if( codeCategoriesData[i] [1] [j] [1] === "selected" )
+          optIsSel = true; 
+
+        ciSel.options[ ciSel.options.length ] = new Option( optLabel, optLabel);
+        ciSel.options[ ciSel.options.length - 1 ].selected = optIsSel;
+      }
+    }
+  }
+  <!-- upon lost focus or click, update the data in memory & display string -->
+  var ciSel = self.document.getElementById( "codeItems" );
+  catchEvent( ciSel, "blur", updateActiveSelection );
+  catchEvent( ciSel, "click", updateActiveSelection );
+
+  <!-- set up handlers for selecting/deselecting all items under this category -->
+  var selAllItemsObj = self.document.getElementById( "selAllItems" );
+  catchEvent( selAllItemsObj, "click", selectAllItemsUnderCat );
+
+  var deselAllItemsObj = self.document.getElementById( "deselAllItems" );
+  catchEvent( deselAllItemsObj, "click", deselectAllItemsUnderCat );
+  
+}
+
+
+
+
+function selectAllItemsUnderCat() {
+  var theOptions = self.document.getElementById( "codeItems" ).options;
+  for( var i = 0; i < theOptions.length; i++ ) {
+    theOptions[ i ].selected = true;
+  }
+  updateActiveSelection();
+  self.document.getElementById( "codeItems" ).focus();
+}
+
+
+
+
+function deselectAllItemsUnderCat() {
+  var theOptions = self.document.getElementById( "codeItems" ).options;
+  for( var i = 0; i < theOptions.length; i++ ) {
+    theOptions[ i ].selected = false;
+  }
+  updateActiveSelection();
+  self.document.getElementById( "codeItems" ).focus();
+}
+
+
+
+
+function updateCodeCategoriesData() {
+  var selOption = "";
+  var ccSel = self.document.getElementById( "codeCat" );
+  for( var i = 0; i < ccSel.options.length; i++ ) {
+    if( ccSel.options[ i ].selected )
+      selOption = ccSel.options[ i ].text;
+  }
+  
+  if( selOption != "" )
+    var ciSel = self.document.getElementById( "codeItems" );
+    for( var j = 0; j < ciSel.options.length; j++ ) {
+      var selLabel = ciSel.options[ j ].text;
+      var selValue = "notSelected";
+      if( ciSel.options[ j ].selected )
+        selValue = "selected";
+      
+      for( var m = 0; m < codeCategoriesData.length; m++ ){
+        if( codeCategoriesData[ m ] [ 0 ] === selOption )
+          for( var n = 0; n < codeCategoriesData[ m ] [ 1 ].length; n++ ) {
+            if( codeCategoriesData[ m ] [ 1 ] [ n ] [ 0 ] === selLabel )
+              codeCategoriesData[ m ] [ 1 ] [ n ] [ 1 ] = selValue;
+          }
+        
+      }
+
+    }
+}
+
+
+
+
+function updateTextBox() {
+  var tb = self.document.getElementById( "textBox" );
+  var displayString = "";
+  for( var m = 0; m < codeCategoriesData.length; m++ ) {
+    for( var n = 0; n < codeCategoriesData[ m ] [ 1 ].length; n++ ) {
+      if( codeCategoriesData[ m ] [ 1 ] [ n ] [ 1 ] === "selected" )
+        displayString += codeCategoriesData[ m ] [ 1 ] [ n ] [ 0 ] + ", ";
+    }
+  }
+
+  if( displayString.length > 2 )
+    displayString = displayString.substring( 0, displayString.length - 2 );
+
+  tb.value = displayString;
+}
+
+
+
+
+function updateActiveSelection() {
+  updateCodeCategoriesData();
+  updateTextBox();
+}
+
+
+
+
+function cancelChooseCode() {
+
+  self.close();
+}
+
+
+
+
+function okChooseCode() {
+  <!-- do necessary set ups for the chosen codes -->
+  var ret = "CODECHOOSER|";
+  for( var m = 0; m < codeCategoriesData.length; m++ ){
+    for( var n = 0; n < codeCategoriesData[ m ] [ 1 ].length; n++ ) {
+      if( codeCategoriesData[ m ] [ 1 ] [ n ] [ 1 ] === "selected" )
+        ret += codeCategoriesData[ m ] [ 1 ] [ n ] [ 0 ] + "|";
+    }
+  }
+  if( ret.length > 1 )
+    ret = ret.substring( 0, ret.length - 1 );
+
+  opener.popUpMsg = ret;
+  self.close();
+}
+
+
+
+<!--codeCategoriesData{ { Math, { {VASM, selected}, {ASMD, notSelected}, ... } }, { Social,  } }-->
+
+function buildCodeCategoriesData( rawRows ) {
+  for( var i = 1; i < rawRows.length; i++ ) {
+    
+    var pieces = rawRows[ i ].split( "," );
+    var catHead = pieces [ 0 ];
+    var itemBody = new Array();
+    for( var b = 1; b < pieces.length; b++ ) {
+      itemBody[ b - 1 ] = pieces[ b ];
+    }
+
+    var flagFound = 0;
+    var totalFound = 0;
+    if( codeCategoriesData.length == 0 ) {
+      codeCategoriesData[ 0 ] = [ catHead, [ itemBody ] ];
+      continue;
+    }
+    for( var j = 0; j < codeCategoriesData.length; j++ ) {
+      flagFound = 0;
+      if( codeCategoriesData[ j ] [ 0 ] === catHead ) {
+        flagFound = 1;
+        codeCategoriesData[ j ] [ 1 ] [ codeCategoriesData [j][1].length ] = itemBody;
+      }
+      totalFound += flagFound;          
+    }
+
+    if( totalFound == 0 ) {
+      var tempArrItems = new Array();
+      tempArrItems[ 0 ] = itemBody;
+      var tempElement = new Array();
+      tempElement[ 0 ] = catHead;
+      tempElement[ 1 ] = tempArrItems;
+      codeCategoriesData[ codeCategoriesData.length ] = tempElement;
+    }
+  }
+}
+
+
+
+
+function populateCodeCat() {
+  var ccSel = self.document.getElementById( "codeCat" );
+  ccSel.options = null;
+  ccSel.options.length = 0;
+  
+  for( var i = 0; i < codeCategoriesData.length; i++ ) {
+    var optStr = codeCategoriesData[ i ] [ 0 ];
+    ccSel.options[ ccSel.options.length ] = new Option( optStr, optStr );   
+  }
+}
+
+
+
+
+window.onload=function() {
+  var theRows = opener.popUpMsg.split( "|" );
+  self.document.getElementById( "textBox" ).value = "selected: " + theRows.toString();
+  buildCodeCategoriesData( theRows );
+
+  populateCodeCat();
+
+  updateActiveSelection();
+
+  self.document.getElementById("codeCat").focus();
+  <!-- other setup routines --> 
+
+  var confirmCCObject = self.document.getElementById( "confirmCodeCat" );
+  catchEvent( confirmCCObject, "click", continueWithSelCodeCat );
+
+  var cccObject = self.document.getElementById("cancelB");
+  catchEvent( cccObject, "click", cancelChooseCode );
+
+  var okCCObject = self.document.getElementById( "okB" );
+  catchEvent( okCCObject, "click", okChooseCode );
+
+  self.document.getElementById( "codeItems" ).disabled = true;
+}
+
+//]]>
+</script>
+</head>
+
+
+
+
+<body>
+  <form id="codeChooser" action="">
+    <p>
+      Choose Code Items to be displayed
+    </p>
+
+    <p>
+      <label>Code Category: 
+        <select id="codeCat" name="codeCategory" style="width: 100px"></select>
+      </label>
+      &nbsp
+      <button id="confirmCodeCat" type="button">Next</button>
+    </p>
+
+    <hr>
+    
+    <p>
+      <label>Code Items:</label>
+      <select id="codeItems" name="CodeItems" multiple="yes" size="10" style="width: 100px"></select>
+    </p>
+
+    <p>
+      <button id="selAllItems" type="button">Select All Items</button>
+      &nbsp
+      <button id="deselAllItems" type="button">De-select All Items</button>
+    </p>
+
+    <hr>
+
+    <p>
+      Selected for display: <br>
+      <textarea id="textBox" rows="5" cols="30"></textArea>
+      <br>
+      <button id="cancelB" type="button">Cancel</button>
+      &nbsp
+      <button id="okB" type="button">OK</button>
+    </p>
+    
+  </form>
+
+</body>
+
+
+
+
+</html>

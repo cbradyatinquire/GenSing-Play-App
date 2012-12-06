@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+<title>Select Codes To Display</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+  select { vertical-align: top }
+</style>
+<script type="text/javascript">
+//<![CDATA[
+
+var codeCategoriesAssignmentData = new Array();
+var wpAssignedCodes = new Array();
+var oldWpAssignedCodes = new Array();
+var wpAnnotation = "";
+var oldWpAnnotation = "";
+
+
+
+function catchEvent(eventObj, event, eventHandler) {
+  if (eventObj.addEventListener) {
+      eventObj.addEventListener(event, eventHandler,false);
+   } else if (eventObj.attachEvent) {
+      event = "on" + event;
+      eventObj.attachEvent(event, eventHandler);
+   }
+}
+
+
+
+function buildWpAnnotation( inputLine ) {
+  var pieces = inputLine.split( ":" );
+  wpAnnotation = pieces[ 1 ];
+  oldWpAnnotation = wpAnnotation;
+}
+
+
+
+
+function updateWpAnnotation() {
+  var tb = self.document.getElementById( "textBox" );
+  wpAnnotation = tb.value;
+}
+
+
+
+
+function buildWpAssignedCodes( wrows ) {
+  wpAssignedCodes = wrows[ wrows.length - 1 ].split( ":" )[ 1 ].split( "," );
+  oldWpAssignedCodes = wpAssignedCodes;
+}
+
+
+
+
+function updateWpAssignedCodes() {
+  wpAssignedCodes.length = 0;
+  wpAssignedCodes = new Array();
+  for( var m = 0; m < codeCategoriesAssignmentData.length; m++ ) {
+    for( var n = 0; n < codeCategoriesAssignmentData[ m ] [ 1 ].length; n++ ) {
+      if( codeCategoriesAssignmentData[ m ] [ 1 ] [ n ] [ 1 ] === "assigned" ){
+        wpAssignedCodes[ wpAssignedCodes.length ] = codeCategoriesAssignmentData[ m ] [ 1 ] [ n ] [ 0 ];
+      }
+    }
+  }
+}
+
+
+
+function updateActiveAssignment() {
+  updateCodeCategoriesAssignmentData();
+  updateWpAnnotation();
+  updateWpAssignedCodes();
+}
+
+
+
+
+function buildCodeCategoriesAssignmentData( rawRows, assgnRows ) {
+  for( var i = 1; i < rawRows.length; i++ ) {
+    
+    var pieces = rawRows[ i ].split( ":" );
+    var catHead = pieces [ 0 ];
+    var itemBody = new Array();
+    for( var b = 1; b < pieces.length; b++ ) {
+      itemBody[ b - 1 ] = pieces[ b ];
+    }
+    
+    var flagFound = 0;
+    var sumFound = 0;
+    for( var ac = 0; ac < assgnRows.length; ac++ ) {
+      if( assgnRows[ ac ] === itemBody[ 0 ] )
+        flagFound = 1;
+      else
+        flagFound = 0;
+      sumFound += flagFound;
+    }
+    if( sumFound > 0 )
+      itemBody[ 1 ] = "assigned";
+    else
+      itemBody[ 1 ] = "notAssigned";
+
+    var flagFound = 0;
+    var totalFound = 0;
+    if( codeCategoriesAssignmentData.length == 0 ) {
+      codeCategoriesAssignmentData[ 0 ] = [ catHead, [ itemBody ] ];
+      continue;
+    }
+    for( var j = 0; j < codeCategoriesAssignmentData.length; j++ ) {
+      flagFound = 0;
+      if( codeCategoriesAssignmentData[ j ] [ 0 ] === catHead ) {
+        flagFound = 1;
+        codeCategoriesAssignmentData[ j ] [ 1 ] [ codeCategoriesAssignmentData [j][1].length ] = itemBody;
+      }
+      totalFound += flagFound;          
+    }
+
+    if( totalFound == 0 ) {
+      var tempArrItems = new Array();
+      tempArrItems[ 0 ] = itemBody;
+      var tempElement = new Array();
+      tempElement[ 0 ] = catHead;
+      tempElement[ 1 ] = tempArrItems;
+      codeCategoriesAssignmentData[ codeCategoriesAssignmentData.length ] = tempElement;
+    }
+  }
+}
+
+
+
+
+function updateCodeCategoriesAssignmentData() {
+  var selOption = "";
+  var ccSel = self.document.getElementById( "codeCat" );
+  for( var i = 0; i < ccSel.options.length; i++ ) {
+    if( ccSel.options[ i ].selected )
+      selOption = ccSel.options[ i ].text;
+  }
+  
+  if( selOption != "" )
+    var ciSel = self.document.getElementById( "codeItems" );
+    for( var j = 0; j < ciSel.options.length; j++ ) {
+      var selLabel = ciSel.options[ j ].text;
+      var selValue = "notAssigned";
+      if( ciSel.options[ j ].selected )
+        selValue = "assigned";
+      
+      for( var m = 0; m < codeCategoriesAssignmentData.length; m++ ){
+        if( codeCategoriesAssignmentData[ m ] [ 0 ] === selOption )
+          for( var n = 0; n < codeCategoriesAssignmentData[ m ] [ 1 ].length; n++ ) {
+            if( codeCategoriesAssignmentData[ m ] [ 1 ] [ n ] [ 0 ] === selLabel )
+              codeCategoriesAssignmentData[ m ] [ 1 ] [ n ] [ 1 ] = selValue;
+          }
+        
+      }
+
+    }
+}
+
+
+
+
+function continueWithSelCodeCat() {
+  <!-- First find out which one is being selected -->
+  var opts = self.document.getElementById( "codeCat" ).options;
+  var selOption;
+  for( var i = 0; i < opts.length; i++ ) {
+    if( opts[ i ].selected ) {
+      selOption = opts[ i ].text;
+    }
+  }
+
+  <!-- Then populate the second dropdown based on what's selected -->
+  for( var i = 0; i < codeCategoriesAssignmentData.length; i++ ) {
+    if( codeCategoriesAssignmentData[ i ] [ 0 ] === selOption ) {
+      var ciSel = self.document.getElementById( "codeItems" );
+      ciSel.disabled = false;
+      ciSel.focus();
+      ciSel.options.length = 0;
+      ciSel.options = null;
+      for( var j = 0; j < codeCategoriesAssignmentData[ i ] [ 1 ].length; j++ ) {
+
+        var optLabel = codeCategoriesAssignmentData[ i ] [ 1 ] [ j ] [ 0 ];
+        var optIsSel = false;
+        if( codeCategoriesAssignmentData[i] [1] [j] [1] === "assigned" )
+          optIsSel = true; 
+
+        ciSel.options[ ciSel.options.length ] = new Option( optLabel, optLabel);
+        ciSel.options[ ciSel.options.length - 1 ].selected = optIsSel;
+      }
+    }
+  }
+  <!-- upon lost focus or click, update the data in memory & display string -->
+  var ciSel = self.document.getElementById( "codeItems" );
+  catchEvent( ciSel, "blur", updateActiveAssignment );
+  catchEvent( ciSel, "click", updateActiveAssignment );
+
+}
+
+
+
+
+function populateCodeCat() {
+  var ccSel = self.document.getElementById( "codeCat" );
+  ccSel.options.length = 0;
+  ccSel.options = null;
+  
+  for( var i = 0; i < codeCategoriesAssignmentData.length; i++ ) {
+    var optStr = codeCategoriesAssignmentData[ i ] [ 0 ];
+    ccSel.options[ ccSel.options.length ] = new Option( optStr, optStr );   
+  }
+}
+
+
+
+
+function hasIdenticalContents( arr1, arr2 ) {
+  var ret = true;
+  if( arr1.length != arr2.length )
+    ret = false;
+  else {
+    for( var i = 0; i < arr2.length; i++ ) {
+      if( !(arr1[ i ] === arr2[ i ]) ) {
+        ret = false;
+        break;
+      }
+    }
+  }
+  return ret;
+}
+
+
+
+
+function cancelAnnotate() {
+  self.close();
+}
+
+
+
+
+function okAnnotate() {
+  updateActiveAssignment();
+
+  if( oldWpAnnotation != wpAnnotation ) {
+    alert( "GOT NEW WPANNOTATION TO SEND: \n" + wpAnnotation );
+    var proc = opener.Processing.getInstanceById( "LiveWave" );
+    proc.setNewAnnotationAncWpMO( wpAnnotation );
+  }
+
+  if( hasIdenticalContents( oldWpAssignedCodes, wpAssignedCodes ) === false ) {
+    alert( "GOT NEW WPASSIGNMENTCODES TO SEND: \n" + wpAssignedCodes.length );
+    var proc = opener.Processing.getInstanceById( "LiveWave" );
+    var chainedCodes = wpAssignedCodes.join();
+    proc.setNewCodesAncWpMO( chainedCodes );  
+  }
+  <!-- UNCOMMENT these for debugging
+  oldWpAnnotation = wpAnnotation;
+  oldWpAssignedCodes = new Array();
+  for( var l = 0; l < wpAssignedCodes.length; l++ ) {
+    oldWpAssignedCodes[ l ] = wpAssignedCodes[ l ];
+  }
+  -->
+  self.close();
+}
+
+
+
+
+window.onload=function() {
+
+  var theRows = opener.popUpMsg.split( ";" );
+  var wpDetails = theRows[ 1 ].split( "|" );
+  var rawCodeItems = theRows[ 2 ].split( "," );
+  
+  buildWpAnnotation( wpDetails[ wpDetails.length - 2 ] );
+  self.document.getElementById( "textBox" ).value = wpAnnotation;
+
+  buildWpAssignedCodes( wpDetails );
+  buildCodeCategoriesAssignmentData( rawCodeItems, wpAssignedCodes );
+  populateCodeCat();
+  self.document.getElementById( "codeItems" ).disabled = true;
+
+  <!-- other setup routines --> 
+  var tbObject = self.document.getElementById( "textBox" );
+  catchEvent( tbObject, "blur", updateWpAnnotation );
+
+
+  var confirmCCObject = self.document.getElementById( "confirmCodeCat" );
+  catchEvent( confirmCCObject, "click", continueWithSelCodeCat );
+
+  var caObject = self.document.getElementById("cancelB");
+  catchEvent( caObject, "click", cancelAnnotate );
+
+  var okaObject = self.document.getElementById( "okB" );
+  catchEvent( okaObject, "click", okAnnotate );
+
+}
+
+//]]>
+</script>
+</head>
+
+
+
+
+<body>
+  <form id="annotate" action="">
+    <p>
+      Type in annotation to this equation in the box below:
+    </p>
+
+    <p>
+      Annotation: <br>
+      <textarea id="textBox" rows="10" cols="200"></textArea>
+    </p>
+
+    <hr>
+    
+    <p>
+      To tag this equation, first select a Code Category and then select Code Item(s) <br>
+      <label>Code Category: 
+        <select id="codeCat" name="codeCategory" style="width: 100px"></select>
+      </label>
+      &nbsp
+      <button id="confirmCodeCat" type="button">Next</button>
+    </p>
+
+    <hr>
+    
+    <p>
+      <label>Code Items:</label>
+      <select id="codeItems" name="CodeItems" multiple="yes" size="10" style="width: 100px"></select>
+    </p>
+
+    <hr>
+
+    <p>
+      <button id="cancelB" type="button">Cancel</button>
+      &nbsp
+      <button id="okB" type="button">OK</button>
+    </p>
+
+    
+  </form>
+
+</body>
+
+
+
+
+</html>
