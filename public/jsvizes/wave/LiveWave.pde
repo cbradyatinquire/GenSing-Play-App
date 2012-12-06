@@ -70,7 +70,7 @@ function AjaxPOSTObject() {
         {
           if (this.responseText != null)
           {
-            alert( "Result of POST: " + this.responseText );
+
           }
           else alert("Ajax POST error: No data received");
         }
@@ -389,7 +389,7 @@ void setAnchoredWpMO( WavePt wp ){
 void setNewAnnotationAncWpMO( String newAnnot ) {
   if( anchoredWpMO != null ) {
     anchoredWpMO.setAnnotation( newAnnot );
-    anchoredWpMO.postAnnotation( wva );
+    anchoredWpMO.postAnnotation();
     anchoredWpMO = null;
   }
 } // end setNewAnnotationAncWpMO()
@@ -4459,17 +4459,14 @@ class WavePt extends Function {
 
 
 
-  void postAnnotation( WaveActivity w ) {
+  void postAnnotation() {
     // These are Javascript code enclosed in a Processing function
-    var pairs = new Array();
-    pairs[ pairs.length ] = "sessionId=" + owner.actid;
-    pairs[ pairs.length ] = "sequence=" + serialNum;
-    pairs[ pairs.length ] = "annotations=" + annotation;
-    alert( pairs.join() );
+    var postData = "sessionId=" + owner.actid + "&";
+    postData += "sequence=" + serialNum + "&";
+    postData += "annotations=" + annotation;
 
     postAjaxObject = new AjaxPOSTObject();
-    alert( "http://" + owner.hostip + "/setAnnotationsForContribution" );
-    postAjaxObject.makeAjaxPost( "http://" + owner.hostip + "/setAnnotationsForContribution", pairs );
+    postAjaxObject.makeAjaxPost( "http://" + owner.hostip + "/setAnnotationsForContribution", postData );
 
   } // end postAnnotation()
 
