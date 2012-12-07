@@ -398,12 +398,8 @@ void setNewAnnotationAncWpMO( String newAnnot ) {
 
 void setNewCodesAncWpMO( String chainedCodes ) {
   if( anchoredWpMO != null ) {
-    String[] tempCodes = splitTokens( chainedCodes, "," );
-    anchoredWpMO.codes = new ArrayList<CodeItem>();
-    for( String s : tempCodes ) {
-      CodeItem ci = wva.codeCabinet.codeItemsDictionary.get( s );
-      anchoredWpMO.codes.add( ci );
-    }
+    anchoredWpMO.setCodes( chainedCodes );
+    anchoredWpMO.postCodes();
     anchoredWpMO = null;
   }
 } // end setNewCodesAncWpMO()
@@ -4469,6 +4465,38 @@ class WavePt extends Function {
     postAjaxObject.makeAjaxPost( "http://" + owner.hostip + "/setAnnotationsForContribution", postData );
 
   } // end postAnnotation()
+
+
+
+
+  void setCodes( String chainedCodeItems ) {
+    String[] tempCodes = splitTokens( chainedCodeItems, "," );
+    codes = new ArrayList<CodeItem>();
+    for( String s : tempCodes ) {
+      CodeItem ci = owner.codeCabinet.codeItemsDictionary.get( s );
+      codes.add( ci );
+    }
+  } // end setCodes()
+
+
+
+
+  void postCodes() {
+    String packedCodes = "";
+    for( CodeItem ci : codes ) {
+      if( ci.dispName != "" ) {
+        packedCodes += ci.owner.dispName + ":" + ci.dispName + "|";
+      }
+    }
+    packedCodes = packedCodes.substring( 0, packedCodes.length - 1 );
+    
+    var postData = "sessionId=" + owner.actid + "&";
+    postData += "sequence=" + serialNum + "&";
+    postData += "codings=" + packedCodes;
+    alert( postData );
+    postAjaxObject = new AjaxPOSTObject();
+    postAjaxObject.makeAjaxPost( "http://" + owner.hostip + "/setCodingsForContribution", postData );
+  } // end postCodes()
 
 
 
