@@ -70,7 +70,7 @@ function AjaxPOSTObject() {
         {
           if (this.responseText != null)
           {
-
+            processServerResponse( this.responseText );
           }
           else alert("Ajax POST error: No data received");
         }
@@ -80,6 +80,27 @@ function AjaxPOSTObject() {
 
     this.request.send( dataPairs );
   } // end method makeAjaxPost()
+
+
+
+
+  function processServerResponse( resp ) {
+    var pieces = resp.split( ":" );
+
+    if( pieces.length > 1 ) {
+      var p = Processing.getInstanceById( "LiveWave" );
+      
+      // anticipate reply to "Save State" --> look for state id
+      if( p.getWva().getWave().expectNewID || p.getWva().getWave().stateID == -1) {
+        var innerpcs = pieces[ 1 ].split( " ="  );
+        innerpcs[ 1 ] = parseInt( innerpcs[ 1 ] );
+        // ensure prereqs are met
+        if( innerpcs.length > 1 && innerpcs[ 0 ] === " state id" )
+          p.getWva().getWave().setStateID( innerpcs[ 1 ] );
+        p.getWva().getWave().expectNewID = false;
+      }
+    } else
+  } // end processServerResponse()
 
 
 
@@ -406,6 +427,44 @@ void setNewCodesAncWpMO( String chainedCodes ) {
 
 
 
+
+void executeSaveState( String aID, String sID, String sName, String sComments, boolean moveSID ) {
+  if( moveSID )
+    wva.wave.expectNewID = true;
+  else {
+    wva.wave.expectNewID = false;
+  }
+
+  // update state details in memory
+  wva.wave.stateName = sName;
+  wva.wave.comments = sComments;
+
+  String packedSelCodes = wva.wave.consolidateCodesToString( wva.wave.selCodes );
+  String packedSelEqs = wva.wave.consolidateToString( wva.wave.selEqs );
+
+  var postData = "";
+  if( moveSID == false ) { 
+    postData += "id=" + sID + "&";
+  }
+ 
+  postData += "selcodes=" + packedSelCodes + "&";
+  postData += "name=" + sName + "&";
+  postData += "sid=" + aID + "&"; // sid should be aid here need to change play sode
+  postData += "selstring=" + packedSelEqs + "&";
+  postData += "comments=" + sComments;
+
+  if( moveSID == true ) {
+    postAjaxObject = new AjaxPOSTObject();
+    postAjaxObject.makeAjaxPost( "http://" + hostip + "/saveWaveState", postData );
+  } else { 
+    postAjaxObject = new AjaxPOSTObject();
+    postAjaxObject.makeAjaxPost( "http://" + hostip + "/updateWaveState", postData );
+  }
+
+} // end executeSaveState()
+
+
+
 // ========================================
 // GUI Component Class
 // This is just a single straight line divider for decorative purposes.
@@ -496,7 +555,6 @@ class WaveActivity extends LVActivity {
     activityUI = wvactivityUI;
 
     wave = new Wave();
-    println( this );
   } // end constructor
 
 
@@ -799,60 +857,6 @@ class LVActivity extends Activity {
         } // end else "DESCRIPTOR:"
       } // end for i
     } // end if got valid data
-  
-    // below are just a block of dummy data for testing
-    CodeCategory catMath = codeCabinet.codeCategoriesDictionary.get( "Math" );
-    CodeItem c2, c3, c4, c5, c6, c7, c8, c9, c10;
-
-    c2 = new CodeItem( "M2" );
-    c3 = new CodeItem( "M3" );
-    c4 = new CodeItem( "M4" );
-    c5 = new CodeItem( "M5" );
-    c6 = new CodeItem( "M6" );
-    c7 = new CodeItem( "M7" );
-    c8 = new CodeItem( "M8" );
-    c9 = new CodeItem( "M9" );
-    c10 = new CodeItem("M10" );
-
-    codeCabinet.codeItemsList.add( c2 );
-    codeCabinet.codeItemsList.add( c3 );
-    codeCabinet.codeItemsList.add( c4 );
-    codeCabinet.codeItemsList.add( c5 );
-    codeCabinet.codeItemsList.add( c6 );
-    codeCabinet.codeItemsList.add( c7 );
-    codeCabinet.codeItemsList.add( c8 );
-    codeCabinet.codeItemsList.add( c9 );
-    codeCabinet.codeItemsList.add( c10 );
-
-    codeCabinet.codeItemsDictionary.put( c2.dispName, c2 );
-    codeCabinet.codeItemsDictionary.put( c3.dispName, c3 );
-    codeCabinet.codeItemsDictionary.put( c4.dispName, c4 );
-    codeCabinet.codeItemsDictionary.put( c5.dispName, c5 );
-    codeCabinet.codeItemsDictionary.put( c6.dispName, c6 );
-    codeCabinet.codeItemsDictionary.put( c7.dispName, c7 );
-    codeCabinet.codeItemsDictionary.put( c8.dispName, c8 );
-    codeCabinet.codeItemsDictionary.put( c9.dispName, c9 );
-    codeCabinet.codeItemsDictionary.put( c10.dispName, c10 );
-
-    catMath.addCodeItem( c2 );
-    catMath.addCodeItem( c3 );
-    catMath.addCodeItem( c4 );
-    catMath.addCodeItem( c5 );
-    catMath.addCodeItem( c6 );
-    catMath.addCodeItem( c7 );
-    catMath.addCodeItem( c8 );
-    catMath.addCodeItem( c9 );
-    catMath.addCodeItem( c10 );
-
-    codeCabinet.codeBook.put( c2, catMath );
-    codeCabinet.codeBook.put( c3, catMath );
-    codeCabinet.codeBook.put( c4, catMath );
-    codeCabinet.codeBook.put( c5, catMath );
-    codeCabinet.codeBook.put( c6, catMath );
-    codeCabinet.codeBook.put( c7, catMath );
-    codeCabinet.codeBook.put( c8, catMath );
-    codeCabinet.codeBook.put( c9, catMath );
-    codeCabinet.codeBook.put( c10, catMath );
   
   } // end buildCodeCabinet()
 
@@ -1232,7 +1236,6 @@ abstract class Activity extends ProtoPanel {
 
 
 
-
   
 } // end class Activity
 abstract class ProtoPanel {
@@ -1564,8 +1567,16 @@ class WaveUI extends ActivityUI {
         var lsWindow = window.open( "loadstate.html", "Load State", optionString );
       
       } else if( whichOne == 3 ) { // "SAVE"
-        //PopUpSaveState ps = new PopUpSaveState( downcasted, currentWave, currentWave.stateName, currentWave.actid, currentWave.comments );
-      String optionString = "width=600,height=350, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";
+
+        popUpMsg = "SAVESTATE|";
+        popUpMsg += owner.wave.actid + "|";
+        popUpMsg += owner.wave.stateID + "|";
+        popUpMsg += owner.wave.stateName + "|"; 
+        popUpMsg += owner.wave.comments;
+
+        oldPopUpMsg = popUpMsg;
+        owner.owner.setPopUpStatus( true );
+        String optionString = "width=600,height=350, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";
         var ssWindow = window.open( "savestate.html", "Save State", optionString );
 
       } else if( whichOne == 4 ) { // VALIDITY TOGGLE SWITCH
@@ -3396,6 +3407,7 @@ class Wave extends Section {
   
   String comments;
   String stateName;
+  boolean expectNewID;
   long stateID;
   int countValids, countInValids;
 
@@ -3429,6 +3441,7 @@ class Wave extends Section {
     comments = "";
     stateName = "";
     stateID = -1; // -1 means NOT referring to oany states on the database
+    expectNewID = true;
     countValids = updateCountValids();
     countInValids = updateCountInValids();
   } // end constructor
@@ -3990,6 +4003,57 @@ class Wave extends Section {
 
 
 
+
+  String consolidateCodesToString( ArrayList<String> sc ) {
+    String ret = "";
+    for( String s : sc ) {
+      if( s === "" )
+        alert( "We got a blank element in the selCodes ArrayList!" );
+      else {
+        ret += prepCode( s ) + "|";
+      }
+    }
+    ret = ret.substring( 0, ret.length - 1 );
+    return ret;
+  } // end consolidateWpCodes()
+
+
+
+
+  String prepCode( String citem ) {
+    CodeItem tempCI = codeCabinet.codeItemsDictionary.get( citem );
+    return( tempCI.owner.dispName + ":" + citem  );
+  } // end prepCode()
+
+
+
+
+  String consolidateToString( ArrayList<String> ss ) {
+    String ret = "";
+    for( String s : ss ) {
+      ret += s + "|";  
+    }
+    ret = ret.substring( 0, ret.length - 1 );
+    return ret;
+  } // end consolidateToString()
+
+
+
+
+  void setStateID( long newID ) {
+    this.stateID = newID;
+    println( stateID );
+  } // end setStateID()
+
+
+
+
+  long getStateID() {
+    return this.stateID  ;
+  } // end getStateID()
+
+
+
     
 } // end class Wave
 // ========================================
@@ -4493,7 +4557,6 @@ class WavePt extends Function {
     var postData = "sessionId=" + owner.actid + "&";
     postData += "sequence=" + serialNum + "&";
     postData += "codings=" + packedCodes;
-    alert( postData );
     postAjaxObject = new AjaxPOSTObject();
     postAjaxObject.makeAjaxPost( "http://" + owner.hostip + "/setCodingsForContribution", postData );
   } // end postCodes()

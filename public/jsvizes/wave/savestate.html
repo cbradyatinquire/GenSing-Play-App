@@ -9,9 +9,13 @@
 <script type="text/javascript">
 //<![CDATA[
 
-var oldStateName = "this is an old state name";
-var oldStateDescription = "This is\nan old\nstate description";
-
+var actid;
+var stateID;
+var stateName = "";
+var stateComments = "";
+var oldStateName = "";
+var oldStateComments = "";
+var proc;
 
 
 
@@ -33,19 +37,31 @@ catchEvent(window,"load",setupEvents);
 
 
 function setupEvents(evnt) {
-  document.getElementById( "stateName" ).value = oldStateName;
-  document.getElementById( "stateDescription" ).value = oldStateDescription;
+  proc = opener.Processing.getInstanceById( "LiveWave" );
+  var pieces = opener.popUpMsg.split( "|" );
+  actid = pieces[ 1 ];
+  stateID = pieces [ 2 ];
+  oldStateName = pieces[ 3 ];
+  oldStateComments = pieces[ 4 ];
 
-  catchEvent( document.getElementById( "saveB" ), "click", executeSave );
-  catchEvent( document.getElementById( "saveAsB" ), "click", executeSaveAs );
-  catchEvent( document.getElementById( "cancelB" ), "click", executeCancel );
+  document.getElementById( "stateName" ).value = oldStateName;
+  document.getElementById( "stateComments" ).value = oldStateComments;
+
+  if( stateID == -1 ) {
+     self.document.getElementById( "saveB" ).disabled = true;
+  } else {
+    catchEvent( self.document.getElementById( "saveB" ), "click", executeSave );
+  }
+  catchEvent( self.document.getElementById( "saveAsB" ), "click", executeSaveAs );
+  catchEvent( self.document.getElementById( "cancelB" ), "click", executeCancel );
 }
 
 
 
 
 function executeSave() {
-  alert( "saving state with \n name: " + oldStateName + " \n description: " + document.getElementById( "stateDescription" ).value );
+  prepForSave();
+  proc.executeSaveState( actid, stateID, stateName, stateComments, false );
   self.close();
 }
 
@@ -53,8 +69,22 @@ function executeSave() {
 
 
 function executeSaveAs() {
-  alert( "saving state with \n name: " + document.getElementById( "stateName" ).value + " \n description: " + document.getElementById( "stateDescription" ).value );
+  prepForSave();
+  proc.executeSaveState( actid, stateID, stateName, stateComments, true );
   self.close();
+}
+
+
+
+
+function prepForSave() {
+  this.stateName = self.document.getElementById( "stateName" ).value;
+  this.stateComments = self.document.getElementById( "stateComments" ).value;
+  if( this.stateName === "" ) {
+    alert( "Please type in a name." );
+    self.document.getElementById( "stateName" ).focus();
+  }
+  alert( "saving state with \n name: " + stateName + " \n description: " + document.getElementById( "stateComments" ).value );
 }
 
 
@@ -83,7 +113,7 @@ function executeCancel() {
     <p>
       <label>Type a description for the state:</label>
       <br>
-      <textarea id="stateDescription" value="" rows=10 cols=80></textarea>
+      <textarea id="stateComments" value="" rows=10 cols=80></textarea>
     </p>
 
     <p>

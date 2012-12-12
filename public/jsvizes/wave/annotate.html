@@ -275,6 +275,9 @@ window.onload=function() {
   var wpDetails = theRows[ 1 ].split( "|" );
   var rawCodeItems = theRows[ 2 ].split( "," );
   
+  var funcString = wpDetails[ 3 ].split( ":" )[ 1 ];
+  self.document.getElementById( "contribString" ).innerHTML = "<h2 style=\"text-align:center;\">" + funcString + "</h2>";
+
   buildWpAnnotation( wpDetails[ wpDetails.length - 2 ] );
   self.document.getElementById( "textBox" ).value = wpAnnotation;
 
@@ -308,12 +311,9 @@ window.onload=function() {
 
 <body>
   <form id="annotate" action="">
+    <span id="contribString"></span>
     <p>
-      Type in annotation to this equation in the box below:
-    </p>
-
-    <p>
-      Annotation: <br>
+      Type in annotation to this equation in the box below: <br>
       <textarea id="textBox" rows="10" cols="200"></textArea>
     </p>
 
