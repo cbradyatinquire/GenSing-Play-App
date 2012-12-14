@@ -23,8 +23,143 @@
 <script type="text/javascript">
 //<![CDATA[
 
-var stateNames = [ 'state One', 'state Two', 'state Three' ];
-var stateDescriptions = [ 'desc one', 'desc two', 'desc three' ];
+var stateIDs = new Array();
+var stateNames = new Array();
+var savedTimeStamps = new Array();
+var longDescription = "";
+
+var chunksUpToDate = false;
+
+var newSchoolName = "";
+var newTeachername = "";
+
+var newClassAndYear = "";
+var newClassName = "";
+var newClassYear = "";
+
+var newStartTimeFull = "";
+
+var selCodesChunk = "";
+
+var newStateName = "";
+var newActid = -1;
+
+var selEqsChunk = "";
+
+var newComments = "";
+
+
+
+
+
+
+function AjaxGETObject() {
+  this.request = new ajaxRequest();
+
+  this.makeAjaxGet = function( urlAddress ) {
+    this.request.open( "GET", urlAddress, true );
+    this.request.send( null );
+  }
+
+  this.request.onreadystatechange = function() {
+    if (this.readyState == 4) {
+      if (this.status == 200) {
+         processDBReply( this.responseText );
+      } else     
+         alert( "Ajax GET error: \n status code: " + this.status + "\n" + this.statusText);
+    }
+  }
+
+
+
+        
+}
+
+
+
+
+  function ajaxRequest() {
+    try {
+      var request = new XMLHttpRequest();
+    } catch(e1) {
+      try { 
+        request = new ActiveXObject("Msxml2.XMLHTTP");
+      } catch(e2) {
+        try {
+          request = new ActiveXObject("Microsoft.XMLHTTP");
+        } catch(e3) {
+          request = false;
+        }
+      }
+    }
+    return request;
+  }
+
+
+
+  function processDBReply( respText ) {
+    var chunks = new Array();
+    chunks = respText.split( "\t" );
+
+    newSchoolName = chunks[ 0 ];
+    newTeacherName = chunks[ 1 ];
+    newClassNameAndYear = chunks[ 2 ];
+    newStartTimeFull = chunks[ 3 ];
+    selCodesChunk = chunks[ 4 ];
+    newStateName = chunks[ 5 ];
+    newActid = chunks[ 6 ];
+    selEqsChunk = chunks[ 7 ];
+    newComments = chunks[ 8 ];
+
+    chunksUpToDate = true;
+
+    self.document.getElementById( "stateDescription" ).value += "\n\n" + newComments + "\n" + selCodesChunk + "\n" + selEqsChunk;
+  }
+
+
+
+
+  function feedWaveWithChunks() {
+    var cpieces = new Array();
+    cpieces = newClassNameAndYear.split( ":" );
+    newClassName = cpieces[ 0 ];
+    newClassYear = cpieces[ 1 ];
+
+    var newSelCodesPieces = new Array();
+    newSelCodesPieces = selCodesChunk.split( "|" );
+
+    var newSelCodes = new Array();
+    for( var i = 0; i < newSelCodesPieces.length; i++ ) {
+      var c = new Array();
+      c = newSelCodesPieces[ i ].split( ":" );
+      newSelCodes[ i ] = c[ 1 ];
+    }
+
+    var newSelEqs = new Array();
+    newSelEqs = selEqsChunk.split( "|" );
+
+    var proc = opener.Processing.getInstanceById( "LiveWave" );
+    proc.setSchool( newSchoolName );
+    proc.setTeacher( newTeacherName );
+    proc.setCNameAndCYear( newClassNameAndYear );
+    proc.setCName( newClassName );
+    proc.setCYear( newClassYear );
+    proc.setActid( newActid );
+    proc.setStartTimeFull( newStartTimeFull );
+    proc.setStartTimeTrimmed( newStartTimeFull.substring( newStartTimeFull.length - 17, newStartTimeFull.length - 9 ) );
+    
+    proc.buildADetails();
+    proc.buildNewWva();
+
+    proc.getWva().getWave().setStateName( newStateName );
+
+    proc.getWva().getWave().setComments( newComments );
+
+    proc.executeNewSelEqs( newSelEqs );
+
+    proc.executeChosenCodes( newSelCodes );
+        
+  }
 
 
 
@@ -47,6 +182,15 @@ catchEvent(window,"load",setupEvents);
 
 
 function setupEvents(evnt) {
+
+  var tempRows = opener.popUpMsg.split( "|" );
+
+  for( var i = 1; i < tempRows.length; i++ ) {
+    var pieces = tempRows[ i ].split( "\t" );
+    stateIDs[ stateIDs.length ] = pieces[ 0 ];
+    stateNames[ stateNames.length ] = pieces[ 1 ];
+    savedTimeStamps[ savedTimeStamps.length ] = "Saved On: " + pieces[ 2 ];
+  }
   
   for( var i = 0; i < stateNames.length; i++ ) {
     var stateOpts = document.getElementById( "stateList" );
@@ -66,17 +210,22 @@ function processClickedStateList() {
   var selIndex = document.getElementById( "stateList" ).options.selectedIndex;
   var theValue = "";
   if( selIndex != -1 ) {
-    theValue = stateDescriptions[ selIndex ];
+    theValue = savedTimeStamps[ selIndex ];
   }
   document.getElementById( "stateDescription" ).value = theValue;
+  updateStateDescription( selIndex );
 }
 
 
 
 
 function updateStateDescription( theIndex ) {
-  alert( theIndex );
-  document.getElementById( "stateDescription" ).value = stateDescriptions[ theIndex ];
+  var selStateIndex = theIndex + 1;
+  var proc = opener.Processing.getInstanceById( "LiveWave" );
+  var loaderAjax = new AjaxGETObject();
+  chunksUpTodate = false;
+  loaderAjax.makeAjaxGet( "http://" + proc.getWva().getWave().getHostip() + "/retrieveWaveState?id=" + selStateIndex );
+
 }
 
 
@@ -85,20 +234,17 @@ function updateStateDescription( theIndex ) {
 function executeLoad() {
   var stateOpts = document.getElementById( "stateList" );
   var selIndex = stateOpts.selectedIndex;
+  var selStateIndex = selIndex + 1;
   if( selIndex == -1 ) {
     alert( "Please select one of the saved states from the list" );
   } else {
-    alert( "loading state with \n name: " + stateOpts.options[ selIndex ].value );
+    while( chunksUpToDate === false ) {
+      <!-- make sure new data is in before continuing -->
+    }
+    feedWaveWithChunks();
+
   }
-  self.close();
-}
-
-
-
-
-function executeSaveAs() {
-  alert( "saving state with \n name: " + document.getElementById( "stateName" ).value + " \n description: " + document.getElementById( "stateDescription" ).value );
-  self.close();
+  
 }
 
 

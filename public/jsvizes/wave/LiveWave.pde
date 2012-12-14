@@ -22,8 +22,8 @@ function AjaxGETObject() {
     if (this.readyState == 4) {
       if (this.status == 200) {
         if (this.responseText != null) {
-          dataBuffered = true;          // how to refer to the
-          dataAjax = this.responseText; // members of AjaxObject?
+          dataBuffered = true;          
+          dataAjax = this.responseText; 
         } else 
           alert("Ajax GET error: No data received");
       } else     
@@ -99,7 +99,7 @@ function AjaxPOSTObject() {
           p.getWva().getWave().setStateID( innerpcs[ 1 ] );
         p.getWva().getWave().expectNewID = false;
       }
-    } else
+    }
   } // end processServerResponse()
 
 
@@ -241,7 +241,11 @@ void interceptInputFromPopUp() {
     // call further execution based on the header ( first piece of String )
     
     if( pieces[ 0 ].equals( "CODECHOOSER" ) ) {
-      executeChosenCodes( pieces );
+      String[] newCodes = new String[ pieces.length - 1 ];
+      for( int i = 1; i < pieces.length; i++ ) {
+        newCodes[ i-1 ] = pieces[ i ];
+      }
+      executeChosenCodes( newCodes );
     }
     else if( pieces[ 0 ].equals( "ANNOTATION" ) )
       executeAnnotation( pieces );
@@ -255,11 +259,11 @@ void interceptInputFromPopUp() {
 
 
 void executeChosenCodes( String[] pcs ) {
-  ArrayList<String> selCodes = new ArrayList<String>();
-  for( int i = 1; i < pcs.length; i++ )
-    selCodes.add( pcs[ i ] );
+  ArrayList<String> newSelCodes = new ArrayList<String>();
+  for( int i = 0; i < pcs.length; i++ )
+    newSelCodes.add( pcs[ i ] );
 
-  wva.wave.selCodes = selCodes;
+  wva.wave.selCodes = newSelCodes;
   wva.wave.markForDisplay( wva.wave.selCodes, wva.wave.selValds );
   wva.wave.sortBy( wva.wave.selEqs, wva.wave.selValds );
 } // end executeChosenCodes()
@@ -267,9 +271,113 @@ void executeChosenCodes( String[] pcs ) {
 
 
 
+void executeNewSelEqs( String[] pcs ) {
+  println( "pcs.length is: " + pcs.length );
+  ArrayList<String> newSelEqs = new ArrayList<String>();
+  println( "newSelEqs.size is: " + newSelEqs.size() );
+  for( int i = 0; i < pcs.length; i++ ) {
+    println( pcs[ i ] );
+    newSelEqs.add( pcs[ i ] );
+  }
+  
+  wva.wave.selEqs = newSelEqs;
+} // end executeNewSelEqs()
+
+
+
+
 void executeAnnotation( String[] pcs ) {
   println( "annotation executed." );
 } // end executeAnnotation()
+
+
+
+
+void setSchool( String s ) {
+  school = s;
+} // end setSchool()
+
+
+
+
+void setTeacher( String s ) {
+  teacher = s;
+} // end setTeacher()
+
+
+
+
+void setCNameAndCYear( String s ) {
+  cnameandcyear = s;
+} // end setCNameAndCYear()
+
+
+
+
+void setCName( String s ) {
+  cname = s;
+} // end setCName()
+
+
+
+
+void setCYear( String s ) {
+  cyear = s;
+} // end setCYear()
+
+
+
+
+void setActid( String s ) {
+  actid = s;
+} // end setActid()
+
+
+
+
+void setStartTimeFull( String s ) {
+  starttimeFull = s;
+} // end setStartTimeFull()
+
+
+
+
+void setStartTimeTrimmed( String s ) {
+  startTimeTrimmed = s;
+} // end setStartTimeTrimmed()
+
+
+
+
+void buildNewWva() {
+  wva = new WaveActivity( this );
+  wva.startWave( aDetails, parseInt( actid ), hostip );
+  println( "calling display for the first time..." );
+  wva.display();
+  println( "end first display" );
+
+  // waveUI display to reflect loading
+  //int count=0;
+  //fill( 0, 0, 255 );
+  //while( wva.dataWholeChunk.contains( "MATCHING" ) == false ) {
+  //  println( "not yet matching" + wva.dataWholeChunk );
+  //  if( count >= wva.wvaUI.view.xScrollPos2 - 100 )
+  //    count--;
+  //  else
+  //    count ++;
+  //  
+  //  stroke( 0, 0, 255 );
+  //  fill( 0, 0, 255 );
+  //  wva.wvaUI.view.clearBackground();
+  //  wva.wvaUI.view.putRect( 20+count, 20, 130+count, 120 ); 
+  //  fill( 255, 255, 0 );
+  //  wva.wvaUI.view.putText( "LOADING ... ", 40+count, 60 );
+  //  println( "end while not yet matching" );        
+  //}
+  println( "end buildNewWva" );
+} // end buildNewWva()
+
+
 
 
 
@@ -620,7 +728,7 @@ class WaveActivity extends LVActivity {
   Wave getWave() {
     return wave;  
   } // end getWave()
-  
+
 
 
 
@@ -742,7 +850,7 @@ class LVActivity extends Activity {
     dataWholeChunk = myAjaxObject.grabData();
     if( dataWholeChunk.equals( "" ) == false &&
         dataWholeChunk.equals( prevDataWholeChunk ) == false ) {
-      println( "\t\t\t >>> dataWholeChunk is: " + dataWholeChunk + " . " );
+      //println( "\t\t\t >>> dataWholeChunk is: " + dataWholeChunk + " . " );
       String[] dataInRows = split( dataWholeChunk, "\n"); 
 
       // if looks ok, turn it into a Table and populate funcs then add spokes
@@ -761,7 +869,7 @@ class LVActivity extends Activity {
     int now = millis();
     if( now - lastRequestTime > 5000 ) {
       String s = makeNextURLAddress( baseURLAddress );
-      println( "About to poll database on this address: " + s );
+      //println( "About to poll database on this address: " + s );
       if( myAjaxObject == null ) {
         myAjaxObject = new AjaxGETObject();
       }
@@ -831,7 +939,7 @@ class LVActivity extends Activity {
           codeCatStamp = dbCodeDPieces[ i ] [ 1 ];  
           if( codeCatStamp.equals( "UNCATEGORIZED" ) == false ) { // if category is concrete
             stampObject = new CodeCategory( codeCatStamp );
-            println( "\tAdded " + stampObject );
+            //println( "\tAdded " + stampObject );
             codeCabinet.codeCategoriesList.add( stampObject );
             codeCabinet.codeCategoriesDictionary.put( codeCatStamp, stampObject );
           }
@@ -842,14 +950,14 @@ class LVActivity extends Activity {
           CodeItem ctemp = null;
           if( codeCatStamp.equals( "UNCATEGORIZED" ) == false ) { // if category is concrete
             ctemp = new CodeItem( stampObject, codeItemStamp );
-            println( "\t\tAdded: " + ctemp );
+            //println( "\t\tAdded: " + ctemp );
             codeCabinet.codeBook.put( ctemp, stampObject );
             stampObject.addCodeItem( ctemp );
           } else {
             // dont put in codeBook HashMap coz ctemp's owner is null, 
             // the owner is  NOT an instance of CodeCategory with dispName="UNCATEGORIZED"
             ctemp = new CodeItem( codeItemStamp );
-            println( "\tAdded: " + ctemp ); 
+            //println( "\tAdded: " + ctemp ); 
           }
           codeCabinet.codeItemsList.add( ctemp );
           codeCabinet.codeItemsDictionary.put( codeItemStamp, ctemp );
@@ -869,7 +977,7 @@ class LVActivity extends Activity {
     //myAjaxObject.request.send( null );
     myAjaxObject.makeAjaxGet( s + makeNoCache() );
 
-    println( "connecting to DB @ " + s + makeNoCache() );
+    //println( "connecting to DB @ " + s + makeNoCache() );
   } // end connectDB()
 
 
@@ -932,8 +1040,7 @@ class LVActivity extends Activity {
 	nextPosCleaned++;
       }
     }
-    println( "VERIFY IF INDEED CLEANED:" );
-    println( cleaned );
+
     return cleaned; 
   }  // end cleanRows()
   
@@ -1561,8 +1668,8 @@ class WaveUI extends ActivityUI {
         currentWave.sortBy( currentWave.selEqs, currentWave.selValds );
 
       } else if( whichOne == 2 )  { // "LOAD"
-        // NEED TO ENSURE ONLY ONE INSTANCE OF THE DIALOG OPENS UP FOR LOAD AND SAVE
-        //PopUpLoadState puls = new PopUpLoadState( downcasted, currentWave );
+        popUpMsg = "LOADSTATE|" + loadStrings( "http://" + currentWave.hostip + "/getWaveStates" ).join( "|" );
+        oldPopUpMsg = popUpMsg;
         String optionString = "width=850,height=350, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";
         var lsWindow = window.open( "loadstate.html", "Load State", optionString );
       
@@ -1603,12 +1710,10 @@ class WaveUI extends ActivityUI {
 
     } else if( mouseButton == RIGHT ) {
       WavePt wpMO = owner.wave.getWavePointMouseOver();
-      println( wpMO != null );
       if( wpMO != null ) {
         owner.owner.setAnchoredWpMO( wpMO );
         popUpMsg = "ANNOTATE;" + wpMO.toString() + ";" + owner.chainCodeItems();
         // expected string is: "ANNOTATE;serialNum:9|funcString:sin(x)|...|annotation:onelongannotationstring|codes:ASMD,R,BN;Math:VASM,Math:R1,...,Social:BN"
-        println( popUpMsg );
         oldPopUpMsg = popUpMsg;
         owner.owner.setPopUpStatus( true );
         String optionString = "width=600,height=600, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";
@@ -3463,13 +3568,11 @@ class Wave extends Section {
     actid = id;
     codeCabinet = cc;
     for( CodeItem ci : codeCabinet.codeItemsList )
-      println( "\t" + ci );
     selCodes = new ArrayList<String>();
     for( CodeItem ci : codeCabinet.codeItemsList )
       selCodes.add( ci.dispName );
       CodeCategory ccg = codeCabinet.codeCategoriesDictionary.get( "Math" );
       for( CodeItem ci : ccg.codeItems )
-        println( ccg.dispName + "-=" + ci.dispName );
         
     selCodesDisp = setSelCodesDisp( selCodes );
     selEqs = new ArrayList<String>();
@@ -3554,7 +3657,6 @@ class Wave extends Section {
 
 
   void addWavePoints( ArrayList <Function> tempFuncs, int tempLastCountForFuncs, Table tempTable ) {
-    println( "tempLastCountForFuncs, tempFuncs.size() - tempTable.size() " + tempLastCountForFuncs + " " + tempFuncs.size() + "-" + tempTable.getRowCount() );
     for( int i = tempLastCountForFuncs; i < tempFuncs.size(); i++ ) {
       Function tf = tempFuncs.get( i );
       wavePoints.add( new WavePt( this, tempTable, i - tempLastCountForFuncs + 1, tf.serialNum ) );
@@ -3593,7 +3695,6 @@ class Wave extends Section {
 
 
   void updateHasData() {
-    println( "calling updateHasData()" );
     if( wavePoints.size() > 0 )
       hasData = true;
     else
@@ -3657,16 +3758,9 @@ class Wave extends Section {
   // this should be called everytime there's a change in the
   // selected Code(s) / Validity(ies) to display, or immediately following
   // incoming of new dataStream()
-    /*
-    if( sc.isEmpty() ) {            // show everything
-      for( Student s : students )
-        s.onShow = true;
-      for( WavePt wp : wavePoints )
-        wp.onShow = true;
-    } else { */
 
-      println( " >>> selCodes is : " + sc );
-      println( " >>> selValds is : " + sv );
+      //println( " >>> selCodes is : " + sc );
+      //println( " >>> selValds is : " + sv );
       
       for( Student s : students ) {
         if( s.hasWpSelCodes( selCodes ) || s.hasWpNoCodes() || s.hasWpSelVals( sv ) ) {
@@ -4048,9 +4142,29 @@ class Wave extends Section {
 
 
 
+  void setStateName( String s ) {
+    stateName = s;
+  } // end setStateName()
+
+
+
+
+  void setComments( String s ) {
+    comments = s;
+  } // end setComments()
+
+
+
+
   long getStateID() {
     return this.stateID  ;
   } // end getStateID()
+
+
+
+  String getHostip() {
+    return hostip;
+  } // end getHostip()
 
 
 
@@ -4197,11 +4311,11 @@ class Section {
     updateMinMaxPostTime();
     println( "funcs count is now: " + funcs.size() + " maxPostTime is now: " + maxPostTime + " [ DONE ]" );
 
-    println( "\t \t PRINTING FUNCTIONS: " );
-    for( int i = 0; i < funcs.size(); i++ ) {
-      Function f = (Function) funcs.get( i );
-      println( "\t \t " + f.serialNum + " " + f.funcString );
-    } 
+    //println( "\t \t PRINTING FUNCTIONS: " );
+    //for( int i = 0; i < funcs.size(); i++ ) {
+    //  Function f = (Function) funcs.get( i );
+    //  println( "\t \t " + f.serialNum + " " + f.funcString );
+    //} 
   } // end populateFuncs()
 
 
@@ -4266,7 +4380,7 @@ class WavePt extends Function {
     //
     super( t, row, tempSN );
     owner = o;
-    println( "codes and annots are: " + t.getString( row, 7 ) + " " +  t.getString( row, 8 ) );
+    //println( "codes and annots are: " + t.getString( row, 7 ) + " " +  t.getString( row, 8 ) );
     readCodes( t, row, 7);
     readAnnotation( t, row, 8 );
     student = owner.getStudent( studentID );
@@ -4288,7 +4402,7 @@ class WavePt extends Function {
     codes = new ArrayList <CodeItem>();
     //println( "RAW: " + t.getString( r, c ) );
     String[] largePieces = splitTokens( t.getString( r, c ), "|" );
-    println( largePieces );
+    //println( largePieces );
     if( largePieces.length > 0 ) 
       for( String p : largePieces ){
         String[] smallPieces = splitTokens( p, ":" );
@@ -5098,7 +5212,6 @@ Post_Time (int tempPostTime, String startTime) {
   postM= floor(tempPostTime/60);
   postH = floor(postM/60);
   postS = tempPostTime%60;
-  println( "startTime is : " + startTime );
   if ( (startTime.charAt(2) == ':') && (startTime.length() == 8)) {
     startH = int(startTime.charAt(0)-'0')*10 + int(+startTime.charAt(1)-'0');
     startM = int(startTime.charAt(3)-'0')*10 + int(+startTime.charAt(4)-'0');
