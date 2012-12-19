@@ -71,6 +71,7 @@ GET 	/upload									UploadData.getForm
 
 GET		/testGet								QueryBuilder.testGet
 GET		/basicSelector							QueryBuilder.basicSelector
+GET		/graphicVisualizer						QueryBuilder.graphicVisualizer
 
 GET		/showViaGeo								QueryBuilder.geoRouter
 

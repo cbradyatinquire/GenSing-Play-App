@@ -15,6 +15,13 @@
     /* Add/remove class to a row when clicked on */
     $('#example tr').click( function() {
     	console.log(this.id);
+    	var blah = this.id.replace("X","x")
+    	var i = blah.indexOf("=");
+    	if (i > 0) 
+    	{
+    	 var blah2 = blah.substring(i+1, blah.length)
+    	 document.ggbApplet.evalCommand("fselect(x)="+blah2);
+    	}
         $(this).toggleClass('row_selected');
     } );
      
@@ -32,7 +39,7 @@ function fnGetSelected( oTableLocal )
   </head>
 
   <body>
-  <div id="container" style="position:absolute; width:800px; left:50px">
+  <div id="container" style="position:absolute; width:800px; left:10px">
     <div id="demo">
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
 	<thead>
