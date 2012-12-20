@@ -14,14 +14,26 @@
      $(document).ready(function() {
     /* Add/remove class to a row when clicked on */
     $('#example tr').click( function() {
-    	console.log(this.id);
-    	var blah = this.id.replace("X","x")
-    	var i = blah.indexOf("=");
-    	if (i > 0) 
+    	//console.log(this.id);
+    	var functiondef = this.id.toLowerCase();
+    	var fname = functiondef.substring(0, functiondef.indexOf("(x)="));
+    	//update ggb
+    	document.ggbApplet.evalCommand(functiondef);
+    	
+    	console.log(functiondef);
+    	console.log(fname);
+    	var cl = $(this).attr("class");
+    	if ( cl.indexOf("row_selected") > 0 )
     	{
-    	 var blah2 = blah.substring(i+1, blah.length)
-    	 document.ggbApplet.evalCommand("fselect(x)="+blah2);
+    	 //was visible, going to be made invisible
+    	  document.ggbApplet.setVisible(fname, false);
     	}
+    	else
+    	{
+    	//was invisible, going to be made visible
+    	  document.ggbApplet.setVisible(fname, true)
+    	}
+    	
         $(this).toggleClass('row_selected');
     } );
      
@@ -45,6 +57,8 @@ function fnGetSelected( oTableLocal )
 	<thead>
 		<tr>
 			<th>Student</th>
+			<th>SecsIn</th>
+			<th>Label</th>
 			<th>Contribution</th>
 			<th>Codings</th>
 			<th>Annotations</th>
@@ -54,9 +68,12 @@ function fnGetSelected( oTableLocal )
 	<tbody>
 	
 	#{list items:contribs, as:'cont'}
-    <tr class="gradeA" id="${cont.student.username}:${cont.objectID} = ${cont.body}">
+	
+    <tr class="gradeA" id="${cont.student.username}_{${cont.secondsIn}${cont.objectID}}(x)=${cont.body}">
     <td>${cont.student.username}</td>
-    <td>${cont.objectID} = ${cont.body}</td>
+    <td>${cont.secondsIn}</td>
+    <td>${cont.objectID}</td> 
+    <td>${cont.body}</td>
     <td>${cont.codingsShorthand()}</td>
     <td>${cont.annotationsShorthand()}</td>
     <td>${cont.isValid}</td>
@@ -68,6 +85,8 @@ function fnGetSelected( oTableLocal )
 	<tfoot>
 		<tr>
 			<th>Student</th>
+			<th>SecsIn</th>
+			<th>Label</th>
 			<th>Contribution</th>
 			<th>Codings</th>
 			<th>Annotations</th>
