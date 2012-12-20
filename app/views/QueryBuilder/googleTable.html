@@ -14,31 +14,37 @@
      $(document).ready(function() {
     /* Add/remove class to a row when clicked on */
     $('#example tr').click( function() {
-    	//console.log(this.id);
-    	var functiondef = this.id.toLowerCase();
-    	var fname = functiondef.substring(0, functiondef.indexOf("(x)="));
-    	//update ggb
-    	document.ggbApplet.evalCommand(functiondef);
-    	
-    	console.log(functiondef);
-    	console.log(fname);
-    	var cl = $(this).attr("class");
-    	if ( cl.indexOf("row_selected") > 0 )
+    	if (this.id == "") 
     	{
-    	 //was visible, going to be made invisible
-    	  document.ggbApplet.setVisible(fname, false);
+    	 console.log('changed sort order');
     	}
-    	else
-    	{
-    	//was invisible, going to be made visible
-    	  document.ggbApplet.setVisible(fname, true)
-    	}
-    	
-        $(this).toggleClass('row_selected');
-    } );
-     
-    /* Init the table */
-    var oTable = $('#example').dataTable( );
+		else
+		{
+	    	var functiondef = this.id.toLowerCase();
+	    	//console.log(functiondef);
+	    	
+	    	var fname = functiondef.substring(0, functiondef.indexOf("(x)="));
+	    	//update ggb
+	    	document.ggbApplet.evalCommand(functiondef);
+	    	
+	    	var cl = $(this).attr("class");
+	    	if ( cl.indexOf("row_selected") > 0 )
+	    	{
+	    	 //was visible, going to be made invisible
+	    	  document.ggbApplet.setVisible(fname, false);
+	    	}
+	    	else
+	    	{
+	    	//was invisible, going to be made visible
+	    	  document.ggbApplet.setVisible(fname, true)
+	    	}
+	    	
+	        $(this).toggleClass('row_selected');
+	     }
+	    } );
+	     
+	    /* Init the table */
+	    var oTable = $('#example').dataTable( );
 } );
 
 function fnGetSelected( oTableLocal )

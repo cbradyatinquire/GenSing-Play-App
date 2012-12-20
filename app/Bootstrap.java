@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import controllers.Application;
 import play.*;
 import play.jobs.*;
@@ -26,6 +28,7 @@ public class Bootstrap extends Job {
             c.save();
             Classroom c2 = new Classroom(s, t, "A Second Class", 2012);
             c2.save();
+            ArrayList<StudentUser>sus = new ArrayList<StudentUser>();
             for (int i = 1; i<31; i++ )
             {
             	String uid = String.valueOf(i);
@@ -33,6 +36,7 @@ public class Bootstrap extends Job {
             		uid = "0"+uid;
             	StudentUser su = new StudentUser(ubase+uid, c);
             	su.save();
+            	sus.add(su);
             }
             
             //create a fake session
@@ -41,7 +45,7 @@ public class Bootstrap extends Job {
             Session se = new Session(c, "Fake Source");
             se.save();
             
-            StudentUser csu = new StudentUser("contributor", c);
+            StudentUser csu = new StudentUser("corey", c);
             csu.save();
             
             for (int i=1; i<100; i++)
@@ -49,14 +53,17 @@ public class Bootstrap extends Job {
             	double co = i / 10.0;
             	String fn = String.valueOf(co) + "sin(X)";
             	Contribution con;
-            	if ( i % 10 == 0 )
+            	if ( i % 30 == 0 )
             	{
             		con = new Contribution(ContributionType.EQUATION, csu, se, "Y"+i, "h" + fn + "g", false );
             	}
             	else
             	{
-            		 con = new Contribution(ContributionType.EQUATION, csu, se, "Y"+i, fn, true );
+            		 con = new Contribution(ContributionType.EQUATION, sus.get(i%30), se, "Y"+i, fn, true );
             	}
+            	Long tim = con.timestamp.getTime();
+       		 	con.timestamp.setTime( tim + i * 1000);
+       		 	con.secondsIn += i;
 	    		con.save();
             }
             

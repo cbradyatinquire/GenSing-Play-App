@@ -351,16 +351,16 @@ public class Application extends Controller {
     }
     
     
-    public static void saveWaveState( String selcodes, String name, Long sid, String selstring, String comments )
+    public static void saveWaveState( String selcodes, String name, Long sid, String selstring, String comments, int whatshowing )
     {
-    	WaveSaveState state = new WaveSaveState( selcodes, name, sid, selstring );
+    	WaveSaveState state = new WaveSaveState( selcodes, name, sid, selstring, whatshowing );
     	state.setComments(comments);
     	state.save();
     	Long theid = state.id;
     	renderJSON( "Success: state id = " + theid );
     }
     
-    public static void updateWaveState( Long id, String selcodes, String name, Long sid, String selstring, String comments )
+    public static void updateWaveState( Long id, String selcodes, String name, Long sid, String selstring, String comments, int whatshowing )
     {
     	WaveSaveState thestate = WaveSaveState.findWaveSaveState(id);
     	if ( name == null  || name.length() == 0 ) { renderJSON("Failed: name cannot be blank."); }
@@ -369,6 +369,7 @@ public class Application extends Controller {
     	thestate.name = name;
     	thestate.currentSelectionString = selstring;
     	thestate.comments = comments;
+    	thestate.whatShowing = whatshowing;
     	thestate.save();
     	renderJSON("Success");
     }

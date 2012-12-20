@@ -35,14 +35,18 @@ public class WaveSaveState extends Model {
 	@Required
 	public String currentSelectionString;
 	
+	@Required
+	public int whatShowing;    //valid = 1 invalid=2  both = 3  (|)
 	
-	public WaveSaveState( String selcodes, String nam, Long sid, String selstring )
+	
+	public WaveSaveState( String selcodes, String nam, Long sid, String selstring, int whatshowing )
 	{
 		this.selectedCodes = selcodes;
 		this.timestamp = Utilities.getTstamp();
 		this.name = nam;
 		this.sessionId = sid;
 		this.currentSelectionString = selstring;
+		this.whatShowing = whatshowing;
 		Session check = Session.getActivitySession(sid);
 		if (check == null )
 		{
