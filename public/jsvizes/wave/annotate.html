@@ -254,6 +254,7 @@ function okAnnotate() {
     alert( "GOT NEW WPASSIGNMENTCODES TO SEND: \n" + wpAssignedCodes.length );
     var proc = opener.Processing.getInstanceById( "LiveWave" );
     var chainedCodes = wpAssignedCodes.join();
+    alert( chainedCodes );
     proc.setNewCodesAncWpMO( chainedCodes );  
   }
   <!-- UNCOMMENT these for debugging

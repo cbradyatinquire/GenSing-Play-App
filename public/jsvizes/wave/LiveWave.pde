@@ -172,7 +172,6 @@ function AjaxPOSTObject() {
 
 // Fields
 
-boolean gotActivePopUp;
 WavePt anchoredWpMO;
 
 WaveActivity wva;
@@ -226,34 +225,8 @@ void setup() {
 
 
 void draw() {
-  if( gotActivePopUp == true ) {
-    interceptInputFromPopUp();
-  }
   wva.display();
 } // end draw()
-
-
-
-
-void interceptInputFromPopUp() {
-  if( popUpMsg.equals( oldPopUpMsg ) == false ) { // see index.html
-    String pieces[] = splitTokens( popUpMsg, "|" );
-    // call further execution based on the header ( first piece of String )
-    
-    if( pieces[ 0 ].equals( "CODECHOOSER" ) ) {
-      String[] newCodes = new String[ pieces.length - 1 ];
-      for( int i = 1; i < pieces.length; i++ ) {
-        newCodes[ i-1 ] = pieces[ i ];
-      }
-      executeChosenCodes( newCodes );
-    }
-    else if( pieces[ 0 ].equals( "ANNOTATION" ) )
-      executeAnnotation( pieces );
-    
-    popUpMsg = "";
-    gotActivePopUp = false;
-  }
-} // end interceptInputFromPopUp()
 
 
 
@@ -479,22 +452,13 @@ float myRound( float val, int dp ) {
 
 
 String toString() {
-  return( "This is LiveWave, and my gotActivePopUp is: " + gotActivePopUp );
+  return( "LiveWave - current state:\n" +
+          "=========================\n" +
+          "\tschool: " + school + "\n" +
+          "\tteacher: " + teacher + "\n" +
+          "..."
+  );
 } // end toString()
-
-
-
-
-void setPopUpStatus( boolean b ) {
-  gotActivePopUp = b;
-} // end setPopUpStatus()
-
-
-
-
-boolean getPopUpStatus(){
-  return gotActivePopUp;
-} // end getPopUpStatus()
 
 
 
@@ -519,7 +483,6 @@ void setNewAnnotationAncWpMO( String newAnnot ) {
   if( anchoredWpMO != null ) {
     anchoredWpMO.setAnnotation( newAnnot );
     anchoredWpMO.postAnnotation();
-    anchoredWpMO = null;
   }
 } // end setNewAnnotationAncWpMO()
 
@@ -529,7 +492,6 @@ void setNewCodesAncWpMO( String chainedCodes ) {
   if( anchoredWpMO != null ) {
     anchoredWpMO.setCodes( chainedCodes );
     anchoredWpMO.postCodes();
-    anchoredWpMO = null;
   }
 } // end setNewCodesAncWpMO()
 
@@ -1622,7 +1584,7 @@ class WaveUI extends ActivityUI {
 
   // Fields
 
-  // PopUpCodeChooser pucc; // need to rewrite the class for JS
+  var popUpWindow;
 
 
 
@@ -1657,34 +1619,17 @@ class WaveUI extends ActivityUI {
       int whichOne = getPressedArrSpButton();
       
       if( whichOne == 0 ) { // "CHOOSE CODES"
-        popUpMsg = "CODECHOOSER|" + owner.wave.chainSelCodes();
-        oldPopUpMsg = popUpMsg;
-        owner.owner.setPopUpStatus( true );
-        String optionString = "width=300,height=500, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";
-        var ccWindow = window.open( "codechooser.html", "Choose Codes", optionString );
+        popChooseCode( "choosecode.html", "Choose Codes" );
 
       } else if( whichOne == 1 ) { // "SORT"
         currentWave.loadSelectedEqs( currentWave.selEqs, currentWave.selValds );
         currentWave.sortBy( currentWave.selEqs, currentWave.selValds );
 
       } else if( whichOne == 2 )  { // "LOAD"
-        popUpMsg = "LOADSTATE|" + loadStrings( "http://" + currentWave.hostip + "/getWaveStates" ).join( "|" );
-        oldPopUpMsg = popUpMsg;
-        String optionString = "width=850,height=350, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";
-        var lsWindow = window.open( "loadstate.html", "Load State", optionString );
-      
+        popLoadState( "loadstate.html", "Load State" );
+
       } else if( whichOne == 3 ) { // "SAVE"
-
-        popUpMsg = "SAVESTATE|";
-        popUpMsg += owner.wave.actid + "|";
-        popUpMsg += owner.wave.stateID + "|";
-        popUpMsg += owner.wave.stateName + "|"; 
-        popUpMsg += owner.wave.comments;
-
-        oldPopUpMsg = popUpMsg;
-        owner.owner.setPopUpStatus( true );
-        String optionString = "width=600,height=350, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";
-        var ssWindow = window.open( "savestate.html", "Save State", optionString );
+        popSaveState( "savestate.html", "Save State" );
 
       } else if( whichOne == 4 ) { // VALIDITY TOGGLE SWITCH
         if( currentWave.selValds.contains( true ) && currentWave.selValds.contains( false ) ) {
@@ -1710,15 +1655,8 @@ class WaveUI extends ActivityUI {
 
     } else if( mouseButton == RIGHT ) {
       WavePt wpMO = owner.wave.getWavePointMouseOver();
-      if( wpMO != null ) {
-        owner.owner.setAnchoredWpMO( wpMO );
-        popUpMsg = "ANNOTATE;" + wpMO.toString() + ";" + owner.chainCodeItems();
-        // expected string is: "ANNOTATE;serialNum:9|funcString:sin(x)|...|annotation:onelongannotationstring|codes:ASMD,R,BN;Math:VASM,Math:R1,...,Social:BN"
-        oldPopUpMsg = popUpMsg;
-        owner.owner.setPopUpStatus( true );
-        String optionString = "width=600,height=600, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";
-        var annWindow = window.open( "annotate.html", "Annotate A Wave Point", optionString );
-      }
+      popAnnotate( "annotate.html", "Annotate A Wave Point", wpMO );
+
     }
   } // end executeMousePressed()
 
@@ -1771,6 +1709,55 @@ class WaveUI extends ActivityUI {
      } // end for
  
   } // end processClickedWavePoint()
+
+
+
+
+  void popChooseCode( String fileName, String windowTitle ) {    
+    String optionString = "width=300,height=500, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";            
+    popUpMsg = "CODECHOOSER|" + owner.wave.chainSelCodes();
+    popUpWindow = window.open( fileName, windowTitle, optionString );
+  } // end popChooseCode()
+
+
+
+
+  void popLoadState( String fileName, String windowTitle ) {
+    String optionString = "width=850,height=350, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";
+    String retrievedStatesFromDB = loadStrings( "http://" + owner.wave.hostip + "/getWaveStates" ).join( "|" ); 
+    popUpMsg = "LOADSTATE|" + retrievedStatesFromDB;      
+    popUpWindow = window.open( fileName, windowTitle, optionString );
+  } // end popLoadState()    
+
+
+
+
+  void popSaveState( String fileName, String windowTitle ) {
+    String optionString = "width=600,height=350, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";
+    
+    popUpMsg = "SAVESTATE|";
+    popUpMsg += owner.wave.actid + "|";
+    popUpMsg += owner.wave.stateID + "|";
+    popUpMsg += owner.wave.stateName + "|"; 
+    popUpMsg += owner.wave.comments;
+
+    popUpWindow = window.open( fileName, windowTitle, optionString );
+  } // end popSaveState()
+
+
+
+
+  void popAnnotate( String fileName, String windowTitle, WavePt w ) {
+    String optionString = "width=600,height=600, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";
+    if( w != null ) {
+      owner.owner.setAnchoredWpMO( w );
+      popUpMsg = "ANNOTATE;" + w.toString() + ";" + owner.chainCodeItems();
+      // expected string is: "ANNOTATE;serialNum:9|funcString:sin(x)|...|annotation:onelongannotationstring|codes:ASMD,R,BN;Math:VASM,Math:R1,...,Social:BN"
+        
+      popUpWindow = window.open( fileName, windowTitle, optionString );
+    }
+  } // end popAnnotate()
+  
 
 
 

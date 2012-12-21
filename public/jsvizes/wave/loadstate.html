@@ -69,108 +69,107 @@ function AjaxGETObject() {
          alert( "Ajax GET error: \n status code: " + this.status + "\n" + this.statusText);
     }
   }
+}
 
 
 
+
+function ajaxRequest() {
+  try {
+    var request = new XMLHttpRequest();
+  } catch(e1) {
+    try { 
+      request = new ActiveXObject("Msxml2.XMLHTTP");
+    } catch(e2) {
+      try {
+        request = new ActiveXObject("Microsoft.XMLHTTP");
+      } catch(e3) {
+        request = false;
+      }
+    }
+  }
+  return request;
+}
+
+
+
+
+function processDBReply( respText ) {
+  var chunks = new Array();
+  chunks = respText.split( "\t" );
+
+  newSchoolName = chunks[ 0 ];
+  newTeacherName = chunks[ 1 ];
+  newClassNameAndYear = chunks[ 2 ];
+  newStartTimeFull = chunks[ 3 ];
+  selCodesChunk = chunks[ 4 ];
+  newStateName = chunks[ 5 ];
+  newActid = chunks[ 6 ];
+  selEqsChunk = chunks[ 7 ];
+  newComments = chunks[ 8 ];
+
+  chunksUpToDate = true;
+
+  self.document.getElementById( "stateDescription" ).value += "\n\n" + newComments + "\n" + selCodesChunk + "\n" + selEqsChunk;
+}
+
+
+
+
+function feedWaveWithChunks() {
+  var cpieces = new Array();
+  cpieces = newClassNameAndYear.split( ":" );
+  newClassName = cpieces[ 0 ];
+  newClassYear = cpieces[ 1 ];
+
+  var newSelCodesPieces = new Array();
+  newSelCodesPieces = selCodesChunk.split( "|" );
+
+  var newSelCodes = new Array();
+  for( var i = 0; i < newSelCodesPieces.length; i++ ) {
+    var c = new Array();
+    c = newSelCodesPieces[ i ].split( ":" );
+    newSelCodes[ i ] = c[ 1 ];
+  }
+    
+  var newSelEqs = new Array();
+  newSelEqs = selEqsChunk.split( "|" );
+
+  var proc = opener.Processing.getInstanceById( "LiveWave" );
+  proc.setSchool( newSchoolName );
+  proc.setTeacher( newTeacherName );
+  proc.setCNameAndCYear( newClassNameAndYear );
+  proc.setCName( newClassName );
+  proc.setCYear( newClassYear );
+  proc.setActid( newActid );
+  proc.setStartTimeFull( newStartTimeFull );
+  proc.setStartTimeTrimmed( newStartTimeFull.substring( newStartTimeFull.length - 17, newStartTimeFull.length - 9 ) );
+    
+  proc.buildADetails();
+  proc.buildNewWva();
+
+  proc.getWva().getWave().setStateName( newStateName );
+
+  proc.getWva().getWave().setComments( newComments );
+
+  proc.executeNewSelEqs( newSelEqs );
+  <!-- ex. newSelEqs values: [ "3.0*sin(x)", "2+2+2+2x", "3x/2" ] -->
+
+  proc.executeChosenCodes( newSelCodes );
+  <!-- ex. newSelCodes values: [ "VASM", "R1", "BN" ]-->
         
 }
 
 
 
 
-  function ajaxRequest() {
-    try {
-      var request = new XMLHttpRequest();
-    } catch(e1) {
-      try { 
-        request = new ActiveXObject("Msxml2.XMLHTTP");
-      } catch(e2) {
-        try {
-          request = new ActiveXObject("Microsoft.XMLHTTP");
-        } catch(e3) {
-          request = false;
-        }
-      }
-    }
-    return request;
-  }
-
-
-
-  function processDBReply( respText ) {
-    var chunks = new Array();
-    chunks = respText.split( "\t" );
-
-    newSchoolName = chunks[ 0 ];
-    newTeacherName = chunks[ 1 ];
-    newClassNameAndYear = chunks[ 2 ];
-    newStartTimeFull = chunks[ 3 ];
-    selCodesChunk = chunks[ 4 ];
-    newStateName = chunks[ 5 ];
-    newActid = chunks[ 6 ];
-    selEqsChunk = chunks[ 7 ];
-    newComments = chunks[ 8 ];
-
-    chunksUpToDate = true;
-
-    self.document.getElementById( "stateDescription" ).value += "\n\n" + newComments + "\n" + selCodesChunk + "\n" + selEqsChunk;
-  }
-
-
-
-
-  function feedWaveWithChunks() {
-    var cpieces = new Array();
-    cpieces = newClassNameAndYear.split( ":" );
-    newClassName = cpieces[ 0 ];
-    newClassYear = cpieces[ 1 ];
-
-    var newSelCodesPieces = new Array();
-    newSelCodesPieces = selCodesChunk.split( "|" );
-
-    var newSelCodes = new Array();
-    for( var i = 0; i < newSelCodesPieces.length; i++ ) {
-      var c = new Array();
-      c = newSelCodesPieces[ i ].split( ":" );
-      newSelCodes[ i ] = c[ 1 ];
-    }
-
-    var newSelEqs = new Array();
-    newSelEqs = selEqsChunk.split( "|" );
-
-    var proc = opener.Processing.getInstanceById( "LiveWave" );
-    proc.setSchool( newSchoolName );
-    proc.setTeacher( newTeacherName );
-    proc.setCNameAndCYear( newClassNameAndYear );
-    proc.setCName( newClassName );
-    proc.setCYear( newClassYear );
-    proc.setActid( newActid );
-    proc.setStartTimeFull( newStartTimeFull );
-    proc.setStartTimeTrimmed( newStartTimeFull.substring( newStartTimeFull.length - 17, newStartTimeFull.length - 9 ) );
-    
-    proc.buildADetails();
-    proc.buildNewWva();
-
-    proc.getWva().getWave().setStateName( newStateName );
-
-    proc.getWva().getWave().setComments( newComments );
-
-    proc.executeNewSelEqs( newSelEqs );
-
-    proc.executeChosenCodes( newSelCodes );
-        
-  }
-
-
-
-
 function catchEvent(eventObj, event, eventHandler) {
-   if (eventObj.addEventListener) {
-      eventObj.addEventListener(event, eventHandler,false);
-   } else if (eventObj.attachEvent) {
-      event = "on" + event;
-      eventObj.attachEvent(event, eventHandler);
-   }
+  if (eventObj.addEventListener) {
+    eventObj.addEventListener(event, eventHandler,false);
+  } else if (eventObj.attachEvent) {
+    event = "on" + event;
+    eventObj.attachEvent(event, eventHandler);
+  }
 }
 
 
@@ -242,9 +241,8 @@ function executeLoad() {
       <!-- make sure new data is in before continuing -->
     }
     feedWaveWithChunks();
-
   }
-  
+  self.close();  
 }
 
 
