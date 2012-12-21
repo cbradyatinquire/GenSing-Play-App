@@ -118,6 +118,12 @@ public class QueryBuilder extends Controller {
     	render();
     }
 
+    public static void graphicVisualizer() {
+    	renderArgs.put("kiddos", schoolObjectArray() );
+    	render();
+    }
+    
+    
     public static void testGet( String name, String value )
     {
     	String resp = "Received name=" + name + ", and value=" + value ;

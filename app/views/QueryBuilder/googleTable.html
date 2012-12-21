@@ -14,12 +14,37 @@
      $(document).ready(function() {
     /* Add/remove class to a row when clicked on */
     $('#example tr').click( function() {
-    	console.log(this.id);
-        $(this).toggleClass('row_selected');
-    } );
-     
-    /* Init the table */
-    var oTable = $('#example').dataTable( );
+    	if (this.id == "") 
+    	{
+    	 console.log('changed sort order');
+    	}
+		else
+		{
+	    	var functiondef = this.id.toLowerCase();
+	    	//console.log(functiondef);
+	    	
+	    	var fname = functiondef.substring(0, functiondef.indexOf("(x)="));
+	    	//update ggb
+	    	document.ggbApplet.evalCommand(functiondef);
+	    	
+	    	var cl = $(this).attr("class");
+	    	if ( cl.indexOf("row_selected") > 0 )
+	    	{
+	    	 //was visible, going to be made invisible
+	    	  document.ggbApplet.setVisible(fname, false);
+	    	}
+	    	else
+	    	{
+	    	//was invisible, going to be made visible
+	    	  document.ggbApplet.setVisible(fname, true)
+	    	}
+	    	
+	        $(this).toggleClass('row_selected');
+	     }
+	    } );
+	     
+	    /* Init the table */
+	    var oTable = $('#example').dataTable( );
 } );
 
 function fnGetSelected( oTableLocal )
@@ -32,12 +57,14 @@ function fnGetSelected( oTableLocal )
   </head>
 
   <body>
-  <div id="container" style="position:absolute; width:800px; left:50px">
+  <div id="container" style="position:absolute; width:800px; left:10px">
     <div id="demo">
 <table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
 	<thead>
 		<tr>
 			<th>Student</th>
+			<th>SecsIn</th>
+			<th>Label</th>
 			<th>Contribution</th>
 			<th>Codings</th>
 			<th>Annotations</th>
@@ -47,9 +74,12 @@ function fnGetSelected( oTableLocal )
 	<tbody>
 	
 	#{list items:contribs, as:'cont'}
-    <tr class="gradeA" id="${cont.student.username}:${cont.objectID} = ${cont.body}">
+	
+    <tr class="gradeA" id="${cont.student.username}_{${cont.secondsIn}${cont.objectID}}(x)=${cont.body}">
     <td>${cont.student.username}</td>
-    <td>${cont.objectID} = ${cont.body}</td>
+    <td>${cont.secondsIn}</td>
+    <td>${cont.objectID}</td> 
+    <td>${cont.body}</td>
     <td>${cont.codingsShorthand()}</td>
     <td>${cont.annotationsShorthand()}</td>
     <td>${cont.isValid}</td>
@@ -61,6 +91,8 @@ function fnGetSelected( oTableLocal )
 	<tfoot>
 		<tr>
 			<th>Student</th>
+			<th>SecsIn</th>
+			<th>Label</th>
 			<th>Contribution</th>
 			<th>Codings</th>
 			<th>Annotations</th>
