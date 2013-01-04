@@ -266,6 +266,13 @@ void executeAnnotation( String[] pcs ) {
 
 
 
+void executeSetValidity( int newCode ) {
+  wva.wave.setValidity( newCode, wva.getWvactivityUI() );
+} // end executeSetValidity()
+
+
+
+
 void setSchool( String s ) {
   school = s;
 } // end setSchool()
@@ -488,6 +495,7 @@ void setNewAnnotationAncWpMO( String newAnnot ) {
 
 
 
+
 void setNewCodesAncWpMO( String chainedCodes ) {
   if( anchoredWpMO != null ) {
     anchoredWpMO.setCodes( chainedCodes );
@@ -511,6 +519,7 @@ void executeSaveState( String aID, String sID, String sName, String sComments, b
 
   String packedSelCodes = wva.wave.consolidateCodesToString( wva.wave.selCodes );
   String packedSelEqs = wva.wave.consolidateToString( wva.wave.selEqs );
+  int validityCode = wva.wave.getValidityCode();
 
   var postData = "";
   if( moveSID == false ) { 
@@ -522,6 +531,7 @@ void executeSaveState( String aID, String sID, String sName, String sComments, b
   postData += "sid=" + aID + "&"; // sid should be aid here need to change play sode
   postData += "selstring=" + packedSelEqs + "&";
   postData += "comments=" + sComments;
+  postData += "whatshowing=" + validityCode;
 
   if( moveSID == true ) {
     postAjaxObject = new AjaxPOSTObject();
@@ -601,18 +611,7 @@ class WaveActivity extends LVActivity {
 
   WaveUI wvactivityUI;
   Wave wave;
-  // PopUpInput poInput; // Gotta write new class for this to work in JS
-  String[] dummyRows = { 
-      "Contributions:\t\t\t\t\t\t\t\t",
-      "1\ttrue\tEQUATION\t02\t[contributor]\tY1\t0.1sin(x)\t\t",
-      "2\ttrue\tEQUATION\t49\t[contributor]\tY2\t0.2sin(x)\t\t",
-      "3\ttrue\tEQUATION\t58\t[contributor]\tY3\t0.3sin(x)\t\t",
-      "4\tfalse\tEQUATION\t76\t[bontributor]\tY4\t0.4sin(x)\t\t",
-      "5\ttrue\tEQUATION\t02\t[bontributor]\tY5\t0.5sin(x)\t\t",
-      ""
-  };
-  Table dummyDatabaseStream;
-  
+
 
 
 
@@ -690,6 +689,13 @@ class WaveActivity extends LVActivity {
   Wave getWave() {
     return wave;  
   } // end getWave()
+
+
+
+
+  WaveUI getWvactivityUI() {
+    return wvactivityUI;
+  } // end getWvactivityUI()
 
 
 
@@ -1632,22 +1638,9 @@ class WaveUI extends ActivityUI {
         popSaveState( "savestate.html", "Save State" );
 
       } else if( whichOne == 4 ) { // VALIDITY TOGGLE SWITCH
-        if( currentWave.selValds.contains( true ) && currentWave.selValds.contains( false ) ) {
-          currentWave.selValds.remove( false );
-          arrSpButtons.get( 4 ).label = "VALID EQs";
-        } else if( currentWave.selValds.contains( true ) && currentWave.selValds.size() == 1 ) {
-          currentWave.selValds.remove( true );
-          currentWave.selValds.add( false );
-          arrSpButtons.get( 4 ).label = "INVALID EQs";
-        } else if( currentWave.selValds.contains( false ) && currentWave.selValds.size() == 1 ) {
-          currentWave.selValds.add( true );
-          arrSpButtons.get( 4 ).label = "Vs & IVs";
-        }
-        arrSpButtons.get( 4 ).display();
-        currentWave.markForDisplay( currentWave.selEqs, currentWave.selValds );
-        currentWave.loadSelectedEqs( currentWave.selEqs, currentWave.selValds );
-        currentWave.sortBy( currentWave.selEqs, currentWave.selValds );
+        currentWave.toggleValidity( this );
       }
+      
            
       processClickedView();
       processClickedWavePoint();
@@ -4149,9 +4142,72 @@ class Wave extends Section {
 
 
 
+
   String getHostip() {
     return hostip;
   } // end getHostip()
+
+
+
+
+  void toggleValidity( WaveUI theUI ) {
+    if( selValds.contains( true ) && selValds.contains( false ) ) {
+      selValds.remove( false );
+      theUI.arrSpButtons.get( 4 ).label = "VALID EQs";
+    } else if( selValds.contains( true ) && selValds.size() == 1 ) {
+      selValds.remove( true );
+      selValds.add( false );
+      theUI.arrSpButtons.get( 4 ).label = "INVALID EQs";
+    } else if( selValds.contains( false ) && selValds.size() == 1 ) {
+      selValds.add( true );
+      theUI.arrSpButtons.get( 4 ).label = "Vs & IVs";
+    }
+    theUI.arrSpButtons.get( 4 ).display();
+    updateValidity( selEqs, selValds );
+  } // end toggleValidity()
+
+
+
+  void setValidity( int validityCode, WaveUI theUI ) {
+    ArrayList<Boolean> newValds = new ArrayList<Boolean>();
+    if( validityCode == 1 ) {
+      newValds.add( true );
+      theUI.arrSpButtons.get( 4 ).label = "VALID EQs";
+    } else if( validityCode == 2 ) {
+      newValds.add( false );
+      theUI.arrSpButtons.get( 4 ).label = "INVALID EQs";
+    } else if( validityCode == 3 ) {
+      newValds.add( true );
+      newValds.add( false );
+      theUI.arrSpButtons.get( 4 ).label = "Vs & IVs";;
+    }
+    if( newValds.size() > 0 ) {
+      selValds = newValds;
+      theUI.arrSpButtons.get( 4 ).display();
+    }
+    updateValidity( selEqs, selValds );
+  } // end setValidity()
+
+
+
+
+  void updateValidity( ArrayList<String> sEqs, ArrayList<String> sValds ) {
+    markForDisplay( sEqs, sValds );
+    loadSelectedEqs( sEqs, sValds );
+    sortBy( sEqs, sValds );
+  } // end updateValidity()
+
+
+
+
+  int getValidityCode() {
+    if( selValds.contains( true ) && selValds.contains( false ) )
+      return 3;
+    else if( selValds.contains( true ) && selValds.size() == 1 )
+      return 1;
+    else if( selValds.contains( false ) && selValds.size() == 1 )
+      return 2; 
+  } // end getValidityCode()
 
 
 

@@ -48,6 +48,8 @@ var selEqsChunk = "";
 
 var newComments = "";
 
+var validityCode = 1;
+
 
 
 
@@ -107,6 +109,7 @@ function processDBReply( respText ) {
   newActid = chunks[ 6 ];
   selEqsChunk = chunks[ 7 ];
   newComments = chunks[ 8 ];
+  validityCode = parseInt( chunks[ 8 ].substring( chunks[8].length-1, chunks[8].length ) );
 
   chunksUpToDate = true;
 
@@ -157,7 +160,9 @@ function feedWaveWithChunks() {
 
   proc.executeChosenCodes( newSelCodes );
   <!-- ex. newSelCodes values: [ "VASM", "R1", "BN" ]-->
-        
+  
+  proc.executeSetValidity( validityCode );
+
 }
 
 
