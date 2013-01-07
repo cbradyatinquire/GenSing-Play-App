@@ -353,7 +353,8 @@ public class Application extends Controller {
     
     public static void saveWaveState( String selcodes, String name, Long sid, String selstring, String comments, int whatshowing )
     {
-    	WaveSaveState state = new WaveSaveState( selcodes, name, sid, selstring, whatshowing );
+    	System.err.println("whatshowing has value " + whatshowing);
+    	WaveSaveState state = new WaveSaveState( selcodes, name, sid, selstring, whatshowing );  
     	state.setComments(comments);
     	state.save();
     	Long theid = state.id;
@@ -411,7 +412,9 @@ public class Application extends Controller {
     	toreturn += thestate.name + "\t";
     	toreturn += thestate.sessionId.toString() + "\t";
     	toreturn += thestate.currentSelectionString + "\t";
-    	toreturn += thestate.comments;
+    	toreturn += thestate.comments + "\t";
+    	toreturn += thestate.whatShowing;
+    	System.err.println(toreturn);
     	renderJSON( toreturn );
     }
     

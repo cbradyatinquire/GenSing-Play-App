@@ -530,8 +530,8 @@ void executeSaveState( String aID, String sID, String sName, String sComments, b
   postData += "name=" + sName + "&";
   postData += "sid=" + aID + "&"; // sid should be aid here need to change play sode
   postData += "selstring=" + packedSelEqs + "&";
-  postData += "comments=" + sComments;
-  postData += "whatshowing=" + validityCode;
+  postData += "comments=" + sComments + "&";
+  postData += "whatshowing=" +validityCode;
 
   if( moveSID == true ) {
     postAjaxObject = new AjaxPOSTObject();
