@@ -181,6 +181,18 @@ function catchEvent(eventObj, event, eventHandler) {
 
 
 
+catchEvent( self.document, "keyup", processKeyUp );
+
+
+
+
+function processKeyUp( evnt ) {
+  if( evnt.keyCode == 27 )     
+    self.close();
+}
+
+
+
 
 catchEvent(window,"load",setupEvents);
 
@@ -190,23 +202,25 @@ catchEvent(window,"load",setupEvents);
 function setupEvents(evnt) {
 
   var tempRows = opener.popUpMsg.split( "|" );
-
-  for( var i = 1; i < tempRows.length; i++ ) {
-    var pieces = tempRows[ i ].split( "\t" );
-    stateIDs[ stateIDs.length ] = pieces[ 0 ];
-    stateNames[ stateNames.length ] = pieces[ 1 ];
-    savedTimeStamps[ savedTimeStamps.length ] = "Saved On: " + pieces[ 2 ];
-  }
+  if( typeOf( tempRows[ 1 ] ) != "undefined" ) {
+    for( var i = 1; i < tempRows.length; i++ ) {
+      var pieces = tempRows[ i ].split( "\t" );
+      stateIDs[ stateIDs.length ] = pieces[ 0 ];
+      stateNames[ stateNames.length ] = pieces[ 1 ];
+      savedTimeStamps[ savedTimeStamps.length ] = "Saved On: " + pieces[ 2 ];
+    }
   
-  for( var i = 0; i < stateNames.length; i++ ) {
-    var stateOpts = document.getElementById( "stateList" );
-    stateOpts[ i ] = new Option( stateNames[ i ], stateNames[ i ] ); 
+    for( var i = 0; i < stateNames.length; i++ ) {
+      var stateOpts = document.getElementById( "stateList" );
+      stateOpts[ i ] = new Option( stateNames[ i ], stateNames[ i ] ); 
+    }
+
+    catchEvent( stateList, "click", processClickedStateList );
+    catchEvent( stateList, "keyup", processKeyUppedStateList );
+
+    catchEvent( document.getElementById( "loadB" ), "click", executeLoad );
+    catchEvent( document.getElementById( "cancelB" ), "click", executeCancel );
   }
-
-  catchEvent( stateList, "click", processClickedStateList );
-
-  catchEvent( document.getElementById( "loadB" ), "click", executeLoad );
-  catchEvent( document.getElementById( "cancelB" ), "click", executeCancel );
 }
 
 
@@ -214,18 +228,42 @@ function setupEvents(evnt) {
 
 function processClickedStateList() {
   var selIndex = document.getElementById( "stateList" ).options.selectedIndex;
-  var theValue = "";
   if( selIndex != -1 ) {
-    theValue = savedTimeStamps[ selIndex ];
+    updateStateDescription( selIndex );
   }
-  document.getElementById( "stateDescription" ).value = theValue;
-  updateStateDescription( selIndex );
+}
+
+
+
+
+function processKeyUppedStateList( evnt ) {
+  switch( evnt.keyCode ) {
+    case 38 : 
+      var selIndex = self.document.getElementById( "stateList" ).options.selectedIndex + 1;
+      if( selIndex > 0 ) { 
+        selIndex--;
+        self.document.getElementById( "stateList" ).options.selectedIndex = selIndex; 
+        updateStateDescription( selIndex );
+      }
+    break;
+    case 40 :
+      var selIndex = self.document.getElementById( "stateList" ).options.selectedIndex - 1;
+      if( selIndex < self.document.getElementById( "stateList" ).options.length ) {
+        selIndex++;
+        self.document.getElementById( "stateList" ).options.selectedIndex = selIndex;
+        updateStateDescription( selIndex );
+      }
+    break;    
+  }
 }
 
 
 
 
 function updateStateDescription( theIndex ) {
+  var  theValue = savedTimeStamps[ theIndex ];
+  document.getElementById( "stateDescription" ).value = theValue;
+
   var selStateIndex = theIndex + 1;
   var proc = opener.Processing.getInstanceById( "LiveWave" );
   var loaderAjax = new AjaxGETObject();

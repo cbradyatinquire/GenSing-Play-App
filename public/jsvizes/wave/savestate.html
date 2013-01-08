@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+x<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 
@@ -27,6 +27,21 @@ function catchEvent(eventObj, event, eventHandler) {
       eventObj.attachEvent(event, eventHandler);
    }
 }
+
+
+
+
+catchEvent( self.document, "keyup", processKeyUp );
+
+
+
+
+function processKeyUp( evnt ) {
+  if( evnt.keyCode == 27 ) {
+    self.close();
+  }
+}
+
 
 
 

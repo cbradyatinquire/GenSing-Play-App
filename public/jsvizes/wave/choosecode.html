@@ -241,6 +241,14 @@ function populateCodeCat() {
 
 
 
+function processKeyUp( evnt ) {
+  if( evnt.keyCode == 27 )
+    self.close();
+}
+
+
+
+
 window.onload=function() {
   var theRows = opener.popUpMsg.split( "|" );
   self.document.getElementById( "textBox" ).value = "selected: " + theRows.toString();
@@ -262,6 +270,8 @@ window.onload=function() {
   catchEvent( okCCObject, "click", okChooseCode );
 
   self.document.getElementById( "codeItems" ).disabled = true;
+
+  catchEvent( self.document, "keyup", processKeyUp )
 }
 
 //]]>
