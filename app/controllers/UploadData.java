@@ -109,6 +109,7 @@ public class UploadData extends Controller {
     	List<StudentUser> studentUsersIn = new ArrayList<StudentUser>();
     	Vector<String> studentsIn = new Vector<String>();
     	final String expectedHeader = "NAME,TIME,Y=,FUNCTION,MATH1,MATH2,MATH3,SOCIAL1,SOCIAL2,SOCIAL3,HIT/NO-HIT,STATUS";
+    	final String expectedPointHeader = "NAME,TIME,TYPE,XVAL,YVAL";
     	if ( attachment.canRead() )
     	{
     		//read
@@ -148,7 +149,7 @@ public class UploadData extends Controller {
     			String headline = in.readLine();
     			
     			String headfeed = ( "Header line = " + headline);
-    			if ( headline.equalsIgnoreCase(expectedHeader) )
+    			if ( headline.equalsIgnoreCase(expectedHeader) || headline.equalsIgnoreCase(expectedPointHeader) )
     			{
     				headfeed += "  (This matches expected format)";
     				feedback.add(headfeed);
@@ -327,7 +328,11 @@ public class UploadData extends Controller {
     			return null;
     		}
     	}
+    	
     	if ( fields.length < 5 || fields[L].equalsIgnoreCase("Y0") ) { return null; }  //then this was just a "logged in" line and not a contrib
+    	
+    	if (fields.length == 5 && "POINT".equalsIgnoreCase(fields[2]) )
+    		return parseForPointContribution(   su,  sess,  sessstart,  fields );
     	
     	double secsin = Double.parseDouble(fields[T]);
     	String contribid = fields[L];
@@ -379,6 +384,27 @@ public class UploadData extends Controller {
     		e.printStackTrace();
     		return null;
     	}
+    }
+    
+    public  static Contribution parseForPointContribution(  StudentUser su, Session sess, Date sessstart, String[] fields) {
+    	final ContributionType  ct = ContributionType.POINT;
+    	//final String expectedPointHeader = "NAME,TIME,TYPE,XVAL,YVAL";
+    	final int N = 0;
+    	final int TI = 1;
+    	final int TY = 2;
+    	final int XV = 3;
+    	final int YV = 4;
+    	
+    	double secsin = Double.parseDouble(fields[TI]);
+    	String contribid = "POINT";
+    	String contribbody = "(" + fields[XV] + "," + fields[YV] + ")";
+    	
+    	Contribution toreturn = new Contribution(ct, su, sess, contribid, contribbody );
+    	toreturn.secondsIn = secsin;
+    	toreturn.timestamp = new Date(sessstart.getTime() + (int)(secsin * 1000));
+    	//add to database. == maybe don't do this --> maybe wait till we are cleared by user.
+    	toreturn.save();
+    	return toreturn;
     }
     
     public static void error( String message )
