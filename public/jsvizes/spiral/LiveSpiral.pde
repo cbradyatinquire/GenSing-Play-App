@@ -100,18 +100,24 @@ function AjaxObject() {
 
 void setup() {
   setupDisplayElements(); 
-  /*
-  readParams();  // comment to debug, uncomment before deploying
+  
+  loadParams();  //new method
+  //readParams();  // comment to debug, uncomment before deploying
   
   // use these for deployment 
-  aDetails[ 0 ] = "http://" + hostip + "/" + functioncall + "?aid=" + actid + "&ind=0";
+  //aDetails[ 0 ] = "http://" + hostip + "/" + functioncall + "?aid=" + actid + "&ind=0";
+  
+  aDetails[ 0 ] = "/" + functioncall + "?aid=" + actid + "&ind=0";
+ 
   aDetails[ 1 ] = starttimeTrimmed;  
   aDetails[ 2 ] = actid + " " + cnameandcyear + " " + school + " " + teacher;  
-  */
+  
   // use these for debugging
+  /*
   aDetails[ 0 ] = "http://localhost:9000/getAllContributionsAfterVerbose?aid=2&ind=0";
   aDetails[ 1 ] = "15:00:00";
   aDetails[ 2 ] = "Just for testing";
+  */
   spa = new SpiralActivity( this );
   spa.startSpiral( aDetails );
 
@@ -173,6 +179,19 @@ void setupDisplayElements() {
 } // end setupDisplayElements()
 
 
+void loadParams() {
+  hostip = jsHostIp();
+  school = jsSchool();
+  teacher = jsTeacher();
+  cnameandcyear = jsCnameandcyear();
+  String[] cpieces = splitTokens( cnameandcyear, ":" );
+  cname = cpieces[ 0 ];
+  cyear = cpieces[ 1 ];
+  actid = jsActid();
+  starttimeFull = jsStarttimefull();
+  starttimeTrimmed = starttimeFull.substring( starttimeFull.length()-17, starttimeFull.length()-9 );
+  functioncall = jsFunctioncall();
+}
 
 
 void readParams() {

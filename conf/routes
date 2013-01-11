@@ -79,6 +79,7 @@ GET		/googleTable							QueryBuilder.googleTable
 
 
 * 		/test									AjaxTesting.test
+*		/tester									Application.tester
 
 *      /admin              						module:crud
 

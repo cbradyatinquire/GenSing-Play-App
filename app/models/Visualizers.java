@@ -18,11 +18,11 @@ public class Visualizers {
 	{
 		names.add("Spiral");
 		names.add("Wave");
-		names.add("Verbose");
-		names.add("Graphical");
+	//	names.add("Verbose");
+		//names.add("Graphical");
 		vizMap.put("Spiral", spiralHTML);
 		vizMap.put("Wave", waveHTML);
-		vizMap.put("TestVerbose", verboseHTML);
+	//	vizMap.put("TestVerbose", verboseHTML);
 	//	vizMap.put("Graphical", graphicalHTML);
 	}
 

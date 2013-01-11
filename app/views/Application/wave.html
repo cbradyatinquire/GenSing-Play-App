@@ -1,125 +1,86 @@
 #{extends 'main.html' /}
 #{set title:'WAVE visualizer' /}
+<!DOCTYPE html>
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>LiveWave : Built with Processing and Processing.js</title>
+		<link rel="icon"  type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAQAAVzABAEAjBQAaDwYAWjUGAGE6CQBrQQ0ATS8PAFhAJwBUQC8AbFI6AHVXPACBZk4A4NrWAPb19QAAAAAAAMmZmZmZmgAJIwAAAAAAcMIjPjA+PjAKpxIuMDMzMAm0Ii4zMzMACaIiLt3dMAAJtyIuIzPQAAm0Un5yM+IzKLRkfncy4iIotRF+dyLkIiq0QX53F+EiGrQUTkd34iIatEVu7u5iIVrBVVRBRFRVbAtGZGZla2uwAMu7u7u8vADAAwAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIABAADAAwAA" />
+		<meta name="Generator" content="Processing" />
+		<!-- - - - - - - - - - - - - - - - - - - - - 
+		+
+		+    Wondering how this works? 
+		+
+		+    Go to: http://processing.org/
+		+    and: http://processingjs.org/
+		+
+		+ - - - - - - - - - - - - - - - - - - - - -->
+		<style type="text/css">
+	body {
+	  background-color: #333; color: #bbb; line-height: normal;
+	  font-family: Lucida Grande, Lucida Sans, Arial, Helvetica Neue, Verdana, Geneva, sans-serif;
+	  font-size: 11px; font-weight: normal; text-decoration: none;
+		  line-height: 1.5em;
+	}
+	a img { 
+		border: 0px solid transparent;
+	}
+	a, a:link, a:visited, a:active, a:hover { 
+		color: #cdcdcd; text-decoration: underline;
+	}
+	h1 {
+	    font-family: Arial, Helvetica Neue, Verdana, Geneva, sans-serif;
+		width: 100%; letter-spacing: 0.1em;
+		margin-bottom: 1em; font-size: 1.65em;
+	}
+	canvas { 
+		display: block; 
+		outline: 0px; 
+		margin-bottom: 1.5em; 
+	}
+	#content { 
+		margin: 5px auto 0px auto; padding: 2px 2px 1px 2px;
+		width: 1180px; min-width: 300px; overflow: auto;
+		border-left: 1px solid #444; border-top: 1px solid #444; 
+		border-right: 1px solid #333; border-bottom: 1px solid #333;
+		background-color: #3d3d3d;
+	}
+		</style>
+		<!--[if lt IE 9]>
+			<script type="text/javascript">alert("Your browser does not support the canvas tag.");</script>
+		<![endif]-->
+		<script src="@{'/public/jsvizes/wave/processing.js'}" type="text/javascript"></script>
+		<script type="text/javascript">
+// convenience function to get the id attribute of generated sketch html element
+function getProcessingSketchId () { return 'LiveWave'; }
+</script>
 
-Wave Visualizer:<br>
+	</head>
+	<body>
+		<div id="content">
+			<div>
+				<canvas id="LiveWave" data-processing-sources="@{'/public/jsvizes/wave/LiveWave.pde'}" 
+						width="1180" height="1000">
 
-    <div id="content">
-      <div id="LiveWave_container">
+				        <!--This facilitates communication with PopUp windows-->                                        
+				        <script type="application/javascript">
+                                          var popUpMsg = "a";
+                                          var oldPopUpMsg = popUpMsg; 
+                                        </script>
 
-	<!-- This version plays nicer with older browsers, 
-	     but requires JavaScript to be enabled. 
-	     http://java.sun.com/javase/6/docs/technotes/guides/jweb/deployment_advice.html
-	     http://download.oracle.com/javase/tutorial/deployment/deploymentInDepth/ -->
-	<script type="text/javascript"
-		src="http://www.java.com/js/deployJava.js"></script>
-	<script type="text/javascript">
-	  /* <![CDATA[ */
-
-	  var attributes = { 
-            code: 'LiveWave.class',
-            codebase: '@{'/public/applet/wave'}',
-            archive: '@{'/public/applet/wave/LiveWave.jar'},@{'/public/applet/wave/simpleML.jar'},@{'/public/applet/wave/core.jar'}',
-            
-            width: 1180, 
-            height: 1000,
-          };
-          var parameters = { 
-            image: 'loading.gif',
-            centerimage: 'true',
-             hostip: '${hostip}',
-            actid: '${aid}',
-            school: '${schoolname}',
-            teacher: '${tuname}',
-            cnameandcyear: '${cnameandcyear}',
-            starttime: '${starttime}',
-            functioncall: '${functioncall}',    
-            
-          };
-          var version = '1.5';
-          deployJava.runApplet(attributes, parameters, version);
-
-          /* ]]> */
-        </script>
-        
-	<noscript> <div>
-	  <!--[if !IE]> -->
-	  <object classid="java:LiveWave.class" 
-            	  type="application/x-java-applet"
-            	  archive="LiveWave.jar,simpleML.jar,core.jar"
-            	  width="1180" height="1000"
-            	  standby="Loading Processing software..." >
-            
-	    <param name="archive" value="LiveWave.jar,simpleML.jar,core.jar" />
-	    
-	    <param name="mayscript" value="true" />
-	    <param name="scriptable" value="true" />
-	    <param name="hostip" value="${hostip}">
-         <param name="actid" value="${aid}">
-         <param name="school" value="${schoolname}">
-        <param name="teacher" value="${tuname}">
-        <param name="cnameandcyear" value="${cnameandcyear}">
-         <param name="starttime" value="${starttime}">
-         <param name="functioncall" value="${functioncall}">
-	    <param name="image" value="loading.gif" />
-	    <param name="boxmessage" value="Loading Processing software..." />
-	    <param name="boxbgcolor" value="#FFFFFF" />
-	  <!--<![endif]-->
-
-	    <!-- For more instructions on deployment, 
-		 or to update the CAB file listed here, see:
-		 http://java.sun.com/javase/6/webnotes/family-clsid.html
-		 http://java.sun.com/javase/6/webnotes/install/jre/autodownload.html -->
-	    <object classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"
-		    codebase="http://java.sun.com/update/1.6.0/jinstall-6u20-windows-i586.cab"
-		    width="1180" height="1000"
-		    standby="Loading Processing software..."  >
-	      
-	      <param name="code" value="LiveWave" />
-	      <param name="archive" value="LiveWave.jar,simpleML.jar,core.jar" />
-	      
-	      <param name="mayscript" value="true" />
-	      <param name="scriptable" value="true" />
-	      <param name="hostip" value="${hostip}">
-         <param name="actid" value="${aid}">
-         <param name="school" value="${schoolname}">
-        <param name="teacher" value="${tuname}">
-        <param name="cnameandcyear" value="${cnameandcyear}">
-         <param name="starttime" value="${starttime}">
-         <param name="functioncall" value="${functioncall}">
-	      <param name="image" value="loading.gif" />
-	      <param name="boxmessage" value="Loading Processing software..." />
-	      <param name="boxbgcolor" value="#FFFFFF" />
-	      
-	      <p>
-		<strong>
-		  This browser does not have a Java Plug-in.
-		  <br />
-		  <a href="http://www.java.com/getjava" 
-		     title="Download Java Plug-in">
-		    Get the latest Java Plug-in here.
-		  </a>
-		</strong>
-	      </p>
-	      
-	    </object>
-	    
-	  <!--[if !IE]> -->
-	  </object>
-	  <!--<![endif]-->
-
-	</div> </noscript>
-
-      </div>
-      
-      <p>
-	
-      </p>
-      
-      <p>
-	Source code: <a href="LiveWave.pde">LiveWave</a> <a href="AUI.pde">AUI</a> <a href="Activity.pde">Activity</a> <a href="Button.pde">Button</a> <a href="DistribPt.pde">DistribPt</a> <a href="Divider.pde">Divider</a> <a href="Dropdown.pde">Dropdown</a> <a href="Function.pde">Function</a> <a href="LVActivity.pde">LVActivity</a> <a href="Post_Time.pde">Post_Time</a> <a href="Ribbon.pde">Ribbon</a> <a href="ScrollPosButton.pde">ScrollPosButton</a> <a href="Section.pde">Section</a> <a href="SpButton.pde">SpButton</a> <a href="Strat.pde">Strat</a> <a href="Student.pde">Student</a> <a href="Tab.pde">Tab</a> <a href="Table.pde">Table</a> <a href="View.pde">View</a> <a href="Wave.pde">Wave</a> <a href="WaveActivity.pde">WaveActivity</a> <a href="WavePt.pde">WavePt</a> <a href="WaveUI.pde">WaveUI</a> 
-      </p>
-      
-      <p>
-	Built with <a href="http://processing.org" title="Processing.org">Processing</a>
-      </p>
-    </div>
+					<p>Your browser does not support the canvas tag.</p>
+					<!-- Note: you can put any alternative content here. -->
+				</canvas>
+				<noscript>
+					<p>JavaScript is required to view the contents of this page.</p>
+				</noscript>
+	    	</div>
+			<h1>LiveWave</h1>
+    		<p id="description"></p>
+			<p id="sources">Source code: <a href="LiveWave.pde">LiveWave</a> </p>
+			<p>
+			Built with <a href="http://processing.org" title="Processing">Processing</a>
+			and <a href="http://processingjs.org" title="Processing.js">Processing.js</a>
+			</p>
+		</div>
+	</body>
+</html>

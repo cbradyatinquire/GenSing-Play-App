@@ -250,6 +250,17 @@ public class Application extends Controller {
     	render(actids, acts, visualizers, cnameandcyear, tuname, schoolname);
     }
     
+    public static void serverHello( String arg, int ument )
+    {
+    	System.err.print(".");
+    	renderJSON( "you sent me " + arg + " and then " + ument);
+    }
+    
+    public static void tester()
+    {
+    	render();
+    }
+    
     public static void classroomPicker( String tuname, String schoolname )
     {
     	if(tuname.startsWith("Select a")) {
