@@ -193,10 +193,14 @@ void setup() {
   setupDisplayElements(); 
   //
   //readParams(); // comment to debug, uncomment before deploying
-  
+
+  //new == javascript versions of applet param reading
+  loadParams();
+
   // use these for deployment 
-  //buildADetails();
+  buildADetails();
  
+/*
   //use these for debugging
   hostip = "localhost:9000";
   school = "SST";
@@ -213,6 +217,7 @@ void setup() {
   aDetails[ 0 ] = "http://localhost:9000/getAllContributionsAfterVerbose?aid=1&ind=0";
   aDetails[ 1 ] = "15:00:00";
   aDetails[ 2 ]  = "Testing";
+*/
   
   wva = new WaveActivity( this );
   wva.startWave( aDetails, parseInt( actid ), hostip );
@@ -422,7 +427,20 @@ void setupDisplayElements() {
 } // end setupDisplayElements()
 
 
-
+//new -- this loads from javascript functions, rather than applet tags (readParams() below)
+void loadParams() {
+  hostip = jsHostIp();
+  school = jsSchool();
+  teacher = jsTeacher();
+  cnameandcyear = jsCnameandcyear();
+  String[] cpieces = splitTokens( cnameandcyear, ":" );
+  cname = cpieces[ 0 ];
+  cyear = cpieces[ 1 ];
+  actid = jsActid();
+  starttimeFull = jsStarttimefull();
+  starttimeTrimmed = starttimeFull.substring( starttimeFull.length()-17, starttimeFull.length()-9 );
+  functioncall = jsFunctioncall();
+}
 
 void readParams() {
 // Reads applet param tags from HTML file
@@ -443,7 +461,10 @@ void readParams() {
 
 
 void buildADetails() {
-  aDetails[ 0 ] = "http://" + hostip + "/" + functioncall + "?aid=" + actid + "&ind=0";
+//  aDetails[ 0 ] = "http://" + hostip + "/" + functioncall + "?aid=" + actid + "&ind=0";
+  //new -- omit http and host ip.
+  aDetails[ 0 ] = "/" + functioncall + "?aid=" + actid + "&ind=0";
+
   aDetails[ 1 ] = starttimeTrimmed;  
   aDetails[ 2 ] = actid + " " + cnameandcyear + " " + school + " " + teacher; 
 } // end buildADetails()
@@ -535,10 +556,16 @@ void executeSaveState( String aID, String sID, String sName, String sComments, b
 
   if( moveSID == true ) {
     postAjaxObject = new AjaxPOSTObject();
-    postAjaxObject.makeAjaxPost( "http://" + hostip + "/saveWaveState", postData );
+   	//postAjaxObject.makeAjaxPost( "http://" + hostip + "/saveWaveState", postData );
+    //new: remove http & hostip
+    postAjaxObject.makeAjaxPost(  "/saveWaveState", postData );
+
   } else { 
     postAjaxObject = new AjaxPOSTObject();
-    postAjaxObject.makeAjaxPost( "http://" + hostip + "/updateWaveState", postData );
+    //postAjaxObject.makeAjaxPost( "http://" + hostip + "/updateWaveState", postData );
+ 	//new: remove http & hostip
+    postAjaxObject.makeAjaxPost( "/updateWaveState", postData );
+
   }
 
 } // end executeSaveState()
@@ -879,8 +906,14 @@ class LVActivity extends Activity {
   // populates the ArrayLists and HashMaps that facilitate usage of Codes
   //     
     println( "BUILDING CODECABINET : " );
-    String[] dbGetCodeD = loadStrings( "http://localhost:9000/getCodeDictionary" );
-    //String[] dbGetCodeD = loadStrings( "http://localhost:9914/dbGetCodeD" );
+    //String[] dbGetCodeD = loadStrings( "http://localhost:9000/getCodeDictionary" );
+    
+	//new: remove http and host ip
+	String[] dbGetCodeD = loadStrings( "/getCodeDictionary" );
+	//console.log( "check!" );
+	//console.log( dbGetCodeD );
+
+	//String[] dbGetCodeD = loadStrings( "http://localhost:9914/dbGetCodeD" );
     String codeCatStamp = "";
     CodeCategory stampObject = null;
     String codeItemStamp = "";
@@ -1625,17 +1658,20 @@ class WaveUI extends ActivityUI {
       int whichOne = getPressedArrSpButton();
       
       if( whichOne == 0 ) { // "CHOOSE CODES"
-        popChooseCode( "choosecode.html", "Choose Codes" );
+//new:url change
+        popChooseCode( "/public/jsvizes/wave/choosecode.html", "Choose Codes" );
 
       } else if( whichOne == 1 ) { // "SORT"
         currentWave.loadSelectedEqs( currentWave.selEqs, currentWave.selValds );
         currentWave.sortBy( currentWave.selEqs, currentWave.selValds );
 
       } else if( whichOne == 2 )  { // "LOAD"
-        popLoadState( "loadstate.html", "Load State" );
+//new:url change
+        popLoadState( "/public/jsvizes/wave/loadstate.html", "Load State" );
 
       } else if( whichOne == 3 ) { // "SAVE"
-        popSaveState( "savestate.html", "Save State" );
+//new:url change
+        popSaveState( "/public/jsvizes/wave/savestate.html", "Save State" );
 
       } else if( whichOne == 4 ) { // VALIDITY TOGGLE SWITCH
         currentWave.toggleValidity( this );
@@ -1648,7 +1684,8 @@ class WaveUI extends ActivityUI {
 
     } else if( mouseButton == RIGHT ) {
       WavePt wpMO = owner.wave.getWavePointMouseOver();
-      popAnnotate( "annotate.html", "Annotate A Wave Point", wpMO );
+//new:url change
+      popAnnotate( "/public/jsvizes/wave/annotate.html", "Annotate A Wave Point", wpMO );
 
     }
   } // end executeMousePressed()
@@ -1717,7 +1754,11 @@ class WaveUI extends ActivityUI {
 
   void popLoadState( String fileName, String windowTitle ) {
     String optionString = "width=850,height=350, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";
-    String retrievedStatesFromDB = loadStrings( "http://" + owner.wave.hostip + "/getWaveStates" ).join( "|" ); 
+
+	//String retrievedStatesFromDB = loadStrings( "http://" + owner.wave.hostip + "/getWaveStates" ).join( "|" ); 
+	//new: remove http and host ip
+    String retrievedStatesFromDB = loadStrings( "/getWaveStates" ).join( "|" ); 
+
     popUpMsg = "LOADSTATE|" + retrievedStatesFromDB;      
     popUpWindow = window.open( fileName, windowTitle, optionString );
   } // end popLoadState()    
@@ -3567,7 +3608,7 @@ class Wave extends Section {
   // Needs to be commented and reworked
     int wpCountBefore = wavePoints.size();
     super.populateFuncs( t );
-    print( "Applying Datastream to Wave ... " );
+    println( "Applying Datastream to Wave ... " );
     addStudents( funcs, lastCountForFuncs, minPostTime, maxPostTime, t );
     addWavePoints( funcs, lastCountForFuncs, t );
     int wpCountAfter = wavePoints.size(); 
@@ -3575,7 +3616,9 @@ class Wave extends Section {
     processWavePoints( wpCountBefore, wpCountAfter );
     ribbon.updateMinsCount();
     markForDisplay( selCodes, selValds );
+
     loadSelectedEqs( selEqs,selValds );
+
     sortBy( selEqs, selValds );
   } // end growWave()
 
@@ -3651,6 +3694,7 @@ class Wave extends Section {
   //
     // go through tempFuncs, check for duplication  
     for( int i = tempLastCountForFuncs; i < tempFuncs.size(); i++ ) {
+
       Function tf = tempFuncs.get( i );
       int dup = 0;
       int sumDup = 0;
@@ -3669,6 +3713,7 @@ class Wave extends Section {
 	}
       } // end else
     } // end for i
+
   } // end addStudents()
 
 
@@ -3738,7 +3783,7 @@ class Wave extends Section {
   // this should be called everytime there's a change in the
   // selected Code(s) / Validity(ies) to display, or immediately following
   // incoming of new dataStream()
-
+  
       //println( " >>> selCodes is : " + sc );
       //println( " >>> selValds is : " + sv );
       
@@ -3747,7 +3792,7 @@ class Wave extends Section {
           s.onShow = true;
         } else
           s.onShow = false;
-        
+         
         // for WavePts, first set all wavePoitns to not onShow, then
         // loop through all wavePoints, looking for valid wavePoints and set onShow
         // then loop through all wavePoints one more time, looking for invalid ones
@@ -3762,7 +3807,7 @@ class Wave extends Section {
             }
           } // end for
         } // end if contains true
-        
+     
         if( sv.contains( false ) ) {
           for( WavePt wp : s.wavePoints ) {
             if( wp.isValid == false ) {
@@ -4352,7 +4397,7 @@ class Section {
     //lastCountForFuncs = funcs.size();
     updateHasData();
     updateMinMaxPostTime();
-    println( "funcs count is now: " + funcs.size() + " maxPostTime is now: " + maxPostTime + " [ DONE ]" );
+    println( "funcs count is now: " + funcs.size() + " maxPostTime is now: " + maxPostTime + " [ DONE ]..." );
 
     //println( "\t \t PRINTING FUNCTIONS: " );
     //for( int i = 0; i < funcs.size(); i++ ) {
@@ -4452,7 +4497,12 @@ class WavePt extends Function {
         //print( smallPieces[ 0 ] );
         CodeItem ci = owner.codeCabinet.codeItemsDictionary.get( smallPieces[ 1 ] );
         //println( "\tadding " + p );
-        codes.add( ci ); 
+
+//console.log("adding a code, if not null.  it's.");
+//console.log(ci);
+		//new:  null check
+        if ( ci )
+        { codes.add( ci ); }
       } 
   } // end readCodes()
 
@@ -4633,6 +4683,11 @@ class WavePt extends Function {
 
   boolean hasSelCodes( ArrayList<String> input ) {
     boolean ret = false;
+//console.log("coreybegin");
+//console.log(codes);
+//console.log(codes.size());
+//console.log(codes.get(0));
+//console.log("coreyend");
     if( codes.isEmpty() ) {
       return ret;
     } else {
@@ -4683,7 +4738,10 @@ class WavePt extends Function {
     postData += "annotations=" + annotation;
 
     postAjaxObject = new AjaxPOSTObject();
-    postAjaxObject.makeAjaxPost( "http://" + owner.hostip + "/setAnnotationsForContribution", postData );
+    
+	//new: remove http and host ip
+	postAjaxObject.makeAjaxPost( "/setAnnotationsForContribution", postData );
+	//postAjaxObject.makeAjaxPost( "http://" + owner.hostip + "/setAnnotationsForContribution", postData );
 
   } // end postAnnotation()
 
@@ -4695,7 +4753,10 @@ class WavePt extends Function {
     codes = new ArrayList<CodeItem>();
     for( String s : tempCodes ) {
       CodeItem ci = owner.codeCabinet.codeItemsDictionary.get( s );
-      codes.add( ci );
+
+//new -- null check.
+     if ( ci )
+     { codes.add( ci ); }
     }
   } // end setCodes()
 
@@ -4715,7 +4776,9 @@ class WavePt extends Function {
     postData += "sequence=" + serialNum + "&";
     postData += "codings=" + packedCodes;
     postAjaxObject = new AjaxPOSTObject();
-    postAjaxObject.makeAjaxPost( "http://" + owner.hostip + "/setCodingsForContribution", postData );
+    //postAjaxObject.makeAjaxPost( "http://" + owner.hostip + "/setCodingsForContribution", postData );
+	//new: remove http and host ip
+	postAjaxObject.makeAjaxPost( "/setCodingsForContribution", postData );
   } // end postCodes()
 
 
