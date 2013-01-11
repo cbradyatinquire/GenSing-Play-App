@@ -105,9 +105,9 @@ void setup() {
   //readParams();  // comment to debug, uncomment before deploying
   
   // use these for deployment 
-  aDetails[ 0 ] = "http://" + hostip + "/" + functioncall + "?aid=" + actid + "&ind=0";
+  //aDetails[ 0 ] = "http://" + hostip + "/" + functioncall + "?aid=" + actid + "&ind=0";
   
-  //aDetails[ 0 ] = "/" + functioncall + "?aid=" + actid + "&ind=0";
+  aDetails[ 0 ] = "/" + functioncall + "?aid=" + actid + "&ind=0";
  
   aDetails[ 1 ] = starttimeTrimmed;  
   aDetails[ 2 ] = actid + " " + cnameandcyear + " " + school + " " + teacher;  
@@ -1796,7 +1796,7 @@ class LVActivity extends Activity {
   // populates the ArrayLists and HashMaps that facilitate usage of Codes
   //     
     println( "BUILDING CODECABINET : " );
-    String[] dbGetCodeD = loadStrings( "http://localhost:9000/getCodeDictionary" );
+    String[] dbGetCodeD = loadStrings( "/getCodeDictionary" );  //change
     //String[] dbGetCodeD = loadStrings( "http://localhost:9914/dbGetCodeD" );
     String codeCatStamp = "";
     CodeCategory stampObject = null;
