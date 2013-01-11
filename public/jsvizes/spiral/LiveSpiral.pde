@@ -107,6 +107,7 @@ void setup() {
   // use these for deployment 
   //aDetails[ 0 ] = "http://" + hostip + "/" + functioncall + "?aid=" + actid + "&ind=0";
   
+  //new approach (use / instead of the full server address)  this ensures no same-domain-restriction problems
   aDetails[ 0 ] = "/" + functioncall + "?aid=" + actid + "&ind=0";
  
   aDetails[ 1 ] = starttimeTrimmed;  
@@ -179,6 +180,7 @@ void setupDisplayElements() {
 } // end setupDisplayElements()
 
 
+//new -- this loads from javascript functions, rather than applet tags (readParams() below)
 void loadParams() {
   hostip = jsHostIp();
   school = jsSchool();
@@ -1912,7 +1914,6 @@ class LVActivity extends Activity {
   
   void connectDB( String s ) {
     lastRequestTime = millis();
-println("about to attempt connectDB with get request at " + s);
     myAjaxObject.request.open( "GET", s + makeNoCache(), true );
     myAjaxObject.request.send( null );
     println( "connecting to DB @ " + s + makeNoCache() );
