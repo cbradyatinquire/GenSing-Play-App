@@ -1750,9 +1750,9 @@ class LVActivity extends Activity {
     }
     prevDataWholeChunk = dataWholeChunk;
 
-    // the polling every 5 seconds:  //new: 50
+    // the polling every 5 seconds:  
     int now = millis();
-    if( now - lastRequestTime > 50000 ) {
+    if( now - lastRequestTime > 5000 ) {
       String s = makeNextURLAddress( baseURLAddress );
       println( "About to poll database on this address: " + s );
       if( myAjaxObject == null ) {
