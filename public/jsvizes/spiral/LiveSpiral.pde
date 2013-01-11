@@ -105,18 +105,18 @@ void setup() {
   //readParams();  // comment to debug, uncomment before deploying
   
   // use these for deployment 
-  //aDetails[ 0 ] = "http://" + hostip + "/" + functioncall + "?aid=" + actid + "&ind=0";
+  aDetails[ 0 ] = "http://" + hostip + "/" + functioncall + "?aid=" + actid + "&ind=0";
   
-  aDetails[ 0 ] = "/" + functioncall + "?aid=" + actid + "&ind=0";
+  //aDetails[ 0 ] = "/" + functioncall + "?aid=" + actid + "&ind=0";
  
   aDetails[ 1 ] = starttimeTrimmed;  
   aDetails[ 2 ] = actid + " " + cnameandcyear + " " + school + " " + teacher;  
   
   // use these for debugging
   /*
-  aDetails[ 0 ] = "http://localhost:9000/getAllContributionsAfterVerbose?aid=2&ind=0";
-  aDetails[ 1 ] = "15:00:00";
-  aDetails[ 2 ] = "Just for testing";
+  //aDetails[ 0 ] = "http://localhost:9000/getAllContributionsAfterVerbose?aid=2&ind=0";
+  //aDetails[ 1 ] = "15:00:00";
+  //aDetails[ 2 ] = "Just for testing";
   */
   spa = new SpiralActivity( this );
   spa.startSpiral( aDetails );
@@ -1750,9 +1750,9 @@ class LVActivity extends Activity {
     }
     prevDataWholeChunk = dataWholeChunk;
 
-    // the polling every 5 seconds:
+    // the polling every 5 seconds:  //new: 50
     int now = millis();
-    if( now - lastRequestTime > 5000 ) {
+    if( now - lastRequestTime > 50000 ) {
       String s = makeNextURLAddress( baseURLAddress );
       println( "About to poll database on this address: " + s );
       if( myAjaxObject == null ) {
@@ -1912,6 +1912,7 @@ class LVActivity extends Activity {
   
   void connectDB( String s ) {
     lastRequestTime = millis();
+println("about to attempt connectDB with get request at " + s);
     myAjaxObject.request.open( "GET", s + makeNoCache(), true );
     myAjaxObject.request.send( null );
     println( "connecting to DB @ " + s + makeNoCache() );
