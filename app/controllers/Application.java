@@ -181,7 +181,7 @@ public class Application extends Controller {
     	}
     	Date st = s.startTime;
     	String hostip = Http.Request.current().host;
-    	String functioncall = "getAllContributionsAfter";
+    	String functioncall = "getAllContributionsAfterVerbose";
     	
     	if (viz.equalsIgnoreCase("Wave"))
     	{
