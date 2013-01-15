@@ -200,9 +200,8 @@ catchEvent(window,"load",setupEvents);
 
 
 function setupEvents(evnt) {
-
   var tempRows = opener.popUpMsg.split( "|" );
-  if( typeOf( tempRows[ 1 ] ) != "undefined" ) {
+  if( typeof tempRows[ 1 ] != "undefined" ) {
     for( var i = 1; i < tempRows.length; i++ ) {
       var pieces = tempRows[ i ].split( "\t" );
       stateIDs[ stateIDs.length ] = pieces[ 0 ];

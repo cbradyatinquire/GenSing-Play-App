@@ -695,9 +695,6 @@ class WaveActivity extends LVActivity {
 
     // create a new wave and put in activity details into it
     wave.sproutWave( aDetails[ 1 ], aDetails[ 2 ], actid,  codeCabinet ); // pass codeCabinet to Wave
-    //dummyRows = cleanRows( dummyRows );
-    //dummyDatabaseStream = new Table( dummyRows );
-    //processDatastream( dummyDatabaseStream );
     hasNewValidDatastream = false;
     wave.hostip = hostip;
   } // end startWave()
@@ -906,14 +903,7 @@ class LVActivity extends Activity {
   // populates the ArrayLists and HashMaps that facilitate usage of Codes
   //     
     println( "BUILDING CODECABINET : " );
-    //String[] dbGetCodeD = loadStrings( "http://localhost:9000/getCodeDictionary" );
-    
-	//new: remove http and host ip
-	String[] dbGetCodeD = loadStrings( "/getCodeDictionary" );
-	//console.log( "check!" );
-	//console.log( dbGetCodeD );
-
-	//String[] dbGetCodeD = loadStrings( "http://localhost:9914/dbGetCodeD" );
+    String[] dbGetCodeD = loadStrings( "/getCodeDictionary" );
     String codeCatStamp = "";
     CodeCategory stampObject = null;
     String codeItemStamp = "";
@@ -1014,7 +1004,19 @@ class LVActivity extends Activity {
   //
     int irrelevantRows = 0;
     for( int i = 1; i < tbCleaned.length - 1; i++ ) {
-      String[] cells = fixedSplitToken( tbCleaned[ i ], "\t", 9 ); 
+      //println( "tbCleaned[ " + i + " ] is :"  + tbCleaned[ i ] );
+      String[] cells = splitTokens( tbCleaned[ i ], "\t" ); 
+      //println( "# cells?:" + cells.length + " * " + 
+      //         cells[ 0 ] + " * " +
+      //          cells[ 1 ] + " * " +
+      //         cells[ 2 ] + " * " +
+      //         cells[ 3 ] + " * " +
+      //         cells[ 4 ] + " * " +
+      //         cells[ 5 ] + " * " +
+      //         cells[ 6 ] + " * " +
+      //         cells[ 7 ] + " * " +
+      //         cells[ 8 ] + ". "
+      //       );
       if( cells[ 2 ].equals( "EQUATION" ) == false ) { // discard non "EQUATION" contributions
         tbCleaned[ i ] = ""; // overwrite the row with blank String        
         irrelevantRows++;
@@ -1027,7 +1029,7 @@ class LVActivity extends Activity {
     int nextPosCleaned = 1;
     for( int z = 1; z < tbCleaned.length; z++ ) {    
       if( tbCleaned[ z ].equals( "" ) == false ) {
-        String[] cells = fixedSplitToken( tbCleaned[ z ], "\t", 9 );
+        String[] cells = splitFixedColumns( tbCleaned[ z ], "\t", 9 );
         // sewing back all the columns received from database except Contribution Type )
         String tempR = cells[ 0 ] + "\t" + cells[ 1 ] + "\t";
         // So we'll start with the fourth column (index 3)
@@ -1045,30 +1047,33 @@ class LVActivity extends Activity {
     return cleaned; 
   }  // end cleanRows()
   
+
+
   
-  
-  String[] fixedSplitToken( String row, String tkn, int targetCol ) {
-    String input = row;
-    String token = tkn;
-    int colCount = targetCol;
+  String[] splitFixedColumns( String row, String tkn, int colCount ) {
+  // returns an array with count of elements equal to colCount
+  // any extras will be dropped, any deficiencies will be topped up with epty string
     String[] ret = new String[ colCount ];
-
-    int i = 0;
-    int j = input.indexOf( token, i+1 );
-
-    for( int index = 0; index < colCount - 1; index++ ) {
-      String nextpiece = input.substring( i, j );
-      ret[ index ] = nextpiece;
-      i = j+1;
-      j = input.indexOf( token, i );
+    String pcs = splitTokens( row, tkn );
+    if( pcs.length >= colCount ) {
+      for( int i = 0; i < pcs.length; i ++ )
+        ret[ i ] = pcs[ i ];
+    } else {
+      int toTopUp = colCount - pcs.length;
+      int topUpFrom = pcs.length;
+      for( int i = 0; i < pcs.length; i++ ) {
+        ret[ i ] = pcs[ i ];
+      }
+      for( int i = 0; i < toTopUp; i++ ) {
+        ret[ topUpFrom + i ] = "";
+      }
     }
-    ret[ colCount-1 ] = input.substring( i );
-  return ret;
-} // end fixedSplitToken()
+    return ret;
+  } // end splitFixedColumns()
 
 
 
-  
+
   void prepForNextDatastream() {
     // prepare for next wave of data - designed to be called only
     // by children classes of SpiralActivity and WaveActivity,
@@ -4486,21 +4491,12 @@ class WavePt extends Function {
   // Methods
 
   void readCodes( Table t, int r, int c ) {
-    //println( "reading code : " );
     codes = new ArrayList <CodeItem>();
-    //println( "RAW: " + t.getString( r, c ) );
     String[] largePieces = splitTokens( t.getString( r, c ), "|" );
-    //println( largePieces );
     if( largePieces.length > 0 ) 
       for( String p : largePieces ){
         String[] smallPieces = splitTokens( p, ":" );
-        //print( smallPieces[ 0 ] );
         CodeItem ci = owner.codeCabinet.codeItemsDictionary.get( smallPieces[ 1 ] );
-        //println( "\tadding " + p );
-
-//console.log("adding a code, if not null.  it's.");
-//console.log(ci);
-		//new:  null check
         if ( ci )
         { codes.add( ci ); }
       } 
@@ -4683,11 +4679,6 @@ class WavePt extends Function {
 
   boolean hasSelCodes( ArrayList<String> input ) {
     boolean ret = false;
-//console.log("coreybegin");
-//console.log(codes);
-//console.log(codes.size());
-//console.log(codes.get(0));
-//console.log("coreyend");
     if( codes.isEmpty() ) {
       return ret;
     } else {
@@ -4928,7 +4919,7 @@ class Table {
       
       // split the row on the tabs
       // String[] pieces = split(rows[i], "\t");
-      String[] pieces = fixedSplitToken( rows[ i ], "\t", 9  );
+      String[] pieces = splitFixedColumns( rows[ i ], "\t", 9  );
       columnCount = pieces.length; // number of columns - value starts from 1 and not 0.
       // copy to the table array
       data[rowCount] = pieces;
@@ -5118,23 +5109,27 @@ class Table {
 
 
 
-  String[] fixedSplitToken( String row, String tkn, int targetCol ) {
-    String input = row;
-    String token = tkn;
-    int colCount = targetCol;
+  String[] splitFixedColumns( String row, String tkn, int colCount ) {
+  // returns an array with count of elements equal to colCount
+  // any extras will be dropped, any deficiencies will be topped up with epty string
     String[] ret = new String[ colCount ];
-
-    int i = 0;
-    int j = input.indexOf( token, i+1 );
-    for( int index = 0; index < colCount - 1; index++ ) {
-      String nextpiece = input.substring( i, j );
-      ret[ index ] = nextpiece;
-      i = j+1;
-      j = input.indexOf( token, i );
+    String pcs = splitTokens( row, tkn );
+    if( pcs.length >= colCount ) {
+      for( int i = 0; i < pcs.length; i ++ )
+        ret[ i ] = pcs[ i ];
+    } else {
+      int toTopUp = colCount - pcs.length;
+      int topUpFrom = pcs.length;
+      for( int i = 0; i < pcs.length; i++ ) {
+        ret[ i ] = pcs[ i ];
+      }
+      for( int i = 0; i < toTopUp; i++ ) {
+        ret[ topUpFrom + i ] = "";
+      }
     }
-    ret[ colCount-1 ] = input.substring( i );
-  return ret;
-} // end fixedSplitToken()
+    return ret;
+  } // end splitFixedColumns()
+
 
 
 
