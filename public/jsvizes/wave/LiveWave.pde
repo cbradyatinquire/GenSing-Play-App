@@ -754,6 +754,7 @@ class LVActivity extends Activity {
   int lastRequestTime;
   int lastIndexReceived;
   boolean hasNewValidDatastream;
+  boolean onDatastream;   // true for continuous database polling, false for pausing
   
   ArrayList<CodeItem> codeItemsList;
   ArrayList<CodeCateogry> codeCategoriesList;
@@ -781,6 +782,7 @@ class LVActivity extends Activity {
     lastIndexReceived = 0;
     baseURLAddress = "";
     hasNewValidDatastream = false;
+    onDatastream = true;
     
     codeItemsList = new ArrayList<CodeItem>();
     codeCategoriesList = new ArrayList<CodeCategory>();
@@ -860,13 +862,15 @@ class LVActivity extends Activity {
     // the polling every 5 seconds:
     int now = millis();
     if( now - lastRequestTime > 5000 ) {
-      String s = makeNextURLAddress( baseURLAddress );
-      //println( "About to poll database on this address: " + s );
-      if( myAjaxObject == null ) {
-        myAjaxObject = new AjaxGETObject();
+      if( onDatastream ) {
+        String s = makeNextURLAddress( baseURLAddress );
+        println( "About to poll database on this address: " + s );
+        if( myAjaxObject == null ) {
+          myAjaxObject = new AjaxGETObject();
+        }
+        connectDB( s );
+        lastRequestTime = millis();
       }
-      connectDB( s );
-      lastRequestTime = millis();
     }
            
   } // end updateDatastream()
@@ -1102,6 +1106,19 @@ class LVActivity extends Activity {
       ret = ret.substring( 1, ret.length );
     return ret;
   } // end chainCodeItems()
+
+
+
+
+  void toggleDatastream( ActivityUI theUI, int indexB ) {
+    if( onDatastream ) {
+      theUI.arrSpButtons.get( indexB ).label = "PAUSED";
+      onDatastream = false;      
+    } else {
+      theUI.arrSpButtons.get( indexB ).label = "  LIVE  ";
+      onDatastream = true;
+    }
+  } // end toggleDatastream()
 
 
 
@@ -1639,13 +1656,15 @@ class WaveUI extends ActivityUI {
           
     createSpButton( o.x2 - 120, o.y1 + 50, o.x2 - 20, o.y1 + 90, getNextIndexArrSpButtons(), "Choose Code(s)", color( 0, 0, 0 ), color( 180, 180, 180 ), color( 250, 250, 250 ), butPress );
 
-    createSpButton( o.x1 + 400, o.y1 + 660, o.x1 + 500, o.y1 + 690, getNextIndexArrSpButtons(), "SORT", color( 0, 0, 0 ), color( 180, 180, 180 ), color( 250, 250, 250 ), butPress );
+    createSpButton( o.x1 + 500, o.y1 + 660, o.x1 + 600, o.y1 + 690, getNextIndexArrSpButtons(), "SORT", color( 0, 0, 0 ), color( 180, 180, 180 ), color( 250, 250, 250 ), butPress );
 
     createSpButton( o.x1 + 700, o.y1 + 660, o.x1 + 800, o.y1 + 690, getNextIndexArrSpButtons(), "LOAD", color( 0, 0, 0 ), color( 180, 180, 180 ), color( 250, 250, 250 ), butPress );
 
     createSpButton( o.x1 + 850, o.y1 + 660, o.x1 + 950, o.y1 + 690, getNextIndexArrSpButtons(), "SAVE", color( 0, 0, 0 ), color( 180, 180, 180 ), color( 250, 250, 250 ), butPress );
 
     createSpButton( o.x1 + 200, o.y1 + 660, o.x1 + 300, o.y1 + 690, getNextIndexArrSpButtons(), "VALID EQs", color( 0, 0, 0 ), color( 180, 180, 180 ), color( 250, 250, 250 ), butPress );
+
+    createSpButton( o.x1 + 350, o.y1 + 660, o.x1 + 450, o.y1 + 690, getNextIndexArrSpButtons(), "  LIVE  ", color( 0, 0, 0 ), color( 180, 180, 180 ), color( 250, 250, 250 ), butPress );
 
   } // end constructor
 
@@ -1680,6 +1699,9 @@ class WaveUI extends ActivityUI {
 
       } else if( whichOne == 4 ) { // VALIDITY TOGGLE SWITCH
         currentWave.toggleValidity( this );
+
+      } else if( whichOne == 5 ) { // LIVE-PAUSED TOGGLE SWITCH
+        owner.toggleDatastream( this, 5 );
       }
       
            
@@ -1833,7 +1855,8 @@ abstract class ActivityUI extends ProtoUI {
 
 
 
-} // end class ActivityUI// ========================================
+} // end class ActivityUI
+// ========================================
 // GUI Component Class
 // Ancestor class of all ...UI classes 
 // ActivityUI stands for "Activity UI". An object of this class is a member of an 
@@ -3014,7 +3037,7 @@ class SpButton  extends AButton {
 
 
 
-} // end class spButton
+} // end class SpButton
 // ========================================
 // GUI Component Class
 // Ancestor class for GUI buttons
@@ -5719,6 +5742,10 @@ if( s1.getEarliestPostTimeForSelEqs( eqs ) > s2.getEarliestPostTimeForSelEqs( eq
     return s1.studentID.compareTo( s2.studentID );
   } // end compare()
 } // end class StudentComparator
+
+
+
+
 abstract class SComparator {
 
   // Fields
