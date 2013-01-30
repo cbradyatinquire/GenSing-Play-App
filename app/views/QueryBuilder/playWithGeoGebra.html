@@ -3,6 +3,7 @@
 
 <head>
  <script type="text/javascript" language="javascript" src="http://www.geogebra.org/web/4.2/web/web.nocache.js"></script>
+
  </head> 
   
   <body>
@@ -12,6 +13,49 @@
  <br>
  <input type="text" size="75" name="func" id="func" onkeydown="if (event.keyCode == 13) document.getElementById('evaluate').click()"/> &nbsp;
    <input type="button" name="evaluate" value="evaluate" id="evaluate" onclick="document.ggbApplet.evalCommand( func.value );" />
+
+<script type="text/javascript">
+//<![CDATA[
+
+function catchEvent(eventObj, event, eventHandler) {
+  if (eventObj.addEventListener) {
+    eventObj.addEventListener(event, eventHandler,false);
+  } else if (eventObj.attachEvent) {
+    event = "on" + event;
+    eventObj.attachEvent(event, eventHandler);
+  }
+}
+
+
+
+
+catchEvent(window,"load",setupEvents);
+
+catchEvent( window, "click", doTestPlotFunction );
+
+
+
+
+function setupEvents(evnt) {
+  alert( "page loaded. Asking GeoGebra to plot a function" );
+  document.ggbApplet.evalCommand( "f(x)=-0.5x" ); 
+  <!-- GeoGebra 'applet'(?) seems to load after the window has loaded. 
+       is there any way to detect if the 'applet'(?) has finished loading? 
+       this is just so that we can automatically plot functions on load -->
+  alert( "function plotted." );
+}
+
+
+
+function doTestPlotFunction(evnt) {
+  <!-- click anywhere in the window to plot f(x)=3x -->
+  alert( "clicked, test plot f(x)=3x" );
+  document.ggbApplet.evalCommand( "f(x)=3x" );
+  alert( "done plotting." );
+}
+
+</script>
+
  <br>
  Try, for example:  f(x)=sin(x) <br>
  or P=(2,3)<br>
