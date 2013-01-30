@@ -294,4 +294,8 @@ public class QueryBuilder extends Controller {
     public static void addInfo( String  aparam ) { //ArrayList<String> params ) {
     	render( aparam );
     }
+    
+    public static void playWithGeoGebra() {
+    	render();
+    }
 }
