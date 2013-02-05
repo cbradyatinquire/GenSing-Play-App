@@ -13,7 +13,7 @@ public class Bootstrap extends Job {
     @SuppressWarnings("unused")
 	public void doJob() {
         //Check if the database is empty
-        if(false) { //School.count() == 0) {
+        if(School.count() == 0) {
         	System.err.println("REMOVING ALL DATABASE ENTRIES....");
         	Fixtures.deleteDatabase();
             //Fixtures.loadModels("seeddata.yml");
