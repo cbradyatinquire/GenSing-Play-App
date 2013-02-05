@@ -16,7 +16,7 @@ public class Bootstrap extends Job {
         	System.err.println("REMOVING ALL DATABASE ENTRIES....");
         	Fixtures.deleteDatabase();
             //Fixtures.loadModels("seeddata.yml");
-        	School s = new School("Test");
+        	School s = new School("SchoolForTesting");
         	s.save();
 
 
