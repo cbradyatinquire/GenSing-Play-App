@@ -48,7 +48,7 @@ public class Bootstrap extends Job {
         	Session se = new Session(c, "Fake Source");
         	se.save();
 
-        	StudentUser csu = new StudentUser("autogenstudent", c);
+        	StudentUser csu = new StudentUser("Otto Mattique", c);
         	csu.save();
 
         	for (int i=1; i<100; i++)
@@ -117,8 +117,8 @@ public class Bootstrap extends Job {
             
             CodeCategory cctest = CodeCategory.findByName("Math");
             CodeDescriptor cdtest = CodeDescriptor.findByCategoryAndName(cctest, "VASM");
-            System.err.println("TEST - codedescriptor " + cdtest);
-            System.err.println("TEST - codecategory: " + cctest);
+            System.err.println("TEST Finding codedescriptor " + cdtest);
+            System.err.println("TEST Finding codecategory: " + cctest);
             
             
         }
