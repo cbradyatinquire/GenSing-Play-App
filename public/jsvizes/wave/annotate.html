@@ -245,16 +245,16 @@ function okAnnotate() {
   updateActiveAssignment();
 
   if( oldWpAnnotation != wpAnnotation ) {
-    alert( "GOT NEW WPANNOTATION TO SEND: \n" + wpAnnotation );
+    <!--alert( "GOT NEW WPANNOTATION TO SEND: \n" + wpAnnotation );-->
     var proc = opener.Processing.getInstanceById( "LiveWave" );
     proc.setNewAnnotationAncWpMO( wpAnnotation );
   }
 
   if( hasIdenticalContents( oldWpAssignedCodes, wpAssignedCodes ) === false ) {
-    alert( "GOT NEW WPASSIGNMENTCODES TO SEND: \n" + wpAssignedCodes.length );
+    <!--alert( "GOT NEW WPASSIGNMENTCODES TO SEND: \n" + wpAssignedCodes.length );-->
     var proc = opener.Processing.getInstanceById( "LiveWave" );
     var chainedCodes = wpAssignedCodes.join();
-    alert( chainedCodes );
+    <!--alert( chainedCodes );-->
     proc.setNewCodesAncWpMO( chainedCodes );  
   }
   <!-- UNCOMMENT these for debugging

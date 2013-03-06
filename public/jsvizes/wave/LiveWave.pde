@@ -703,7 +703,7 @@ class WaveActivity extends LVActivity {
 
 
   void processDatastream( Table databaseStream ) {
-    println( "processing Databasestream for Wave ... " );
+    //println( "processing Databasestream for Wave ... " );
     wave.growWave( databaseStream );
     wave.lastCountForFuncs = wave.funcs.size();
   } // end processDatastream()
@@ -864,10 +864,10 @@ class LVActivity extends Activity {
     if( now - lastRequestTime > 5000 ) {
       if( onDatastream ) {
         String s = makeNextURLAddress( baseURLAddress );
-        println( "About to poll database on this address: " + s );
-        if( myAjaxObject == null ) {
+        //if( myAjaxObject == null ) {
+        //  println( "     >>>>>> Creating new AjaxGETOvbject" );
           myAjaxObject = new AjaxGETObject();
-        }
+        //}
         connectDB( s );
         lastRequestTime = millis();
       }
@@ -886,7 +886,7 @@ class LVActivity extends Activity {
       //}
       //else
       //  ret = adetails;
-      println( "baseURLAddress is now: " + ret );
+      //println( "baseURLAddress is now: " + ret );
       return ret;
     } // end makeBaseURLAddress()
     
@@ -906,7 +906,7 @@ class LVActivity extends Activity {
   void buildCodeCabinet() {
   // populates the ArrayLists and HashMaps that facilitate usage of Codes
   //     
-    println( "BUILDING CODECABINET : " );
+    //println( "BUILDING CODECABINET : " );
     String[] dbGetCodeD = loadStrings( "/getCodeDictionary" );
     String codeCatStamp = "";
     CodeCategory stampObject = null;
@@ -971,7 +971,6 @@ class LVActivity extends Activity {
     //myAjaxObject.request.open( "GET", s + makeNoCache(), true );
     //myAjaxObject.request.send( null );
     myAjaxObject.makeAjaxGet( s + makeNoCache() );
-
     //println( "connecting to DB @ " + s + makeNoCache() );
   } // end connectDB()
 
@@ -3636,7 +3635,7 @@ class Wave extends Section {
   // Needs to be commented and reworked
     int wpCountBefore = wavePoints.size();
     super.populateFuncs( t );
-    println( "Applying Datastream to Wave ... " );
+    //println( "Applying Datastream to Wave ... " );
     addStudents( funcs, lastCountForFuncs, minPostTime, maxPostTime, t );
     addWavePoints( funcs, lastCountForFuncs, t );
     int wpCountAfter = wavePoints.size(); 
@@ -3702,6 +3701,11 @@ class Wave extends Section {
         }
       }	
     } // end for i
+  
+    for( int j = 0; j < indexPrev; j++ ) {
+      WavePt wp = wavePoints.get( j );
+      wp.updateWaveRad();
+    }
   } // end processWavePoints()
 
 
@@ -4422,10 +4426,9 @@ class Section {
     print( "populating funcs with Datastream ... " );
     for( int i = 1; i < t.getRowCount(); i++ )
       funcs.add( new Function ( t, i, getFuncsCount() ) );
-    //lastCountForFuncs = funcs.size();
     updateHasData();
     updateMinMaxPostTime();
-    println( "funcs count is now: " + funcs.size() + " maxPostTime is now: " + maxPostTime + " [ DONE ]..." );
+    //println( "funcs count is now: " + funcs.size() + " maxPostTime is now: " + maxPostTime + " [ DONE ]..." );
 
     //println( "\t \t PRINTING FUNCTIONS: " );
     //for( int i = 0; i < funcs.size(); i++ ) {
