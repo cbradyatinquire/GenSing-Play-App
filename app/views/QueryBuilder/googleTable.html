@@ -44,7 +44,8 @@
 	    } );
 	     
 	    /* Init the table */
-	    var oTable = $('#example').dataTable( );
+	    var oTable = $('#example').dataTable( {'sScrollY': '300px',
+		'bPaginate': false} );
 } );
 
 function fnGetSelected( oTableLocal )
@@ -88,7 +89,7 @@ function fnGetSelected( oTableLocal )
 	
 	
 	</tbody>
-	<tfoot>
+	 <tfoot>
 		<tr>
 			<th>Student</th>
 			<th>SecsIn</th>
