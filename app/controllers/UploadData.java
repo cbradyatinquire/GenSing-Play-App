@@ -50,7 +50,7 @@ public class UploadData extends Controller {
     	Vector<String> contribErrors = new Vector<String>();
     	Vector<Contribution> contributions = new Vector<Contribution>();
     	Vector<StudentUser> newstudents = new Vector<StudentUser>();
-    	
+    	double secsInCursor = 0.0;
     	if ( attachment.canRead() )
     	{
     		//read
@@ -78,22 +78,35 @@ public class UploadData extends Controller {
     			nsess.startTime = thedate;
     			nsess.save();
 
-    			while ((str = in.readLine()) != null) {
+    			boolean keepgoing = true;
+    			while ((str = in.readLine()) != null  && keepgoing) {
     				lines.add(str);
-    				Contribution c = parseForContribution( newstudents, ContributionType.EQUATION, croom, nsess, thedate, str );
-    				if (c == null )
-    				{
-    					contribErrors.add(str);
-    				}
-    				else
-    				{
-    					contributions.add( c );
-    				}
+    				System.err.println("Seconds in cursor is now at: " + secsInCursor);
+    				//try {
+    					Contribution c = parseForContribution(  newstudents, ContributionType.EQUATION, croom, nsess, thedate, str );
+    					if (c == null )
+        				{
+        					contribErrors.add(str);
+        				}
+        				else
+        				{
+        					contributions.add( c );
+        					if ( c.secondsIn < secsInCursor ) { keepgoing = false; }
+        					else { secsInCursor = c.secondsIn; }
+        				}
+    				//}
+//    			    catch (OutOfOrderException ooo) {
+//    			    	System.err.println("caught the exception");
+//    			    	keepgoing = false;
+//    	    			error("!!CONTRIBUTIONS ARE NOT IN TIME-ORDER -- REJECTING THE FILE!!");
+//    	    		}
     			}
     			in.close();
+    			if (!keepgoing) { error("!!CONTRIBUTIONS ARE NOT IN TIME-ORDER -- REJECTING THE FILE!!"); }
     		} catch (IOException e) {
     			error("Problem reading file");
-    		}
+    		} 
+    		
     		render(contributions, contribErrors, newstudents );
     	}
     }
@@ -162,7 +175,17 @@ public class UploadData extends Controller {
     			feedback.add("+ + + + + + + + + +");
     			int news = 0;
     			int errs = 0;
-    			while ((str = in.readLine()) != null) {
+    			double secondsCursor = 0.0;
+    			boolean keepgoing = true;
+    			while ((str = in.readLine()) != null && keepgoing) {
+    				double secsIn = getSecondsInFromLine(str);
+    				if (secsIn < secondsCursor)
+    				{
+    					feedback.add("CRITICAL ERROR: CONTRIBUTIONS ARE NOT IN TIME ORDER:  DO NOT UPLOAD THIS FILE");
+    					keepgoing = false;
+    				}
+    				else
+    					secondsCursor = secsIn;
     			    String nsuName = getStudentNameFromLine(str);
     			    if ( nsuName == null ) 
     			    { 
@@ -179,10 +202,15 @@ public class UploadData extends Controller {
     			    	}
     			    }
     			}
-    			feedback.add( errs + " lines not parseable as contributions were found");
-    			feedback.add("+ + + + + + + + + +");
-    			feedback.add("Students:");
-    			feedback.add( news + " new students would be created with this upload");
+    			if ( keepgoing ) {
+	    			feedback.add( errs + " lines not parseable as contributions were found");
+	    			feedback.add("+ + + + + + + + + +");
+	    			feedback.add("Students:");
+	    			feedback.add( news + " new students would be created with this upload");
+    			}
+    			else {
+    				feedback.add("DO NOT UPLOAD THIS FILE");
+    			}
     			in.close();
     		} catch (IOException e) {
     			feedback.add("Problem reading file");
@@ -201,6 +229,20 @@ public class UploadData extends Controller {
     		uname = fields[0].substring(1,fields[0].length()-1);
 		}
     	return uname;
+    }
+    
+    private static double getSecondsInFromLine( String aline )
+    {
+    	String[] fields = aline.split(",");
+    	double secsin = -1.0;
+    	try {
+    	  secsin = Double.parseDouble(fields[1]);
+    	}
+    	catch (NumberFormatException e )
+    	{
+    		return -1.0;
+    	}
+    	return secsin;
     }
     
     
@@ -289,7 +331,7 @@ public class UploadData extends Controller {
     
     
     ///parse line for contributions...
-    public static Contribution parseForContribution( Vector<StudentUser>newstudents, ContributionType ct, Classroom croom, Session sess, Date sessstart, String aline )
+    public static Contribution parseForContribution(  Vector<StudentUser>newstudents, ContributionType ct, Classroom croom, Session sess, Date sessstart, String aline )
     {
     	//NAME,TIME,Y=,FUNCTION,MATH1,MATH2,MATH3,SOCIAL1,SOCIAL2,SOCIAL3,HIT/NO-HIT,STATUS
     	int N = 0; //namefield N
@@ -303,7 +345,9 @@ public class UploadData extends Controller {
     	String[] fields = aline.split(",");
     	if (fields.length < 4) { return null; }
     	
+    	
     	try {
+    		
     		StudentUser su = null;
     		
     		if ( fields[N].startsWith("[") && fields[N].endsWith("]"))
@@ -334,12 +378,14 @@ public class UploadData extends Controller {
     	if (fields.length == 5 && "POINT".equalsIgnoreCase(fields[2]) )
     		return parseForPointContribution(   su,  sess,  sessstart,  fields );
     	
-    	double secsin = Double.parseDouble(fields[T]);
+    	
     	String contribid = fields[L];
     	String contribbody = fields[F];
     	
     	Contribution toreturn = new Contribution(ct, su, sess, contribid, contribbody );
+    	double secsin = Double.parseDouble(fields[T]);
     	toreturn.secondsIn = secsin;
+    	
     	toreturn.timestamp = new Date(sessstart.getTime() + (int)(secsin * 1000));
     	//add to database. == maybe don't do this --> maybe wait till we are cleared by user.
     	toreturn.save();
