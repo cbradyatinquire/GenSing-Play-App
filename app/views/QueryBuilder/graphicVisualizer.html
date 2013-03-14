@@ -1,8 +1,24 @@
 #{extends 'main.html' /}
 #{set title:'Graphic Visualizer' /}
 
-
 <head>
+
+  <style type="text/css">
+    #geogebraPanel {
+      position : absolute;
+      width : 400px;
+      left : 820px;
+    }
+    #dataPanel {
+      position : absolute;
+      left : 10px;
+      maximum-width : 8000px;
+    }
+    #footer {
+      position : absolute;
+      bottom: 20px;
+    }
+  </style>
 
   <script src="/public/javascript/dynatree/jquery/jquery.js" type="text/javascript"></script>
   <script src="/public/javascript/dynatree/jquery/jquery-ui.custom.js" type="text/javascript"></script>
@@ -14,168 +30,181 @@
   <script type="text/javascript" language="javascript" src="http://www.geogebra.org/web/4.2/web/web.nocache.js"></script>
   
 
-    
 
-	<script type="text/javascript">
-	
-	$(document).ready(function () {
 
-	console.log( childarray );
-	 $("#tree").dynatree({
-      checkbox: true,
-      selectMode: 3,
-      children : childarray,
-      onSelect: function(select, node) {
-        // Get a list of all selected nodes, and convert to a key array:
-        var numStudents = 0;
-        var numSessions = 0;
-        sessIDs = [];
-        studIDs = [];
-        var selKeys = $.map(node.tree.getSelectedNodes(), function(node){
-          if (node.getLevel() == 5 )
-	      { 
-	      	if ( node.getParent().isFirstSibling() )
-	      	{ 
-	      		numSessions++;
-	      		sessIDs.push( node.data.key );
-	      		return node.data.title; 
-	        }
-	      	{ 
-	      		numStudents++;
-	      		studIDs.push( node.data.key );
-	      		return null;
-	      	}
-	      }
-	      else
-	      { return null; }
-        });
-        $("#numStudentsSelected").text(  numStudents );
-        $("#numSessionsSelected").text(  numSessions );
-        //$("#echoSelection3").text(selKeys.join(", "));
-      },
-      onDblClick: function(node, event) {
-        node.toggleSelect();
-      },
-      onKeydown: function(node, event) {
-        if( event.which == 32 ) {
-          node.toggleSelect();
-          return false;
+  <script type="text/javascript">
+
+    $(document).ready(function () {
+
+      $('#sliderButton').click( function() {
+        if( $(this).val() == 'Load Data Into Table' ) {
+          ggT();
+          $(this).val('Select New Data From Tree');
+          $('#tree').slideUp();
+        } else {
+          $(this).val('Load Data Into Table');
+          $('#tree').slideDown();
         }
-      },
-      // The following options are only required, if we have more than one tree on one page:
-//        initId: "treeData",
-      cookieId: "dynatree-Cb3",
-      idPrefix: "dynatree-Cb3-"
+      } );
+
+      console.log( childarray );
+      $("#tree").dynatree({
+        checkbox: true,
+        selectMode: 3,
+        children : childarray,
+        onSelect: function(select, node) {
+          // Get a list of all selected nodes, and convert to a key array:
+          var numStudents = 0;
+          var numSessions = 0;
+          sessIDs = [];
+          studIDs = [];
+          var selKeys = $.map(node.tree.getSelectedNodes(), function(node){
+            if (node.getLevel() == 5 ) {   
+	      if ( node.getParent().isFirstSibling() ) { 
+	        numSessions++;
+	        sessIDs.push( node.data.key );
+	        return node.data.title; 
+	      }
+  	      { 
+	        numStudents++;
+	        studIDs.push( node.data.key );
+	        return null;
+	      }
+	    } 
+            else { 
+              return null; 
+            }
+          });
+          $("#numStudentsSelected").text(  numStudents );
+          $("#numSessionsSelected").text(  numSessions );
+          //$("#echoSelection3").text(selKeys.join(", "));
+        },
+        onDblClick: function(node, event) {
+          node.toggleSelect();
+        },
+        onKeydown: function(node, event) {
+          if( event.which == 32 ) {
+            node.toggleSelect();
+            return false;
+          }
+        },
+        // The following options are only required, if we have more than one tree on one page:
+        //initId: "treeData",
+        cookieId: "dynatree-Cb3",
+        idPrefix: "dynatree-Cb3-"
+      });    
+
     });
+  </script>
     
-   });
-    </script>
-    
-    
-    <script type="text/javascript">    
+  
+
+  
+  <script type="text/javascript">    
     var sessIDs = [];
     var studIDs = [];
     var childarray = ${kiddos};
-    </script>
+  </script>
 
-	<script type="text/javascript">    
-    	function testQuery() {
-    		listAction =  #{jsAction @testQuery(':sessionIDs', ':studentIDs') /};
-			$('#querypreview').load(
-		       listAction({sessionIDs: sessIDs, studentIDs: studIDs}), 
-		       function( data ) {
-	       			//alert("hello there");
-           			//$('#testthree').html("loaded: " + data);  
-           		}
-   			);
+
+
+
+  <script type="text/javascript">    
+    function testQuery() { 
+      listAction =  #{jsAction @testQuery(':sessionIDs', ':studentIDs') /};
+      $('#querypreview').load(
+        listAction( {sessionIDs: sessIDs, studentIDs: studIDs} ), 
+	function( data ) {
+	  //alert("hello there");
+          //$('#testthree').html("loaded: " + data);  
+        }
+      );
    		//	$('#doit').css('visibility', 'visible');
    		//	$('#queryresults').html("-");
    		//	$('#testit').css('visibility', 'hidden');
    			
    			
-    	}
+    } // end testQuery()
     	
-    	//var geogebraData;
+    //var geogebraData;
     	
-    	function executeQuery() {
-    		listAction =  #{jsAction @executeQuery(':sessionIDs', ':studentIDs') /};
-			$('#queryresults').load(
-		       listAction({sessionIDs: sessIDs, studentIDs: studIDs}), 
-		       function( data ) {
-	       			//alert("hello there");
-	       			//geogebraData = data;
-           			//$('#testthree').html("loaded: " + data);  
-           		}
-   			);
+    function executeQuery() {
+      listAction =  #{jsAction @executeQuery(':sessionIDs', ':studentIDs') /};
+      $('#queryresults').load(
+        listAction({sessionIDs: sessIDs, studentIDs: studIDs}), 
+	function( data ) {
+	  //alert("hello there");
+	  //geogebraData = data;
+          //$('#testthree').html("loaded: " + data);  
+        }
+      );
    			
-  
-   			//$('#doit').css('visibility', 'hidden');
-   			//$('#testit').css('visibility', 'visible');
+      //$('#doit').css('visibility', 'hidden');
+      //$('#testit').css('visibility', 'visible');
    			
-    	}
+    } // end executeQuery()
     	
-    	function sendToGeo() {
-    		anotherAction = #{jsAction @geoRouter(':sessionIDs', ':studentIDs') /};
-    		//alert("got to sendToGeo() ");
-    		$('#queryresults').load(
-		       anotherAction({sessionIDs: sessIDs, studentIDs: studIDs}),
-		       function( data ) {
-           			//$('#testthree').html("loaded: " + data);  
-           		}
-   			);
-    	}
-    	
-    	
-    	function ggT() {
-    		third = #{jsAction @googleTable(':sessionIDs', ':studentIDs') /};
-    		$('#queryresults').load(
-		       third({sessionIDs: sessIDs, studentIDs: studIDs}),
-		       function( data ) {
-           		}
-   			);
-    	}
-    	
-    		
-								    	
-								    	
-		</script>
+    function sendToGeo() {
+      anotherAction = #{jsAction @geoRouter(':sessionIDs', ':studentIDs') /};
+      //alert("got to sendToGeo() ");
+      $('#queryresults').load(
+	anotherAction({sessionIDs: sessIDs, studentIDs: studIDs}),
+	function( data ) {
+          //$('#testthree').html("loaded: " + data);  
+        }
+      );
+    } // end sendToGeo()
+    	    	
+    function ggT() {
+      third = #{jsAction @googleTable(':sessionIDs', ':studentIDs') /};
+      $('#queryresults').load(
+        third({sessionIDs: sessIDs, studentIDs: studIDs}),
+	function( data ) {
+        }
+      );
+      $('#queryresults').dataTable( {
+		"sScrollY": "200px",
+		"bPaginate": false
+      } );
+    } // end ggT()
+  </script>
 	
+</head>
+    
+<body>
 
-    </head>
+  <div id="tree">
     
-    
-    <body>
-    
-    <div id="tree">
-    
-    </div>
-    
-
- 
-  <div>The selection contains <span id="numStudentsSelected">0</span> student(s) and <span id="numSessionsSelected">0</span> class session(s).</div>
+  </div>
+     
+  <div id="summaryLine">
+    The selection contains <span id="numStudentsSelected">0</span> student(s) and <span id="numSessionsSelected">0</span> class session(s).
     <br> 
    
-    <input type="button" value="Load Data Into Table" onclick="ggT()"/><br>
-    
-   
-     <article name="geogebraInstance" class="geogebraweb" data-param-width="800" data-param-height="400"
+    <input id="sliderButton" type="button" value="Load Data Into Table"/><br>
+  </div>
+
+  <div id="mainArea">
+    <div id="geogebraPanel">
+     <article name="geogebraInstance" class="geogebraweb" data-param-width="400" data-param-height="400"
 	 data-param-showResetIcon="false" data-param-enableLabelDrags="false" data-param-showMenuBar="false"
 	 data-param-showToolBar="false" data-param-showAlgebraInput="false" data-param-ggbbase64="UEsDBBQACAAIAEKHlEEAAAAAAAAAAAAAAAAWAAAAZ2VvZ2VicmFfamF2YXNjcmlwdC5qc0srzUsuyczPU0hPT/LP88zLLNHQVKiuBQBQSwcI1je9uRkAAAAXAAAAUEsDBBQACAAIAEKHlEEAAAAAAAAAAAAAAAAMAAAAZ2VvZ2VicmEueG1svVZtb9s2EP6c/oqDPsc2X/TmQE6xFihQIOsGpBuGfaMk2uYii4ZI2U7RH78jKdlysw4tOsyIciLv4T13xztSxevTroGD7IzS7SqicxKBbCtdq3azinq7nuXR6/tXxUbqjSw7AWvd7YRdRbFDqnoVsZSsabLMZkkSZ7NYxPUsz4icZbVkZSnTfJnUEcDJqLtWfxA7afaiko/VVu7Eg66E9cRba/d3i8XxeJyPVHPdbRabTTk/GTSAbrZmFQ0vd2juatGRezgjhC7++PkhmJ+p1ljRVjICF0Kv7l/dFEfV1voIR1Xb7SrKszyCrVSbLcaUxjhYONAeE7KXlVUHaXDpZOhjtrt95GGidfqb8AbNOZwIanVQtexWEZmzjJKMpDQhPKZpnmQR6E7J1g5gOpAuRnPFQcljsOvePGUcgdW6KYUzCZ8/AyOMwK0TNAiGIk2DioQ5woNgQcRBJAETh+VxgMYBEwdMzCM4KKPKRq6itWgMplC16w637zw29rmR3p9h4hI+vcWYjPqEYE6wTkLOcZ6QW/ek+MROsbgOkk5Ybdd/J+lImXL67ZTsRyj5SMl4/pKSJV+JMv2X5AYfviVMrKcLJ1L5P/+8YOTsOxjD+McI0/h/CbFYjJ1SDM0BZuuww05auTOuXfgSkqWregoJtkaaYZEnQJcoMgbYDEATiBMc0hxSJzPgGSpi4JCDw1EOvjeSHP/FmTeWQoLG3GyGLQkUiWJIOFDfUjFgI4FvS2xRxhGRJJDgIkdPmTPBU4hTHPEcYvTRdWRGEchxIY6RngGnwN1imgFLIXX2aOw6Pc2d62iSQUogpc4gNjU2dGhmxOfAXTTpkC7V7nt7laJqV4+vVu/Pe4FoPI4up144nq4OxZuiEaVs8J54dDsJcBCN6whPtNathXETWZjbdGK/VZV5lNbiKgN/iYN4EFae3iHajNweW+nW/Npp+1Y3/a41AJVuyNln3dDJOzt7jQM+UcRTRTJRpJP37B95NWqgNxL5dWdGuKjr9w5xORowk7+0zfObToqnvVbXYRQLf+UUsq8aVSvR/o7F6lhcXmC8gfxpNd5ACSOjI7qrH58NVjCc/pSdxhuA0jmf/Bju6nNQMZLOl9MfXjGmEq75OL9axCl25vNXdMNGycN5i8RJnqPfdK6zh8jd4L15o5vLlI//rdjbvvMfD3g4di6qn9pNI32N+M7Gm7l6KvXpMRQHD7Y+Pu9xNARfbnzeAc8GliQIGGQZpMc4z84o4jHEI8hYbao+6+mSeYSXZZAeheUbXBsipWOYlIw0yvgTjURXfeNr393zfavswziwqnq6ROrwH/pdKc8VdG2S/kcmi8UXFVY8ya6VzVDQuJO97k3oz0mt17JSOxwGxZAQ4TbrN3QgzNZy08nR78Z/loV0ee1Vrb6Y9qbedXr3vj18xEr4woFiMXpZmKpTe1dwUOIl8CQvNVUrI/AOqafrXAdi6JW7KzA91qUGe7O3W935Ly88UlA6hinU9+PwaXn/N1BLBwie4WoKaQQAAPcKAABQSwECFAAUAAgACABCh5RB1je9uRkAAAAXAAAAFgAAAAAAAAAAAAAAAAAAAAAAZ2VvZ2VicmFfamF2YXNjcmlwdC5qc1BLAQIUABQACAAIAEKHlEGe4WoKaQQAAPcKAAAMAAAAAAAAAAAAAAAAAF0AAABnZW9nZWJyYS54bWxQSwUGAAAAAAIAAgB+AAAAAAUAAAAA"></article>
- 
+    </div>
     
-    <div id="queryresults"></div>
-    
-    
-    <iframe id="datatable" src="" width="800px" height="2500px" scrolling="no" seamless>
+    <div id="dataPanel">
+      <table id="queryresults">
+      </table>
+     
+      <iframe id="datatable" src="" width="800px" height="2500px" scrolling="no" seamless>
   	<p>Your browser does not support iframes.</p>
-	</iframe>
-    
-    
-    
-    <h4>
-Go back to the <a href="/">Home Screen</a>.
-</h4>
-    </body>
+      </iframe>
+      <h4>
+      Go back to the <a href="/">Home Screen</a>.
+      </h4>
+    </div>
+  </div>
+  
+</body>
     
     
     
