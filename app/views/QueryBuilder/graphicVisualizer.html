@@ -3,20 +3,28 @@
 
 <head>
 
-  <style type="text/css">
+  <style type="text/css">    
     #geogebraPanel {
       position : absolute;
       width : 400px;
-      left : 820px;
+      right : 10px;
     }
     #dataPanel {
       position : absolute;
       left : 10px;
-      maximum-width : 8000px;
+      max-width : 1100px;
+      width : 800px;
     }
-    #footer {
-      position : absolute;
-      bottom: 20px;
+    #mainArea{
+      position : relative;
+      max-width : 1500px;
+      min-width : 1220px;
+      margin : 10px auto 0px auto;
+      padding : 5px 5px 5px 5px;
+      border-left : 1px solid #0033ff;
+      border-right : 1px solid #0033ff;
+      border-top : 1px solid #0033ff;
+      border-bottom : 1px solid #0033ff;
     }
   </style>
 
@@ -157,15 +165,17 @@
     	    	
     function ggT() {
       third = #{jsAction @googleTable(':sessionIDs', ':studentIDs') /};
+      console.log( "third is:" );
+      console.log( third );
+      console.log( "end console.log on third" );
+      console.log( "execute third()" );
+      console.log( third( {sessionIDs: sessIDs, studentIDs: studIDs} ) );
+      console.log( 'end console.log on third()' );
       $('#queryresults').load(
         third({sessionIDs: sessIDs, studentIDs: studIDs}),
 	function( data ) {
         }
       );
-      $('#queryresults').dataTable( {
-		"sScrollY": "200px",
-		"bPaginate": false
-      } );
     } // end ggT()
   </script>
 	
@@ -186,23 +196,21 @@
 
   <div id="mainArea">
     <div id="geogebraPanel">
-     <article name="geogebraInstance" class="geogebraweb" data-param-width="400" data-param-height="400"
-	 data-param-showResetIcon="false" data-param-enableLabelDrags="false" data-param-showMenuBar="false"
-	 data-param-showToolBar="false" data-param-showAlgebraInput="false" data-param-ggbbase64="UEsDBBQACAAIAEKHlEEAAAAAAAAAAAAAAAAWAAAAZ2VvZ2VicmFfamF2YXNjcmlwdC5qc0srzUsuyczPU0hPT/LP88zLLNHQVKiuBQBQSwcI1je9uRkAAAAXAAAAUEsDBBQACAAIAEKHlEEAAAAAAAAAAAAAAAAMAAAAZ2VvZ2VicmEueG1svVZtb9s2EP6c/oqDPsc2X/TmQE6xFihQIOsGpBuGfaMk2uYii4ZI2U7RH78jKdlysw4tOsyIciLv4T13xztSxevTroGD7IzS7SqicxKBbCtdq3azinq7nuXR6/tXxUbqjSw7AWvd7YRdRbFDqnoVsZSsabLMZkkSZ7NYxPUsz4icZbVkZSnTfJnUEcDJqLtWfxA7afaiko/VVu7Eg66E9cRba/d3i8XxeJyPVHPdbRabTTk/GTSAbrZmFQ0vd2juatGRezgjhC7++PkhmJ+p1ljRVjICF0Kv7l/dFEfV1voIR1Xb7SrKszyCrVSbLcaUxjhYONAeE7KXlVUHaXDpZOhjtrt95GGidfqb8AbNOZwIanVQtexWEZmzjJKMpDQhPKZpnmQR6E7J1g5gOpAuRnPFQcljsOvePGUcgdW6KYUzCZ8/AyOMwK0TNAiGIk2DioQ5woNgQcRBJAETh+VxgMYBEwdMzCM4KKPKRq6itWgMplC16w637zw29rmR3p9h4hI+vcWYjPqEYE6wTkLOcZ6QW/ek+MROsbgOkk5Ybdd/J+lImXL67ZTsRyj5SMl4/pKSJV+JMv2X5AYfviVMrKcLJ1L5P/+8YOTsOxjD+McI0/h/CbFYjJ1SDM0BZuuww05auTOuXfgSkqWregoJtkaaYZEnQJcoMgbYDEATiBMc0hxSJzPgGSpi4JCDw1EOvjeSHP/FmTeWQoLG3GyGLQkUiWJIOFDfUjFgI4FvS2xRxhGRJJDgIkdPmTPBU4hTHPEcYvTRdWRGEchxIY6RngGnwN1imgFLIXX2aOw6Pc2d62iSQUogpc4gNjU2dGhmxOfAXTTpkC7V7nt7laJqV4+vVu/Pe4FoPI4up144nq4OxZuiEaVs8J54dDsJcBCN6whPtNathXETWZjbdGK/VZV5lNbiKgN/iYN4EFae3iHajNweW+nW/Npp+1Y3/a41AJVuyNln3dDJOzt7jQM+UcRTRTJRpJP37B95NWqgNxL5dWdGuKjr9w5xORowk7+0zfObToqnvVbXYRQLf+UUsq8aVSvR/o7F6lhcXmC8gfxpNd5ACSOjI7qrH58NVjCc/pSdxhuA0jmf/Bju6nNQMZLOl9MfXjGmEq75OL9axCl25vNXdMNGycN5i8RJnqPfdK6zh8jd4L15o5vLlI//rdjbvvMfD3g4di6qn9pNI32N+M7Gm7l6KvXpMRQHD7Y+Pu9xNARfbnzeAc8GliQIGGQZpMc4z84o4jHEI8hYbao+6+mSeYSXZZAeheUbXBsipWOYlIw0yvgTjURXfeNr393zfavswziwqnq6ROrwH/pdKc8VdG2S/kcmi8UXFVY8ya6VzVDQuJO97k3oz0mt17JSOxwGxZAQ4TbrN3QgzNZy08nR78Z/loV0ee1Vrb6Y9qbedXr3vj18xEr4woFiMXpZmKpTe1dwUOIl8CQvNVUrI/AOqafrXAdi6JW7KzA91qUGe7O3W935Ly88UlA6hinU9+PwaXn/N1BLBwie4WoKaQQAAPcKAABQSwECFAAUAAgACABCh5RB1je9uRkAAAAXAAAAFgAAAAAAAAAAAAAAAAAAAAAAZ2VvZ2VicmFfamF2YXNjcmlwdC5qc1BLAQIUABQACAAIAEKHlEGe4WoKaQQAAPcKAAAMAAAAAAAAAAAAAAAAAF0AAABnZW9nZWJyYS54bWxQSwUGAAAAAAIAAgB+AAAAAAUAAAAA"></article>
-    </div>
+      <article name="geogebraInstance" class="geogebraweb" data-param-width="400" data-param-height="400"
+        data-param-showResetIcon="false" data-param-enableLabelDrags="false" data-param-showMenuBar="false"
+        data-param-showToolBar="false" data-param-showAlgebraInput="false" data-param-ggbbase64="UEsDBBQACAgIAFYvbkIAAAAAAAAAAAAAAAAWAAAAZ2VvZ2VicmFfamF2YXNjcmlwdC5qc0srzUsuyczPU0hPT/LP88zLLNHQVKiuBQBQSwcI1je9uRkAAAAXAAAAUEsDBBQACAgIAFYvbkIAAAAAAAAAAAAAAAAMAAAAZ2VvZ2VicmEueG1svVZRb9s2EH5Of8VBz7FNipQsB3KKtUCBAlk3IN0w7I2SaJmLLBoiZTtFf/yOpGTLaVd06LAg8unIj/fdHe9I5a9PuwYOsjNKt+uIzkkEsi11pdp6HfV2M8ui1/ev8lrqWhadgI3udsKuI+6QqlpHJIslyTIyq1ZJOuPJJpuJkrMZL4s042nMi1JEACej7lr9Qeyk2YtSPpZbuRMPuhTWE2+t3d8tFsfjcT5SzXVXL+q6mJ9MFQG62Zp1NLzcobmrRUfm4TEhdPHHzw/B/Ey1xoq2lBG4EHp1/+omP6q20kc4qspuMQxCI9hKVW9dTEkawcKB9piQvSytOkiDSyeqj9nu9pGHidbN34Q3aM7hRFCpg6pkh/mZx3zFlmmSZClhfEXjLALdKdnaAUwH0sVoLj8oeQx23Zun5BFYrZtCOJPw+TPEJCZw6wQNIkaRpmGKhDHCgoiD4EEkAcPDch6gPGB4wHAWwUEZVTRyHW1EYzCFqt10uH1n3djnRnp/hoFL+PQWYzLqE4IZwToJOcdxQm7dk+LD3cTiOkg6YbVd/y9Jz5Sr1fdTxj8UKBs56dfCjJN/CDP9BmmI+3vipMmEE6n8v3++YGTfCvMlY9B/jDDl/0uI+WJslXzoDjBbhx0prdwZ1zBsBcnK1T2FBJsjXWKZJ0BXKJYxYDsATYAnqNIMUieXwJY4wYFBBg5HGfjuSDL84UtvLIUEjbnRJTYlUCTikDCgvqk4YCuBb0xs0pghIkkgwUWOnsbOBEuBp6ixDDj66HpySRHIcCHqSB8Do8DcYrqEOIXU2aPc9XqaOdfRZAwpgZQ6g9jW2NKhnRGfAXPRjAebave9vc5RuavGLbF6fx5GOJ5Il4MvnFBX5+JN3ohCNnhVPLq9BDiIxvWEZ9ro1sK4jXEYqzux36rSPEprcZWBv8RBPAgrT+8QbUZujy11a37ttH2rm37XGoBSN2R0FN/p5D2+BKMbNpng04lkMpFO3pdf5dU4A72RyK87M8JFVb13iMvhgKn8pW2e33RSPO21ug4jX/hbJ5d92ahKifZ3LFfH4vIC4yXkD6zxEmLLeHREd9Xjs8EShtOfstOYx9VqnkTwPGhZOifTP7RiStH4I3COyvNU8zbl4Zx6cZLnqOrO9ewQkVPemze6uQz5uN6Kve07/12Ax17nvP2prRvp9973LF665VOhT49h01mw9fF5jxoJDhS1zydg18cJhlIPsgjSY5xnZxTxGOIRZKwiVZ3n6Sr2CC+LID0KyzK4NkRKxzApGWmUCV8w0dAQw8Hnatpd4X2r7MOoWFU+XSJ1+A/9rpDnyrg2Sf8jk/niReXkT7JrZTMUKu5kr3sT+m5Sw5Us1Q7VMDEkRLjN+g0dCKOVrDs5+t34L66QLj9LpjX4xbA39a7Tu/ft4SNWwgsH8sXoZW7KTu1dwUGBx/uTvNRUpYzA26GarnOdhaGX7hbA9FiXGuy53m515z+q8KhA6RimUN9nw1fj/d9QSwcIcO9AW2EEAADSCgAAUEsBAhQAFAAICAgAVi9uQtY3vbkZAAAAFwAAABYAAAAAAAAAAAAAAAAAAAAAAGdlb2dlYnJhX2phdmFzY3JpcHQuanNQSwECFAAUAAgICABWL25CcO9AW2EEAADSCgAADAAAAAAAAAAAAAAAAABdAAAAZ2VvZ2VicmEueG1sUEsFBgAAAAACAAIAfgAAAPgEAAAAAA=="></article>
+      </div>
     
-    <div id="dataPanel">
-      <table id="queryresults">
-      </table>
-     
+      <div id="dataPanel">
+        <div id="queryresults">
+      </div>
+
       <iframe id="datatable" src="" width="800px" height="2500px" scrolling="no" seamless>
   	<p>Your browser does not support iframes.</p>
       </iframe>
-      <h4>
-      Go back to the <a href="/">Home Screen</a>.
-      </h4>
-    </div>
-  </div>
+
+    </div> <!-- end div geogebraPanel -->
+  </div> <!-- end div mainArea -->
   
 </body>
     
