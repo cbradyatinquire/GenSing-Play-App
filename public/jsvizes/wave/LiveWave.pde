@@ -1812,7 +1812,7 @@ class WaveUI extends ActivityUI {
     if( w != null ) {
       owner.owner.setAnchoredWpMO( w );
       popUpMsg = "ANNOTATE;" + w.toString() + ";" + owner.chainCodeItems();
-      // expected string is: "ANNOTATE;serialNum:9|funcString:sin(x)|...|annotation:onelongannotationstring|codes:ASMD,R,BN;Math:VASM,Math:R1,...,Social:BN"
+      // expected string is: "ANNOTATE;serialNum:9|funcString:sin(x)|...|annotation:onelongannotationstring|codes:VASM,R1,BN;Math:VASM,Math:R1,...,Social:BN"
         
       popUpWindow = window.open( fileName, windowTitle, optionString );
     }
