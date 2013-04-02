@@ -50,28 +50,9 @@ public class Bootstrap extends Job {
 
         	StudentUser csu = new StudentUser("Otto Mattique", c);
         	csu.save();
-
-        	for (int i=1; i<100; i++)
-        	{
-        		double co = i / 10.0;
-        		String fn = String.valueOf(co) + "sin(X)";
-        		Contribution con;
-        		if ( i % 30 == 0 )
-        		{
-        			con = new Contribution(ContributionType.EQUATION, csu, se, "Y"+i, "h" + fn + "g", false );
-        		}
-        		else
-        		{
-        			con = new Contribution(ContributionType.EQUATION, sus.get(i%30), se, "Y"+i, fn, true );
-        		}
-        		Long tim = con.timestamp.getTime();
-        		con.timestamp.setTime( tim + i * 1000);
-        		con.secondsIn += i;
-        		con.save();
-        	}
-            
-            
-            CodeCategory cca = new CodeCategory("Math");
+        	
+        	
+        	CodeCategory cca = new CodeCategory("Math");
             CodeCategory ccb = new CodeCategory("Social");
             CodeCategory ccc = new CodeCategory("Correctness");
             CodeDescriptor cda = new CodeDescriptor(cca, "ASMD");
@@ -114,6 +95,29 @@ public class Bootstrap extends Job {
             cdh2.save();
             cdi.save();
             cdj.save();
+            
+
+        	for (int i=1; i<100; i++)
+        	{
+        		double co = i / 10.0;
+        		String fn = String.valueOf(co) + "sin(X)";
+        		Contribution con;
+        		if ( i % 30 == 0 )
+        		{
+        			con = new Contribution(ContributionType.EQUATION, csu, se, "Y"+i, "h" + fn + "g", false );
+        		}
+        		else
+        		{
+        			con = new Contribution(ContributionType.EQUATION, sus.get(i%30), se, "Y"+i, fn, true );
+        		}
+        		Long tim = con.timestamp.getTime();
+        		con.timestamp.setTime( tim + i * 1000);
+        		con.secondsIn += i;
+        		con.save();
+        	}
+            
+            
+            
             
             CodeCategory cctest = CodeCategory.findByName("Math");
             CodeDescriptor cdtest = CodeDescriptor.findByCategoryAndName(cctest, "VASM");

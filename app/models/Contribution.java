@@ -101,7 +101,6 @@ public class Contribution extends Model {
 		s += body;
 		return s;
 //		return String.valueOf(sequenceNumber) + "|" + type + "|" + secondsIn + "|" + student.getUserName() + "|" + objectID + "|" + body;
-		
 	}
 	
 	public String codingsShorthand()

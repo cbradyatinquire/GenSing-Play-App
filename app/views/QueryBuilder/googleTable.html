@@ -10,6 +10,9 @@
     <script type='text/javascript' src='/public/javascript/datatables/jquery.dataTables.js'></script>
     
     <script type='text/javascript'>
+     var cid = 0;
+     var cbody = " ** ";
+     var str = " ";
      
      $(document).ready(function() {
     /* Add/remove class to a row when clicked on */
@@ -52,8 +55,10 @@ function fnGetSelected( oTableLocal )
 {
     return oTableLocal.$('tr.row_selected');
 }
-     
-     
+
+     var countstudents;
+     var countcontribs;
+     var countvalids;
     </script>
   </head>
 
@@ -84,6 +89,7 @@ function fnGetSelected( oTableLocal )
     <td>${cont.codingsShorthand()}</td>
     <td>${cont.annotationsShorthand()}</td>
     <td>${cont.isValid}</td>
+  
     </tr>
     #{/list}
 	
@@ -101,7 +107,52 @@ function fnGetSelected( oTableLocal )
 		</tr>
 	</tfoot>
 </table>
+</div>
+<div id="stattable">
+<br>
+<br>
+<table cellpadding="0" cellspacing="0" border="0" class="stats" id="stats">
+	<thead>
+		<tr>
+			<th>Contributions</th>
+			<th>Students</th>
+			<th>Valid Contributions</th>
+			<th>Invalid Contributions</th>
+			
+			#{list items:categories, as:'cat'}
+			<th>${cat}</th>
+			#{/list}
+		</tr> 
+	</thead>
+	<tbody>
+
+    <tr >
+    <td>${numcontributions}</td>
+    <td>${numstudents}</td>
+    <td>${numvalids}</td> 
+    <td>${numinvalids}</td> 
+    
+    #{list items:counts, as:'count'}
+	<td>${count}</td>
+	#{/list}
+    </tr>
+	</tbody>
+</table>
+<br>
+<br>
+FOR TESTING ONLY -- USE THE FORM BELOW TO SET THE CODINGS FOR A CONTRIBUTION
+<form action="@{QueryBuilder.addCodes()}" method="POST">
+    Session ID:<input type="text" name="sessionId" id="sessionId" value="1"><br>
+    Sequence #:<input type="text" name="sequence" id="sequence" value="1"><br>
+    Codings...:<input type="text" name="codings" id="codings" value="Math:R1"><br>
+    <input type="submit" value="SET CODINGS" />   
+		</div>	
 			</div>
-			</div>
+			
+			    
+</form>
+			
+			
   </body>
+  
 </html>

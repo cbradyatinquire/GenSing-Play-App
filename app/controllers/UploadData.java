@@ -177,8 +177,12 @@ public class UploadData extends Controller {
     			int errs = 0;
     			double secondsCursor = 0.0;
     			boolean keepgoing = true;
+    			int linenum = 0;
     			while ((str = in.readLine()) != null && keepgoing) {
+    				linenum++;
+    				System.err.println("LINE NUMBER " + linenum);
     				double secsIn = getSecondsInFromLine(str);
+    				if (secsIn < 0 ){ feedback.add("!!Line number " + linenum + " is faulty:" + str); }
     				if (secsIn < secondsCursor)
     				{
     					feedback.add("CRITICAL ERROR: CONTRIBUTIONS ARE NOT IN TIME ORDER:  DO NOT UPLOAD THIS FILE");
@@ -221,6 +225,7 @@ public class UploadData extends Controller {
    
     private static String getStudentNameFromLine( String aline )
     {
+    	if (aline == null) { return null; }
     	String[] fields = aline.split(",");
     	if (fields.length < 4) { return null; }
     	String uname = null;
@@ -233,7 +238,9 @@ public class UploadData extends Controller {
     
     private static double getSecondsInFromLine( String aline )
     {
+    	if (aline == null) { return -1.0; }
     	String[] fields = aline.split(",");
+    	if (fields.length < 2 ) { return -1.0; }
     	double secsin = -1.0;
     	try {
     	  secsin = Double.parseDouble(fields[1]);

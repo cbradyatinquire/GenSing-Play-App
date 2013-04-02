@@ -1,9 +1,13 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import models.Classroom;
+import models.CodeCategory;
+import models.CodeDescriptor;
+import models.Coding;
 import models.Contribution;
 import models.School;
 import models.Session;
@@ -252,7 +256,26 @@ public class QueryBuilder extends Controller {
     public static void googleTable( String sessionIDs, String studentIDs  ) {
     	//TODO: copied from above - refactor to all use the same guts.
     	ArrayList<Contribution> contribs = new ArrayList<Contribution>();
-    	
+    	int numcontributions = 0;
+    	int numstudents = 0;
+    	int numvalids = 0;
+    	int numinvalids = 0;
+    	List<CodeCategory> cats = CodeCategory.findAll();
+    	ArrayList<String>categories= new ArrayList<String>();
+    	ArrayList<Integer>counts = new ArrayList<Integer>();
+    	HashMap<String, Integer> catcounts = new HashMap<String, Integer>();
+    	for ( CodeCategory cat : cats )
+    	{
+    		List<CodeDescriptor>descs = cat.descriptors;
+    		for ( CodeDescriptor d : descs)
+    		{
+	    		String key = cat.toString() + ":" + d.descri;
+	    		catcounts.put(key, 0);
+	    		categories.add(key);
+	    		counts.add(0);
+    		}
+    	}
+    		
     	String[] studentIDsa = studentIDs.split(",");
     	String[] sessionIDsa = sessionIDs.split(",");
     	
@@ -275,15 +298,57 @@ public class QueryBuilder extends Controller {
 	    					if (su == null ) { System.err.println("NULL STUDENT FOR ID = " + stu ); }
 	    					else {
 	    						contribs.addAll( Contribution.getBySessionAndStudent( s, su ) );
+	    						numstudents++;
 	    					}
 	    				}
 	    			}
 	    		}
     		}
     	}
-    	render( contribs );
+    	numcontributions = contribs.size();
+    	for (Contribution c : contribs)
+    	{
+    		if (c.isValid) {
+    			numvalids++;
+    			List<Coding> codings = c.codings;
+    			if (c.codings.isEmpty() ) { System.err.println( "Contribution with id " + c.id + " has no codings"); }
+    			for (Coding cod : codings)
+    			{
+    				System.err.println( "Checking for coding " + c.toString() + " in contribution " + c.id);
+    				String thekey = cod.categ + ":" + cod.descrip;
+    				if ( categories.contains(thekey) )  //;catcounts.keySet().contains(thekey) )
+    				{
+    					//int val = catcounts.get(thekey);
+    					//catcounts.put(thekey, val + 1);
+    					int inde = categories.indexOf( thekey );
+    					int val = counts.get( inde );
+    					counts.set(inde, val + 1);
+    				}
+    				else
+    				{
+    					System.err.println("No match for " + thekey);
+    				}
+    			}
+    		}
+    		else {
+    			numinvalids++;
+    		}
+    	}
+    	System.err.println("Cat COUNTS ARE ");
+    	for (String categorystring : categories )
+    		System.err.print(categorystring + "\t");
+    	System.err.println(" ");
+    	for (Integer i : counts)
+    		System.err.print(i + "\t");
+    	System.err.println(" ");
+    	
+    	render( contribs, numcontributions, numstudents, numvalids, numinvalids, categories, counts );
     }
     
+    public static void addCodes( Long sessionId, int sequence, String codings ) {
+    	Application.setCodingsForContribution(sessionId, sequence, codings);
+    	graphicVisualizer();
+    }
     
     public static void doQuery( String str ) {
     	System.err.println("Got to do-query");
