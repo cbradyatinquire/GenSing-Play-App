@@ -311,10 +311,10 @@ public class QueryBuilder extends Controller {
     		if (c.isValid) {
     			numvalids++;
     			List<Coding> codings = c.codings;
-    			if (c.codings.isEmpty() ) { System.err.println( "Contribution with id " + c.id + " has no codings"); }
+    			//if (c.codings.isEmpty() ) { System.err.println( "Contribution with id " + c.id + " has no codings"); }
     			for (Coding cod : codings)
     			{
-    				System.err.println( "Checking for coding " + c.toString() + " in contribution " + c.id);
+    				//System.err.println( "Checking for coding " + c.toString() + " in contribution " + c.id);
     				String thekey = cod.categ + ":" + cod.descrip;
     				if ( categories.contains(thekey) )  //;catcounts.keySet().contains(thekey) )
     				{
@@ -334,13 +334,13 @@ public class QueryBuilder extends Controller {
     			numinvalids++;
     		}
     	}
-    	System.err.println("Cat COUNTS ARE ");
-    	for (String categorystring : categories )
-    		System.err.print(categorystring + "\t");
-    	System.err.println(" ");
-    	for (Integer i : counts)
-    		System.err.print(i + "\t");
-    	System.err.println(" ");
+    	//System.err.println("Cat COUNTS ARE ");
+    	//for (String categorystring : categories )
+    	//	System.err.print(categorystring + "\t");
+    	//System.err.println(" ");
+    	//for (Integer i : counts)
+    	//	System.err.print(i + "\t");
+    	//System.err.println(" ");
     	
     	render( contribs, numcontributions, numstudents, numvalids, numinvalids, categories, counts );
     }
