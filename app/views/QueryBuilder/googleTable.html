@@ -1,72 +1,287 @@
 <html>
   <head>
+    <style type="text/css" title="currentStyle">
+      @import "/public/css/demo_page.css"; 
+      @import "/public/css/demo_table.css";
+    </style>
   
-  	<style type="text/css" title="currentStyle">
-			@import "/public/css/demo_page.css"; 
-			@import "/public/css/demo_table.css";
-		</style>
-  
+    <script type='text/javascript'> 
+       var theRow = "";
+      var theStuff = [];
+    </script>
+
     <script type='text/javascript' src='/public/javascript/datatables/jquery.js'></script>
-    <script type='text/javascript' src='/public/javascript/datatables/jquery.dataTables.js'></script>
+    <script type='text/javascript' src='/public/javascript/datatables/jquery.dataTables.js'> </script>
     
     <script type='text/javascript'>
-     var cid = 0;
-     var cbody = " ** ";
-     var str = " ";
-     
-     $(document).ready(function() {
-    /* Add/remove class to a row when clicked on */
-    $('#example tr').click( function() {
-    	if (this.id == "") 
-    	{
-    	 console.log('changed sort order');
-    	}
-		else
-		{
-	    	var functiondef = this.id.toLowerCase();
-	    	//console.log(functiondef);
-	    	
-	    	var fname = functiondef.substring(0, functiondef.indexOf("(x)="));
-	    	//update ggb
-	    	document.ggbApplet.evalCommand(functiondef);
-	    	
-	    	var cl = $(this).attr("class");
-	    	if ( cl.indexOf("row_selected") > 0 )
-	    	{
-	    	 //was visible, going to be made invisible
-	    	  document.ggbApplet.setVisible(fname, false);
-	    	}
-	    	else
-	    	{
-	    	//was invisible, going to be made visible
-	    	  document.ggbApplet.setVisible(fname, true)
-	    	}
-	    	
-	        $(this).toggleClass('row_selected');
-	     }
-	    } );
+      $(document).ready(function() {
+        
+        // variables for tracking position of the mouse pointer
+        var curRow = "";
+        var curCol = "";
+        var curCodings = "";
+        var curAnnots = "";
+
+
+
+
+        // update trackers on row hover
+        $( '#example tr' ).hover( 
+          function() { curRow = this.id.toLowerCase(); },   
+          function() { curRow = ""; } 
+        );
+
+        // update trackers on column hower
+        $( '#example tr .codings' ).hover(
+          function() { 
+            curCol = "codings"; 
+            curCodings = $(this).text(); 
+            curAnnots = $(this).next().text(); 
+          },
+          function() { 
+            curCol = ""; 
+            curCodings = "";
+            curAnnots = "";
+          }
+        );
+
+        $( '#example tr .annots' ).hover(
+          function() { 
+            curCol = "annots";
+            curCodings = $(this).prev().text();
+            curAnnots = $(this).text(); 
+          },
+          function() { 
+            curCol = "";
+            curCodings = "";
+            curAnnots = ""; 
+          }
+        );
+
+        $( '#example tr .drawGGB' ).hover(
+          function() { 
+            curCol = "drawGGB";
+            curCodings = "";
+            curAnnots = ""; 
+          },
+          function() { 
+            curCol = ""; 
+            curCodings = "";
+            curAnnots = "";
+          }
+        );
+
+
+
+        
+        /* Add/remove class to a row when clicked on */
+        $('#example tr').click( function() {
+    	  if (this.id == "") {
+    	    console.log('changed sort order');
+    	  } else {
+
+            if( curCol == 'drawGGB' ) {
+              var functiondef = curRow;
+              var fname = getFName( functiondef ); 
+              //send to ggb
+	      document.ggbApplet.evalCommand(functiondef);
+
+	      var cl = $(this).attr("class");
+	      if ( cl.indexOf("row_selected") > 0 ) {
+	        //was visible, going to be made invisible
+	        document.ggbApplet.setVisible(fname, false);
+	      } else {
+	        //was invisible, going to be made visible
+	        document.ggbApplet.setVisible(fname, true)
+	      }
+		
+	      $(this).toggleClass('row_selected');
+	    }  else {
+              // open popup for editing codings or annots
+              var seqNum = trimForSeqNum( curRow );        
+              var fbody = getFBody( curRow );       
+              curCodings = sanitizeForCodings( sanitize( curCodings ) );
+              curAnnots = sanitize( curAnnots );
+              alert( "open popup " + curCol + "for: \n" + seqNum + "\n" + fbody + "\n" + curCodings + "\n" + curAnnots );
+            }
+          }
+	} );
+
+
+
+
+        function getFName( str ) {
+          // returns only the GGB identifiable name
+          str = str.substring(0, str.indexOf("(x)="));
+          return str;
+        }
+
+
+
+
+        function getFBody( str ) {
+          // returns only the right hand side of the math equation
+          str = str.substring( str.indexOf( "(x)=" ) + 4, str.length ); 
+          return str;
+        }
+
+
+
+
+        function trimForSeqNum( str ) {
+          // separate the id info and remove preceding chars "id"
+          str = str.substring( 0, str.indexOf( "_" ) );
+          str = str.substring( 2, str.length );
+          return str;
+        }
+
+
+
+
+        function sanitize( str ) {
+          // replaces "--" for no codings and no annotation
+          if( str == "--" )
+            str = "";
+          // removes the preceding delimiter
+          if( str[0] == "|" )
+            str = str.substring( 1, str.length );
+          return str;
+        }
+
+        
+
+
+        function sanitizeForCodings( str ){
+          // replace vertical bars with commas
+          if( str.length > 0 ) {
+            str = str.replace( "|", "," );
+          }
+          return str;
+        }
+
+
+
 	     
-	    /* Init the table */
-	    var oTable = $('#example').dataTable( {'sScrollY': '300px',
-		'bPaginate': false} );
-} );
+	/* Init the table */
+	var oTable = $('#example').dataTable( {
+                'sScrollX': '800px',
+                'sScrollY': '600px',
+		'bPaginate': false} 
+        );
 
-function fnGetSelected( oTableLocal )
-{
-    return oTableLocal.$('tr.row_selected');
-}
 
-     var countstudents;
-     var countcontribs;
-     var countvalids;
+
+
+        //var allRawRows = oTable._( '#example tr' );
+        //buildUniqueStudents( allRawRows );
+
+      } );
+
+
+
+
+      function fnGetSelected( oTableLocal ) {
+        return oTableLocal.$('tr.row_selected');
+      }
+
+
+
+      
+      var StudentStats = function() {
+      // constructor for StudentStats object
+
+        this.studID = "";
+        this.contribs = [];
+        this.validContribs = -1;
+        this.invalidContribs = -1;
+
+        this.addContrib = function( aRow ) {
+          // aRow is one row of contribution in its raw data
+          
+          if( this.studID == "" ) { this.studID = aRow[ 0 ] };   
+          this.contribs.push( aRow );     
+        };
+
+        this.updateCountValids = function() {
+          // update count of validContribs and invalidContribs
+          
+          var v = 0;
+          for( var i=0; i<this.contribs.length; i++ ) {
+            if( this.contribs[i].indexOf( "true" ) > 0 ) { v++; }
+          }
+          this.validContribs = v;
+
+          var iv = 0;
+          for( var i=0; i<this.contribs.length; i++ ) {
+            if( this.contribs[i].indexOf( "false" ) > 0 ) { iv++; }
+          }
+          this.invalidContribs = iv;
+        };
+
+      } // end constructor StudentStats
+
+
+
+
+      function buildUniqueStudents( rawRows ) {
+      // returns an array of objects of class StudentStats  
+   
+        // create empty array, to be populated later
+        var studentStats = [];
+
+        // go through the loop, creating students and filling up contribs
+        for( var i=0; i < rawRows.length; i++ ) {
+          var theID = rawRows[ i ] [ 0 ];
+          var thePosition = positionOfStudID( theID, studentStats );
+          if( thePosition < 0 ) {
+            // is not in the array, create a new StudentStats object and add it in
+            var aStudent = new StudentStats();
+            aStudent.addContrib( rawRows[ i ] );
+            studentStats.push( aStudent );
+          } else {
+            // is in the array, work with the returned index number
+            studentStats[ thePosition ].addContrib( rawRows[ i ] );
+          }
+
+        }
+
+        // update counts for each StudentStats
+        console.log( "Total number of students:" +studentStats.length );
+
+        for( var i=0; i<studentStats.length; i++ ) {
+          studentStats[ i ].updateCountValids();
+          console.log( studentStats[ i ].studID + " V:" + studentStats[ i ].validContribs + " IV:" + studentStats[ i ].invalidContribs );
+        }
+
+      }
+
+
+
+
+      function positionOfStudID( anID, anArrayOfStudentStats ) {
+      // returns the index of the StudentStat object with studID equals to anID
+      // returns -1 if no elements has that studID
+        
+        var ret = -1;
+        for( var i=0; i<anArrayOfStudentStats.length; i++ ) {
+          if( anArrayOfStudentStats[ i ].studID == anID ) {
+            ret = i;
+          }
+        }
+        return ret;
+      }
+          
+
+
+
     </script>
   </head>
 
   <body>
-  <div id="container" style="position:absolute; width:800px; left:10px">
-    <div id="demo">
-<table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
-	<thead>
+    <div id="container" style="position:absolute; width:800px; height: 600px,left:10px">
+      <div id="demo">
+      <table cellpadding="0" cellspacing="0" border="0" class="display" id="example">
+        <thead>
 		<tr>
 			<th>Student</th>
 			<th>SecsIn</th>
@@ -78,22 +293,20 @@ function fnGetSelected( oTableLocal )
 		</tr>
 	</thead>
 	<tbody>
-	
-	#{list items:contribs, as:'cont'}
-	
-    <tr class="gradeA" id="${cont.student.username}_{${cont.secondsIn}${cont.objectID}}(x)=${cont.body}">
-    <td>${cont.student.username}</td>
-    <td>${cont.secondsIn}</td>
-    <td>${cont.objectID}</td> 
-    <td>${cont.body}</td>
-    <td>${cont.codingsShorthand()}</td>
-    <td>${cont.annotationsShorthand()}</td>
-    <td>${cont.isValid}</td>
-  
-    </tr>
-    #{/list}
-	
-	
+	  #{list items:contribs, as:'cont'}
+          <script type='text/javascript'>
+            console.log( "${cont.student.username}" );
+          </script>
+	  <tr class="gradeA" id="id${cont.sequenceNumber}_{${cont.student.username}_${cont.secondsIn}${cont.objectID}}(x)=${cont.body}">
+            <td class = "drawGGB">${cont.student.username}</td>
+            <td class = "drawGGB">${cont.secondsIn}</td>
+            <td class = "drawGGB">${cont.objectID}</td> 
+            <td class = "drawGGB">${cont.body}</td>
+            <td class = "codings">${cont.codingsShorthand()}</td>
+            <td class = "annots">${cont.annotationsShorthand()}</td>
+            <td class = "drawGGB">${cont.isValid}</td>
+          </tr>
+          #{/list}
 	</tbody>
 	 <tfoot>
 		<tr>
