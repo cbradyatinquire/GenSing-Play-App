@@ -701,6 +701,18 @@ public class Application extends Controller {
     	}
     	renderJSON(reply);
     }
+
+    public static void getSingleContribution( Long cid )
+    {
+        String reply = "";
+        Contribution cont = Contribution.getContribution( cid );
+        if( cont != null )
+            reply = cont.toTSVLineVerbose();
+        else
+            reply = "FAIL Contribution with id " + cid + " does not exist.";
+ 
+        renderJSON( reply );
+    }
     
 
     public static void getContributionWithSequenceNumber( Long aid, int ind )
