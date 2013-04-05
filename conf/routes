@@ -16,6 +16,7 @@ POST	/nameActivity							Application.nameActivity
 *		/annotateActivity						Application.appendAnnotationToActivity  
 
 GET  	/getAllContributions					Application.getAllContributions
+*		/getSingleContribution					Application.getSingleContribution
 *  		/getAllContributionsAfter				Application.getContributionsAfterSequenceNumber
 *  		/getAllContributionsAfterVerbose		Application.getContributionsAfterSequenceNumberVerbose
 *		/getAllValidContributionsAfterVerbose	Application.getValidContributionsAfterSequenceNumberVerbose

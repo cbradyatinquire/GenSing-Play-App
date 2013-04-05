@@ -1,18 +1,21 @@
-#{extends 'main.html' /}
+or#{extends 'main.html' /}
 #{set title:'Play With Geogebra' /}
 
 <head>
- <script type="text/javascript" language="javascript" src="http://www.geogebra.org/web/4.2/web/web.nocache.js"></script>
+ <script type="text/javascript" language="javascript" src="http://www.geogebra.org/web/4.2/web/web.nocache.js" src="/public/javascript/dynatree/jquery/jaqury.js"></script>
 
  </head> 
   
   <body>
 <article name="geogebraInstance" class="geogebraweb" data-param-width="800" data-param-height="400"
 	 data-param-showResetIcon="false" data-param-enableLabelDrags="false" data-param-showMenuBar="false"
-	 data-param-showToolBar="false" data-param-showAlgebraInput="false" data-param-ggbbase64="UEsDBBQACAAIAEKHlEEAAAAAAAAAAAAAAAAWAAAAZ2VvZ2VicmFfamF2YXNjcmlwdC5qc0srzUsuyczPU0hPT/LP88zLLNHQVKiuBQBQSwcI1je9uRkAAAAXAAAAUEsDBBQACAAIAEKHlEEAAAAAAAAAAAAAAAAMAAAAZ2VvZ2VicmEueG1svVZtb9s2EP6c/oqDPsc2X/TmQE6xFihQIOsGpBuGfaMk2uYii4ZI2U7RH78jKdlysw4tOsyIciLv4T13xztSxevTroGD7IzS7SqicxKBbCtdq3azinq7nuXR6/tXxUbqjSw7AWvd7YRdRbFDqnoVsZSsabLMZkkSZ7NYxPUsz4icZbVkZSnTfJnUEcDJqLtWfxA7afaiko/VVu7Eg66E9cRba/d3i8XxeJyPVHPdbRabTTk/GTSAbrZmFQ0vd2juatGRezgjhC7++PkhmJ+p1ljRVjICF0Kv7l/dFEfV1voIR1Xb7SrKszyCrVSbLcaUxjhYONAeE7KXlVUHaXDpZOhjtrt95GGidfqb8AbNOZwIanVQtexWEZmzjJKMpDQhPKZpnmQR6E7J1g5gOpAuRnPFQcljsOvePGUcgdW6KYUzCZ8/AyOMwK0TNAiGIk2DioQ5woNgQcRBJAETh+VxgMYBEwdMzCM4KKPKRq6itWgMplC16w637zw29rmR3p9h4hI+vcWYjPqEYE6wTkLOcZ6QW/ek+MROsbgOkk5Ybdd/J+lImXL67ZTsRyj5SMl4/pKSJV+JMv2X5AYfviVMrKcLJ1L5P/+8YOTsOxjD+McI0/h/CbFYjJ1SDM0BZuuww05auTOuXfgSkqWregoJtkaaYZEnQJcoMgbYDEATiBMc0hxSJzPgGSpi4JCDw1EOvjeSHP/FmTeWQoLG3GyGLQkUiWJIOFDfUjFgI4FvS2xRxhGRJJDgIkdPmTPBU4hTHPEcYvTRdWRGEchxIY6RngGnwN1imgFLIXX2aOw6Pc2d62iSQUogpc4gNjU2dGhmxOfAXTTpkC7V7nt7laJqV4+vVu/Pe4FoPI4up144nq4OxZuiEaVs8J54dDsJcBCN6whPtNathXETWZjbdGK/VZV5lNbiKgN/iYN4EFae3iHajNweW+nW/Npp+1Y3/a41AJVuyNln3dDJOzt7jQM+UcRTRTJRpJP37B95NWqgNxL5dWdGuKjr9w5xORowk7+0zfObToqnvVbXYRQLf+UUsq8aVSvR/o7F6lhcXmC8gfxpNd5ACSOjI7qrH58NVjCc/pSdxhuA0jmf/Bju6nNQMZLOl9MfXjGmEq75OL9axCl25vNXdMNGycN5i8RJnqPfdK6zh8jd4L15o5vLlI//rdjbvvMfD3g4di6qn9pNI32N+M7Gm7l6KvXpMRQHD7Y+Pu9xNARfbnzeAc8GliQIGGQZpMc4z84o4jHEI8hYbao+6+mSeYSXZZAeheUbXBsipWOYlIw0yvgTjURXfeNr393zfavswziwqnq6ROrwH/pdKc8VdG2S/kcmi8UXFVY8ya6VzVDQuJO97k3oz0mt17JSOxwGxZAQ4TbrN3QgzNZy08nR78Z/loV0ee1Vrb6Y9qbedXr3vj18xEr4woFiMXpZmKpTe1dwUOIl8CQvNVUrI/AOqafrXAdi6JW7KzA91qUGe7O3W935Ly88UlA6hinU9+PwaXn/N1BLBwie4WoKaQQAAPcKAABQSwECFAAUAAgACABCh5RB1je9uRkAAAAXAAAAFgAAAAAAAAAAAAAAAAAAAAAAZ2VvZ2VicmFfamF2YXNjcmlwdC5qc1BLAQIUABQACAAIAEKHlEGe4WoKaQQAAPcKAAAMAAAAAAAAAAAAAAAAAF0AAABnZW9nZWJyYS54bWxQSwUGAAAAAAIAAgB+AAAAAAUAAAAA"></article>
+	 data-param-showToolBar="true" data-param-showAlgebraInput="false" data-param-ggbbase64="UEsDBBQACAAIAEKHlEEAAAAAAAAAAAAAAAAWAAAAZ2VvZ2VicmFfamF2YXNjcmlwdC5qc0srzUsuyczPU0hPT/LP88zLLNHQVKiuBQBQSwcI1je9uRkAAAAXAAAAUEsDBBQACAAIAEKHlEEAAAAAAAAAAAAAAAAMAAAAZ2VvZ2VicmEueG1svVZtb9s2EP6c/oqDPsc2X/TmQE6xFihQIOsGpBuGfaMk2uYii4ZI2U7RH78jKdlysw4tOsyIciLv4T13xztSxevTroGD7IzS7SqicxKBbCtdq3azinq7nuXR6/tXxUbqjSw7AWvd7YRdRbFDqnoVsZSsabLMZkkSZ7NYxPUsz4icZbVkZSnTfJnUEcDJqLtWfxA7afaiko/VVu7Eg66E9cRba/d3i8XxeJyPVHPdbRabTTk/GTSAbrZmFQ0vd2juatGRezgjhC7++PkhmJ+p1ljRVjICF0Kv7l/dFEfV1voIR1Xb7SrKszyCrVSbLcaUxjhYONAeE7KXlVUHaXDpZOhjtrt95GGidfqb8AbNOZwIanVQtexWEZmzjJKMpDQhPKZpnmQR6E7J1g5gOpAuRnPFQcljsOvePGUcgdW6KYUzCZ8/AyOMwK0TNAiGIk2DioQ5woNgQcRBJAETh+VxgMYBEwdMzCM4KKPKRq6itWgMplC16w637zw29rmR3p9h4hI+vcWYjPqEYE6wTkLOcZ6QW/ek+MROsbgOkk5Ybdd/J+lImXL67ZTsRyj5SMl4/pKSJV+JMv2X5AYfviVMrKcLJ1L5P/+8YOTsOxjD+McI0/h/CbFYjJ1SDM0BZuuww05auTOuXfgSkqWregoJtkaaYZEnQJcoMgbYDEATiBMc0hxSJzPgGSpi4JCDw1EOvjeSHP/FmTeWQoLG3GyGLQkUiWJIOFDfUjFgI4FvS2xRxhGRJJDgIkdPmTPBU4hTHPEcYvTRdWRGEchxIY6RngGnwN1imgFLIXX2aOw6Pc2d62iSQUogpc4gNjU2dGhmxOfAXTTpkC7V7nt7laJqV4+vVu/Pe4FoPI4up144nq4OxZuiEaVs8J54dDsJcBCN6whPtNathXETWZjbdGK/VZV5lNbiKgN/iYN4EFae3iHajNweW+nW/Npp+1Y3/a41AJVuyNln3dDJOzt7jQM+UcRTRTJRpJP37B95NWqgNxL5dWdGuKjr9w5xORowk7+0zfObToqnvVbXYRQLf+UUsq8aVSvR/o7F6lhcXmC8gfxpNd5ACSOjI7qrH58NVjCc/pSdxhuA0jmf/Bju6nNQMZLOl9MfXjGmEq75OL9axCl25vNXdMNGycN5i8RJnqPfdK6zh8jd4L15o5vLlI//rdjbvvMfD3g4di6qn9pNI32N+M7Gm7l6KvXpMRQHD7Y+Pu9xNARfbnzeAc8GliQIGGQZpMc4z84o4jHEI8hYbao+6+mSeYSXZZAeheUbXBsipWOYlIw0yvgTjURXfeNr393zfavswziwqnq6ROrwH/pdKc8VdG2S/kcmi8UXFVY8ya6VzVDQuJO97k3oz0mt17JSOxwGxZAQ4TbrN3QgzNZy08nR78Z/loV0ee1Vrb6Y9qbedXr3vj18xEr4woFiMXpZmKpTe1dwUOIl8CQvNVUrI/AOqafrXAdi6JW7KzA91qUGe7O3W935Ly88UlA6hinU9+PwaXn/N1BLBwie4WoKaQQAAPcKAABQSwECFAAUAAgACABCh5RB1je9uRkAAAAXAAAAFgAAAAAAAAAAAAAAAAAAAAAAZ2VvZ2VicmFfamF2YXNjcmlwdC5qc1BLAQIUABQACAAIAEKHlEGe4WoKaQQAAPcKAAAMAAAAAAAAAAAAAAAAAF0AAABnZW9nZWJyYS54bWxQSwUGAAAAAAIAAgB+AAAAAAUAAAAA"></article>
  <br>
  <input type="text" size="75" name="func" id="func" onkeydown="if (event.keyCode == 13) document.getElementById('evaluate').click()"/> &nbsp;
    <input type="button" name="evaluate" value="evaluate" id="evaluate" onclick="document.ggbApplet.evalCommand( func.value );" />
+   <input type="button" value="Reset" onclick="document.ggbApplet.reset();">
+   <input type="button" value="Hide f2(x)" onclick="document.ggbApplet.setVisible('f2', false);">
+   <input type="button" value="Show f2(x)" onclick="document.ggbApplet.setVisible('f2', true);">
 
 <script type="text/javascript">
 //<![CDATA[
@@ -27,11 +30,7 @@ function catchEvent(eventObj, event, eventHandler) {
 }
 
 
-
-
-catchEvent(window,"load",setupEvents);
-
-catchEvent( window, "click", doTestPlotFunction );
+$(document).ready( function(){alert("document's ready!")} );
 
 
 
@@ -39,9 +38,9 @@ catchEvent( window, "click", doTestPlotFunction );
 function setupEvents(evnt) {
   alert( "page loaded. Asking GeoGebra to plot a function" );
   document.ggbApplet.evalCommand( "f(x)=-0.5x" ); 
-  <!-- GeoGebra 'applet'(?) seems to load after the window has loaded. 
-       is there any way to detect if the 'applet'(?) has finished loading? 
-       this is just so that we can automatically plot functions on load -->
+  <!-- GeoGebra 'applet'(?) seems to load after the window has loaded. -->
+  <!-- is there any way to detect if the 'applet'(?) has finished loading? -->
+  <!-- this is just so that we can automatically plot functions on load -->
   alert( "function plotted." );
 }
 
@@ -52,6 +51,19 @@ function doTestPlotFunction(evnt) {
   alert( "clicked, test plot f(x)=3x" );
   document.ggbApplet.evalCommand( "f(x)=3x" );
   alert( "done plotting." );
+}
+
+
+
+function ggbOnInit() {
+  <!-- document.ggbApplet.registerAddListener( "myAddListenerFunction" ); -->
+}
+
+
+
+
+function myAddListenerFunction( objName ) {
+  alert( objName + " added into the construction." );
 }
 
 </script>
