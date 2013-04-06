@@ -11,6 +11,7 @@
 	       anaction,
 	       function(data) {
        	   		mydict = JSON.parse(data);
+       	   		eval("docall = "  + mydict.testfn[0]);
        		}
    		)
 	}
@@ -20,14 +21,18 @@
    		var testAction = #{jsAction @TestJSON.testJSON(':echo') /};
 		var blah = testAction({echo: 'corey'});
 	  	tryit2( blah );
-	  	alert("done");
+	  	alert("done loading");
 	});
 		  
 		  
 	function recall() {
-	   alert(mydict.Math);
-	   alert(mydict.Social);
+	   alert("the values for key 'Math' are " + mydict.Math);
+	   alert("the values for key 'Social' are " + mydict.Social);
 	   
+	}
+	
+	function docall() {
+	  alert("default alerting function-- will be changed by ajax call");
 	}
 	
 	
@@ -44,5 +49,6 @@
 </div>
 
 <button value="press" onclick="recall()">Lookup Some Values</button>
+<button value="press2" onclick="docall()">try before and after</button>
 
 </body>

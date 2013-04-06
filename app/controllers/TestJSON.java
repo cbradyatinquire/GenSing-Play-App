@@ -40,6 +40,11 @@ public class TestJSON extends Controller {
 			}
 			dict.put(cc.category, dlist);
 		}
+		
+		ArrayList<String> funentry = new ArrayList<String>();
+		funentry.add("function() { alert('hello there.  this alert function definition came from the server'); }");
+		dict.put("testfn", funentry );
+		
     	com.google.gson.Gson gson = new Gson();
     	String json = gson.toJson(dict);
     	renderJSON( json );
