@@ -1,0 +1,199 @@
+<!doctype html>
+<!-- The DOCTYPE declaration above will set the    -->
+<!-- browser's rendering engine into               -->
+<!-- "Standards Mode". Replacing this declaration  -->
+<!-- with a "Quirks Mode" doctype may lead to some -->
+<!-- differences in layout.                        -->
+
+<html>
+ <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, user-scalable=0, initial-scale=1"/>
+    <!--                                                               -->
+    <!-- Consider inlining CSS to reduce the number of requested files -->
+    <!--                                                               -->
+  
+   
+    <!--                                           -->
+    <!-- Any title is fine                         -->
+    <!--                                           -->
+    <title>GeoGebra to JavaScript port</title>
+    
+    <!--                                           -->
+    <!-- This script loads your compiled module.   -->
+    <!-- If you add any GWT meta tags, they must   -->
+    <!-- be added before this line.                -->
+    <!--                                           -->
+  </head>
+
+  <!--                                           -->
+  <!-- The body can have arbitrary html, or      -->
+  <!-- you can leave the body empty if you want  -->
+  <!-- to create a completely dynamic UI.        -->
+  <!--                                           -->
+  <body>
+<table style="width: 660px;" border="0" cellpadding="2" cellspacing="2">
+
+  <tbody>
+
+    <tr>
+
+      <td>
+	  
+	  
+	<script type="text/javascript" language="javascript" src="http://www.geogebra.org/web/testJDK/web.nocache.js"></script>
+<article class="geogebraweb" style="border: 1px solid black; display:inline-block;" 
+data-param-ggbbase64="UEsDBBQACAAIAKqDN0AAAAAAAAAAAAAAAAAWAAAAZ2VvZ2VicmFfamF2YXNjcmlwdC5qc0srzUsuyczPU0hPT/LP88zLLNHQVKiuBQBQSwcI1je9uRkAAAAXAAAAUEsDBBQACAAIAKqDN0AAAAAAAAAAAAAAAAAMAAAAZ2VvZ2VicmEueG1svVbbjts2EH3efMVAz2ubpKiLF3aCJkXQAJu0wKZF0Tdaom1mZVEV6VuQj++QlGR5kyxaFC2wXpLi4RzOcM6Qi1enXQUH2Rql62VEpyQCWRe6VPVmGe3tepJHr16+WGyk3shVK2Ct252wy4g7pCqXUUpYkmd8PYl5yiac8nSyomk2WecJXdM5j1OOSDgZdVfrD2InTSMK+VBs5U7c60JYT7y1trmbzY7H47Snmup2M9tsVtOTKSPAbdZmGXWdOzR3tegYezgjhM5+f38fzE9UbayoCxmBc2GvXr64WRxVXeojHFVpt+jGfB7BVqrNFn1K8jyCmQM1GJBGFlYdpMGlo6H32e6ayMNE7eZvQg+qwZ0ISnVQpWyXEZlyQnJCUxIzknLKch6BbpWsbQemHemsN7c4KHkMdl3PU+Iiq3W1Es4kfPkCjDACt66hoWHYpGmYIuEbiUPDQsNDkwQMD8t5gPKA4QHD4wgOyqhVJZfRWlQGQ6jqdYvHN4yNPVfS76f7cHGf3qJPRn1GcEzw9EPM8Tsht+6X4o+7idm1k3TEatv9s6RhfsTZM/Is+/uM7F/5Gfec7FtesuQ7XqbPkAa3nottz0mTESdS+T//+4oxfs7Np4zfDew/IEz5/+LiYtYrZdGJA8zWYbvksXJnnFziOSRzl/UUEpRGmmGSJ0Dn2GQMUAxAE+AJDmkOqWsziDOc4BBDDg5HY/DaSHL8xzNvLIUEjbmvGUoSKBJxSGKgXlIcUEjgZYkSZTEikgQSXOToKXMm4hR4iqM4B457dIrMKAJjXIhjpGcQU4jdYpoBSyFlkDlVU+7EnuZu92iVQUogpc4m6ho1HfSMS3KInUNpFzFVN3t7FaViV/Zdq5vhOBCNFelS+EKFuqqLN4tKrGSFV8WDO0yAg6icKDzRWtcW+nNk4dumFc1WFeZBWourDHwSB3EvrDy9RbTpuT220LX5pdX2ja72u9oAFLoiw551RUd9NuwaB/Fogo8nktFEOupn3+TVOAN7I5Fft6aHi7J85xCX6oCR/Lmuzq9bKR4bra7dWMz8rbOQ+6JSpRL1b5ivjsXFBYZLyFWs/hLiZN5vRLflw9lgEsPpD9lqLDNsPo1ZwmNG4zmnrpCcuxmST5Mcr5c4yWnGWIKKN4Vw8uN0mlCa0DzLaU4YXnHn78yQNDDLw3BA4iQH3zetKsf9d+a1rsohEt75N6Kx+9Y/HrA4ts6lH+pNJX2CeGXjzVw8rvTpIWRGHGx9PDc4IoF/tfFBB6wNLEkQ0LWr0HqM29iAIh5DPIL0qabKYZ7OmUf4dhVaj8LcDVvrHKW9l5T0NMr4ikaiK9H4xHf3/L5W9r4fWFU8Xjx1+A/73Upe0scBflThURJeW9cs9L9jWcyeJOHiUba1rLqcx+Pe670JEh7JoZSF2uEwTHRhE+5If8U9ha+l3LSyw4vKP95CUP0sGafzV5+9qbet3r2rDx8xX55sYDHrd7kwRasal5WwwqviUV4yr1RG4E1Tjtc5kWI0CnejYECsixbKd2+3uvXvM6w62DptVnKHjzGwPgVdRgyBX/tXnosw6NUnrHtPDmYUJ5x/NmlBVM1WuOdg53glzrK9CoU3+l6XTwOE8fdeYCVonAF36I2UIV1sJxxo0KDX3VUtw5gbOAVaOHcP/M/LaEIvGxk0YLE2P+IT1Ph30WDZdX5SZSn91RwqxJ91WGJCHspTU6lC2S7RQkRdd3wMvhx2j/uXfwFQSwcIHUBBLhUFAAB5DAAAUEsBAhQAFAAIAAgAqoM3QNY3vbkZAAAAFwAAABYAAAAAAAAAAAAAAAAAAAAAAGdlb2dlYnJhX2phdmFzY3JpcHQuanNQSwECFAAUAAgACACqgzdAHUBBLhUFAAB5DAAADAAAAAAAAAAAAAAAAABdAAAAZ2VvZ2VicmEueG1sUEsFBgAAAAACAAIAfgAAAKwFAAAAAA=="></article>
+
+
+
+<form style="margin-left: 40px;" name="inputform" onkeyup="numberentered()" action="" onsubmit="check();return false;" autocomplete="Off">Gradient = <span style="font-weight: bold;"></span> <input name="textfield" size="20" type="text"> <input value="Check" onclick="check();" type="button"> 
+</form>
+<h2>
+Type 'u' for 'unbounded'
+</h2>	  
+
+<hr style="width: 100%; height: 2px;"><span style="font-size: small;">Created with <a href="http://www.geogebra.org/" target="_blank">GeoGebra</a>
+
+by Michael Borcherds, May 2008</span> </td>
+
+    </tr>
+
+  </tbody>
+</table>
+<script type="text/javascript">
+//var cookieID="GradientTest"; // unique ID
+		var level=0;
+
+		var sqrt="\u221A"; // square root
+		var sqr="\u00B2"; // superscript 2 ie squared
+		var cub="\u00B3"; // superscript 3 ie cubed
+		var no_correct=0;//readCookieInt("Score",0);
+		var time=0;//readCookieInt("Time",0);
+
+		var vertical=false;
+		var gradient=0;
+		var firstAnswer=true;
+
+
+function updatetimer() {
+	time++;
+	window.setTimeout("updatetimer()",1000);
+}
+function numberentered()
+{
+	return; // not needed
+	var exp=document.inputform.textfield.value;
+	exp=exp.replace("s",sqr);
+	exp=exp.replace("S",sqr);
+	exp=exp.replace("c",cub);
+	exp=exp.replace("C",cub);
+	if (exp!=document.inputform.textfield.value) document.inputform.textfield.value=exp;
+}
+function process_expression(exp) {
+	exp=exp.replace(/\)\(/g,")*("); // replace (x+1)(x+2) by (x+1)*(x+2) etc
+	exp=exp.replace(/xx/g,"x*x"); // xx by x*x
+	exp=exp.replace(/xy/g,"x*y"); // xy by x*y
+	exp=exp.replace(/yx/g,"y*x"); // yx by y*x
+	exp=exp.replace(/(\d)(x)/g, "$1"+"*"+"$2"); // replace 3x by 3*x etc
+	exp=exp.replace(/\(/g," ("); // "( " by "<space>("
+	exp=exp.replace(/\)/g,") "); // ")" by ")<space>"
+	//exp=yacas_calculate("Rationalize("+exp+");");
+	//alert(exp);
+	return exp;
+}
+function randint(a,b)
+{
+	return Math.floor(Math.random()*(b-a+1))+a;
+}
+
+function rand()
+{
+	var nos=[0,0,0,0,0,0,0,0,1,1,-1,-1,2,-2,3,-3,0.5,-0.5,1/3,-1/3,1.5,-1.5,2/3,-2/3];
+	return nos[randint(0,nos.length-1)];
+}
+
+function randplusminus()
+{
+	if (Math.random()<0.5) return -1; else return 1;
+}
+
+function new_question() {
+	var applet = document.ggbApplet;
+
+	firstAnswer=true;
+
+	
+		var a=rand();
+		var b=randint(-4,4);
+
+		var command="";
+
+		if (a==0 && Math.random()<0.5) // fudge to include vertical lines
+		{
+			vertical=true;
+			gradient="u"; // undefined
+			command="f: x="+b; 
+		}
+		else 
+		{
+			vertical=false;
+			gradient =a;
+			command="f: y="+a+"*x + "+b; 
+		}
+	
+
+	applet.setFixed("f",false);
+	applet.evalCommand(command);
+	applet.setColor("f",255,0,0);
+	applet.setFixed("f",true);
+	//alert(applet.getObjectName(0));
+	//alert(applet.getObjectName(1));
+	//createCookie("Question",gradient,30); // 30 minutes expiry
+	document.inputform.textfield.value="";
+}
+
+function check() { var applet = document.ggbApplet;
+
+    window.document.inputform.textfield.select();
+	
+	var exp=document.inputform.textfield.value;
+	
+	if (exp=="") return;
+
+	try { exp2=eval("exp = 1*"+exp); } // expressions like "2/3"
+	catch (err) { exp2=exp; } // "u"
+
+	if (exp2 == gradient || (exp2=="u" && vertical==true)) {
+		if (firstAnswer) no_correct++;
+		alert("Good: "+no_correct+" correct in "+time+" secs");
+		//eraseCookie("Question");
+		//createCookie("Score",no_correct+"",10); // 10 minutes expiry
+		//createCookie("Time",time,10);
+		new_question();
+	} else {
+		if (Math.random()<0.5) alert("Sorry, no. Remember gradient = (change in y) / (change in x)");
+		else alert("Sorry, no. Remember gradient is the amount you go up for every one unit to the right");
+		firstAnswer=false;
+	}
+}
+
+	function ggbOnInit() {
+		//===Js code starts here===//
+		
+		
+		
+		var applet = document.ggbApplet;
+		window.setTimeout("updatetimer()",1000);
+		new_question();
+		//time=readCookieInt("Time",0);
+		no_correct=0;//readCookieInt("Score",0);
+		if (no_correct == 0) firstAnswer = true; else firstAnswer = false;
+		
+		alert("Ready to start!");
+		
+		//===js code ends here===//
+	}
+</script>
+ </body>
+</html>

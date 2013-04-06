@@ -159,6 +159,12 @@ public class Contribution extends Model {
 		
 		return line;
 	}
+
+
+
+    public static Contribution getContribution( Long id ) {
+        return Contribution.findById( id );
+    }
 	
 	
 	

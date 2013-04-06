@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Edit Contribution Coding and Annotation</title>
+
+<style>
+    select {
+        vertical-align : top
+}
+
+form {
+	padding: 10px 10px 10px 10px;
+}
+label {
+	display: inline-block;
+	width: 100px;
+	text-align:right;
+	margin: 0 15px 0 0;
+	color: white;
+}
+input {
+	font-size: 14px;	
+}
+#button {
+	margin-left: 115px;	
+}
+</style>
+
+<script src="../_js/jquery-1.7.2.min.js"></script>
+<script>
+
+  var cid = opener.contid;
+  var body = "";
+  var codingsShorthand = "";
+  var annotationShorthand = "";
+
+  $(document).ready(function() {
+    // get verbose contribution
+    var qry = "cid=" + cid;
+    $.get( '/getSingleContribution', qry, parseCont( data ) ).error( errorGetCont( cid ) );
+
+    // get code dictionary
+
+    // build code dictionary
+
+    // populate dropdown
+		
+}); // end ready
+
+
+
+
+  function errorGetCont( theId ) {
+    alert( "ERROR: Could not get contribution : " + theId );
+    self.close();
+  }
+
+
+
+
+
+  function parseCont( data ) {
+    var tempRows = data.split( "\t" );
+    console.log tempRows;
+  }
+
+
+
+</script>
+</head>
+<body>
+  <form id="annotate" action="">
+    <span id="contribString"></span>
+    <p>
+      Type in annotation to this equation in the box below: <br>
+      <textarea id="textBox" rows="10" cols="200"></textArea>
+    </p>
+
+    <hr>
+    
+    <p>
+      To tag this equation, first select a Code Category and then select Code Item(s) <br>
+      <label>Code Category: 
+        <select id="codeCat" name="codeCategory" style="width: 100px"></select>
+      </label>
+      &nbsp
+      <button id="confirmCodeCat" type="button">Next</button>
+    </p>
+
+    <hr>
+    
+    <p>
+      <label>Code Items:</label>
+      <select id="codeItems" name="CodeItems" multiple="yes" size="10" style="width: 100px"></select>
+    </p>
+
+    <hr>
+
+    <p>
+      <button id="cancelB" type="button">Cancel</button>
+      &nbsp
+      <button id="okB" type="button">OK</button>
+    </p>
+
+    
+  </form>
+</body>
+</html>

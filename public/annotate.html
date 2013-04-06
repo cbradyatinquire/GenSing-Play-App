@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Edit Contribution Coding and Annotation</title>
+
+<style>
+    select {
+        vertical-align : top
+}
+
+form {
+	padding: 10px 10px 10px 10px;
+}
+label {
+	display: inline-block;
+	width: 100px;
+	text-align:right;
+	margin: 0 15px 0 0;
+	color: white;
+}
+input {
+	font-size: 14px;	
+}
+#button {
+	margin-left: 115px;	
+}
+</style>
+  <script src="/public/javascript/dynatree/jquery/jquery.js" type="text/javascript"></script>
+<script>
+
+  var cid = opener.contid;
+  var fbody = "";
+  var codingsShorthand = null;
+  var annotationShorthand = null;
+  var annotationText = "";
+  var codings = [];
+
+  $(document).ready(function() {
+    // get verbose contribution
+    var qry = "cid=" + cid;
+    $.get( "/getSingleContribution", qry, parseCont, "HTML" );
+
+    // get code dictionary
+
+    // build code dictionary
+
+    // populate dropdown
+
+		
+}); // end ready
+
+
+
+
+  function parseCont( data ) {
+    var tempRows = data.split( "\t" );
+    fbody = tempRows[ 6 ];
+    codingsShorthand = tempRows[ 7 ].substring( 1, tempRows[7].length );
+    codings = codingsShorthand.split( "|" );
+    annotationShorthand = tempRows[ 8 ].substring( 1, tempRows[ 8 ].length );
+    annotationText = annotationShorthand;
+
+    $( '#contribString' ).html( "<h2>" + fbody + "</h2>" );
+    $( '#textBox' ).val( annotationText );
+    console.log( getSelectedCodeItems( "Math" ) );
+  }
+
+
+
+
+  function getSelectedCodeItems( selectedCodeCat ) {
+    // returns an array where each element is a String descriptor under that category   
+    var retArray = [];
+    for( c in codings ) {
+      var elements = codings[ c ].split( ":" );
+      if( elements[ 0 ] == selectedCodeCat ) {
+        retArray.push( elements[ 1 ] );    
+      }
+    }
+    return retArray;  
+  }
+
+
+
+</script>
+</head>
+<body>
+  <form id="annotate" action="">
+    <span id="contribString"></span>
+    <p>
+      Type in annotation to this equation in the box below: <br>
+      <textarea id="textBox" rows="10" cols="200"></textArea>
+    </p>
+
+    <hr>
+    
+    <p>
+      To tag this equation, first select a Code Category and then select Code Item(s) <br>
+      <label>Code Category: 
+        <select id="codeCat" name="codeCategory" style="width: 100px"></select>
+      </label>
+      &nbsp
+      <button id="confirmCodeCat" type="button">Next</button>
+    </p>
+
+    <hr>
+    
+    <p>
+      <label>Code Items:</label>
+      <select id="codeItems" name="CodeItems" multiple="yes" size="10" style="width: 100px"></select>
+    </p>
+
+    <hr>
+
+    <p>
+      <button id="cancelB" type="button">Cancel</button>
+      &nbsp
+      <button id="okB" type="button">OK</button>
+    </p>
+
+    
+  </form>
+</body>
+</html>
