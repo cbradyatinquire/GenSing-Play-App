@@ -1,0 +1,48 @@
+#{extends 'main.html' /}
+#{set title:'setupTest.html' /}
+
+<head>
+
+<script type="text/javascript">
+    var mydict;
+   	
+	function tryit2( anaction ) {
+	   $('#result').load(
+	       anaction,
+	       function(data) {
+       	   		mydict = JSON.parse(data);
+       		}
+   		)
+	}
+	
+		   
+ 	$(document).ready(function() {
+   		var testAction = #{jsAction @TestJSON.testJSON(':echo') /};
+		var blah = testAction({echo: 'corey'});
+	  	tryit2( blah );
+	  	alert("done");
+	});
+		  
+		  
+	function recall() {
+	   alert(mydict.Math);
+	   alert(mydict.Social);
+	   
+	}
+	
+	
+</script>
+</head>
+
+<body>
+
+
+
+<div id="result" name="result">
+
+ dummy data
+</div>
+
+<button value="press" onclick="recall()">Lookup Some Values</button>
+
+</body>

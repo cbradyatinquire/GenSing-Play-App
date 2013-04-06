@@ -82,6 +82,8 @@ GET		/playWithGeoGebra						QueryBuilder.playWithGeoGebra
 * 		/test									AjaxTesting.test
 *		/tester									Application.tester
 
+*		/json									TestJSON.setupForTest
+
 *      /admin              						module:crud
 
 
