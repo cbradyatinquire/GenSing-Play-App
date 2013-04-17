@@ -1,0 +1,114 @@
+#{extends 'main.html' /}
+#{set title:'setupTest.html' /}
+
+<head>
+
+<script type="text/javascript">
+
+        var mydict;
+        var actvdict;
+
+        // CONSTRUCTORS
+        var ActiveCodeDictionary = function( catList ) {
+            this.actvCodeCategories = [];
+            for( var i = 0; i < catList.length; i++ ) {
+                var aCat = new ActiveCodeCategory( catList[ i ] );
+                this.actvCodeCategories[ i ] = aCat;
+            }
+
+            this.getActiveCodeCat = function( theName ) {
+                for( var i = 0; i < this.actvCodeCategories.length; i++ ) {
+                    console.log( this.actvCodeCategories[i].name );
+                    if( this.actvCodeCategories[ i ].name == theName ) {
+                        return this.actvCodeCategories[ i ];
+                    }
+                }
+            }
+
+            this.tag = function( ccName, ciNames ) {
+                this.getActiveCodeCat( ccName ).actvCodeItems = ciNames;
+            }
+
+            this.chainCodeItems = function() {
+                var ret = "";
+                for( var i = 0; i < this.actvCodeCategories.length; i++ ){ 
+                    var acc = this.actvCodeCategories[ i ];
+                    if( acc.actvCodeItems.length > 0 ) {
+                        for( var j = 0; j < acc.actvCodeItems.length; j++ ) {
+                            ret += "|" + acc.name + ":" + acc.actvCodeItems[ j ];
+                        }
+                    }
+                }
+                if( ret.length > 0 ) {
+                    return( ret + "|" );
+                }
+                return ret;
+            }
+        } // end constructor ActiveCodeDictionary()
+
+
+
+
+        var ActiveCodeCategory = function( name ) {
+            this.name = name;
+            this.actvCodeItems = [];
+        } // end constructor ActiveCodeCategory
+   	
+
+
+
+        // FUNCTIONS
+     	function tryit2( anaction ) {
+	    
+   	    $('#result').load(
+	       anaction,
+	       function(data) {
+       	   		mydict = JSON.parse(data);
+                        // unwrap all the function literals defined in JSONCodeDictionary.java 
+                        eval( "mydict.getCategory = " + mydict.getCategory[0] );
+		}
+   	    )
+	}
+	
+		   
+ 	$(document).ready(function() {
+   		var testAction = #{jsAction @JSONCodeDictionary.getJSONCodeDictionary(':echo') /};
+		var blah = testAction({echo: 'corey'});
+	  	tryit2( blah );
+
+	});
+		  
+		  
+	function recall() {
+	   alert("the values for key 'Math' are " + mydict.Math);
+	   alert("the values for key 'Social' are " + mydict.Social);
+	   alert( mydict.getCategory( "MT" ) );
+           alert( mydict.getCategory( "kerjale" ) );
+           console.log( mydict.codeCategories );
+           var daActiveCodeDict = new ActiveCodeDictionary( mydict.codeCategories );
+           console.log( daActiveCodeDict );
+           //daActiveCodeDict.tag( "Math", ["VASM", "R1", "ASMD"] );
+           console.log( daActiveCodeDict );
+           console.log( daActiveCodeDict.chainCodeItems() );
+	}
+	
+
+
+
+	
+	
+</script>
+</head>
+
+<body>
+
+
+
+<div id="result" name="result">
+
+ dummy data
+</div>
+
+<button value="press" onclick="recall()">Lookup Some Values</button>
+
+</body>
