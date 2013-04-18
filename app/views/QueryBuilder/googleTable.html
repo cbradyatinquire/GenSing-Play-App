@@ -104,7 +104,9 @@
               curCodings = sanitizeForCodings( sanitize( curCodings ) );
               curAnnots = sanitize( curAnnots );
               alert( "open popup " + curCol + "for: \n" + contid + "\n" + fbody + "\n" + curCodings + "\n" + curAnnots );
-              window.open( "/public/annotate.html" );
+              var popupAction = #{jsAction @JSONCodeDictionary.annotate() /}; 
+              console.log( popupAction );
+              var pu = window.open("/annotate");
             }
           }
 	} );

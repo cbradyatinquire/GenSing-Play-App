@@ -16,7 +16,7 @@ import play.mvc.*;
 
 public class JSONCodeDictionary extends Controller {
 
-    public static void setupMyTest() {
+    public static void annotate() {
 	render();
     }
 
