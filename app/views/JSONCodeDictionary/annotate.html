@@ -4,26 +4,28 @@
 <title>Edit Contribution Coding and Annotation</title>
 
 <style>
+    h2 {
+        text-align: center;
+    }
     select {
-        vertical-align : top
-}
-
-form {
+        vertical-align : top;
+    }
+    form {
 	padding: 10px 10px 10px 10px;
-}
-label {
+    }
+    label {
+        font-size: small;
 	display: inline-block;
-	width: 100px;
-	text-align:right;
+	text-align:left;
 	margin: 0 15px 0 0;
-	color: white;
-}
-input {
+	color: black;
+    }
+    input {
 	font-size: 14px;	
-}
-#button {
+    }
+    #button {
 	margin-left: 115px;	
-}
+    }
 </style>
   <script src="/public/javascript/dynatree/jquery/jquery.js" type="text/javascript"></script>
 <script>
@@ -73,10 +75,7 @@ input {
                   }
               }
           }
-          if( ret.length > 0 ) {
-              return( ret + "|" );
-          }
-          return ret;
+          return ret.substring( 1, ret.length );
       }
   } // end constructor ActiveCodeDictionary()
 
@@ -101,10 +100,35 @@ input {
         // unwrap all the function literals defined in JSONCodeDictionary.java 
         eval( "mydict.getCategory = " + mydict.getCategory[0] );
         buildActiveDictionary( mydict.codeCategories );
-        populateDropdown();
       } 
     );
 
+    $( '#codeCat' ).change( function() {
+      var newCat = $( '#codeCat :selected' ).val();
+      populateCodeItemsDropdown( newCat );
+      $( '#codeItems' ).focus();
+    } );
+
+    $( '#codeItems' ).change( function() {
+      var theCat = $( '#codeCat :selected' ).val();
+      var theItems = [];
+      var selItems = $( '#codeItems :selected' ).each( function( i, selected ) {
+        theItems[ i ] = $(selected).text();
+      } );
+      actvdict.tagByCategory( theCat, theItems );
+    } );
+
+    $( '#okB' ).click( function() {
+      var newCodingsShorthand = actvdict.chainCodeItems();
+      var newAnnotationShorthand = $('#textBox').val();
+      opener.updateCodingsAnnotation( newCodingsShorthand, newAnnotationShorthand );
+      self.close();
+    } );
+
+    $( '#cancelB' ).click( function() {
+      self.close();
+    } );
+ 
   }); // end ready
 
 
@@ -115,13 +139,6 @@ input {
     // get verbose contribution
     var qry = "cid=" + cid;
     $.get( "/getSingleContribution", qry, parseCont, "HTML" );
-  }
-
-
-
-
-  function populateDropdown() {
-
   }
 
 
@@ -144,12 +161,42 @@ input {
         var elements = codings[c].split( ":" );
         var cc = elements[ 0 ];
         var ci = elements[ 1 ];
-        console.log( cc );
         actvdict.tagByItem( cc, ci );
       }
     }
-    console.log( actvdict );
-    console.log( actvdict.chainCodeItems() );
+
+    populateCodeCatDropdown( mydict.codeCategories );
+    var fcc = $( '#codeCat :selected' ).val();
+    populateCodeItemsDropdown( fcc );
+  }
+
+
+
+
+  function populateCodeCatDropdown( catList ) {
+    var ccD = $( '#codeCat' );
+    for( cc in catList ) {
+      ccD.append( "<option value=" + catList[ cc ] + ">" + catList[ cc ] + "</option>" );
+    }
+
+  }
+
+
+
+
+  function populateCodeItemsDropdown( theCat ) {
+    var ciD = $( '#codeItems' );
+    ciD.html( "<select id='codeItems' name='CodeItems' multiple='yes' size='10' style='width: 100px'></select>" );
+
+    var theItems = eval( "mydict." + theCat );
+    var actvItems = actvdict.getActiveCodeCat( theCat ).actvCodeItems;
+    for( ci in theItems ) {
+      if( actvItems.indexOf( theItems[ ci ] ) != -1 ) {
+        ciD.append( "<option value=" + theItems[ ci ] + " selected>" + theItems[ ci ] + "</option>" );
+      } else {
+        ciD.append( "<option value=" + theItems[ ci ] + ">" + theItems[ ci ] + "</option>" );
+      }
+    }
   }
 
 
@@ -175,26 +222,34 @@ input {
   <form id="annotate" action="">
     <span id="contribString"></span>
     <p>
+      <label>
       Type in annotation to this equation in the box below: <br>
-      <textarea id="textBox" rows="10" cols="200"></textArea>
-    </p>
-
-    <hr>
-    
-    <p>
-      To tag this equation, first select a Code Category and then select Code Item(s) <br>
-      <label>Code Category: 
-        <select id="codeCat" name="codeCategory" style="width: 100px"></select>
       </label>
-      &nbsp
-      <button id="confirmCodeCat" type="button">Next</button>
+      <textarea id="textBox" rows="6" cols="60"></textArea>
     </p>
 
     <hr>
     
     <p>
-      <label>Code Items:</label>
-      <select id="codeItems" name="CodeItems" multiple="yes" size="10" style="width: 100px"></select>
+      <label>
+      To tag this equation, first select a Code Category and then select Code Item(s).
+      </label>
+      <p>
+      Code Category: 
+        <select id="codeCat" name="codeCategory" style="width: 100px"></select>
+      </p>
+    </p>
+
+    <hr>
+    
+    <p>
+      <p>
+      Code Items:
+        <select id="codeItems" name="CodeItems" multiple="yes" size="10" style="width: 100px"></select>
+      </p>
+      <label>
+      Press and hold Ctrl key to select multiple items.
+      </label>
     </p>
 
     <hr>
