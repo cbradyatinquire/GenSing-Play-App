@@ -85,6 +85,14 @@ GET		/playWithGeoGebra						QueryBuilder.playWithGeoGebra
 
 *		/json									TestJSON.setupForTest
 
+*		/getJSONCodeDictionary							JSONCodeDictionary.getJSONCodeDictionary
+
+*		/createNewCodeCategory							Application.createNewCodeCategory
+
+*		/createNewCodeDescriptor						Application.createNewCodeDescriptor
+
+*		/annotate								JSONCodeDictionary.annotate
+
 *      /admin              						module:crud
 
 

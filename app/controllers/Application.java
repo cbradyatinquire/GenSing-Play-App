@@ -844,6 +844,49 @@ public class Application extends Controller {
     		renderJSON( reply);
     	}
     }
+
+
+
+
+    public static void createNewCodeCategory( String ccname ) {
+	// check if already exists
+        CodeCategory cc = CodeCategory.findByName( ccname );
+        if( cc != null ) {
+	    renderJSON( "Code Category with the name: " + ccname + " already exists." );
+        } else {
+	    CodeCategory newcc = new CodeCategory( ccname );
+            try {
+                newcc.save();
+                renderJSON( "SUCCESS - Code Category with the name: " + ccname + " created." );
+            } catch( Exception e ) {
+		renderJSON( "ERROR while trying to save new Code Category\n" + e.getMessage() );
+	    }
+	}
+    }
+
+
+
+
+    public static void createNewCodeDescriptor( String ccname, String cdname ) {
+        CodeCategory thecc = CodeCategory.findByName( ccname );
+        if( thecc != null ) {
+            System.err.println( "thecc is " + thecc );
+	    CodeDescriptor cd = CodeDescriptor.findByCategoryAndName( thecc, cdname );
+	    if( cd != null ) {
+		renderJSON( "Code Descriptor with the name: " + cdname + " under Category: " + ccname + " already exists." );
+	    } else {
+		CodeDescriptor newcd = new CodeDescriptor( thecc, cdname );
+		try {
+		    newcd.save();
+		    renderJSON( "SUCCESS - Code Descriptor with the name: " + cdname + " under Category: " + ccname + " created." );
+		} catch( Exception e ) {
+		    renderJSON( "ERROR while trying to save new Code Descriptor with the name: " + cdname + " under Category: " + ccname + "\n" + e.getMessage() );
+		}   
+	    }
+	} else {
+	    renderJSON( "ERROR - Cannot find Code Category: " + ccname );
+	}
+    }
     
     
 
