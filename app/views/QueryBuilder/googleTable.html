@@ -9,6 +9,10 @@
        var theRow = "";
       var theStuff = [];
       var contid;
+      var sessid;
+      var anchoredCodings;
+      var anchoredAnnotation;
+      var hoverlocked;
     </script>
 
     <script type='text/javascript' src='/public/javascript/datatables/jquery.js'></script>
@@ -23,6 +27,9 @@
         var curCodings = "";
         var curAnnots = "";
 
+        // for preventing anchored codings and annotation items to change when opening popup
+        hoverlocked = false; 
+
 
 
 
@@ -35,9 +42,14 @@
         // update trackers on column hower
         $( '#example tr .codings' ).hover(
           function() { 
-            curCol = "codings"; 
-            curCodings = $(this).text(); 
-            curAnnots = $(this).next().text(); 
+            if( !hoverlocked ) {
+              anchoredCodings = $(this);
+              anchoredAnnotation = $(this).next( '.annots' );
+              curCol = "codings"; 
+              curCodings = $(this).text(); 
+              curAnnots = $(this).next( '.annots' ).text(); 
+          
+            }
           },
           function() { 
             curCol = ""; 
@@ -48,9 +60,13 @@
 
         $( '#example tr .annots' ).hover(
           function() { 
-            curCol = "annots";
-            curCodings = $(this).prev().text();
-            curAnnots = $(this).text(); 
+            if( !hoverlocked ) {
+              anchoredCodings = $(this).prev( '.codings' );
+              anchoredAnnotation = $(this);
+              curCol = "annots";
+              curCodings = $(this).prev( '.codings' ).text();
+              curAnnots = $(this).text(); 
+            }
           },
           function() { 
             curCol = "";
@@ -82,7 +98,7 @@
     	  } else {
 
             if( curCol == 'drawGGB' ) {
-              var functiondef = curRow;
+              var functiondef = getFDef( curRow );
               var fname = getFName( functiondef ); 
               //send to ggb
 	      document.ggbApplet.evalCommand(functiondef);
@@ -99,17 +115,36 @@
 	      $(this).toggleClass('row_selected');
 	    }  else {
               // open popup for editing codings or annots
-              contid = trimForID( curRow );        
+              hoverlocked = true;
+              sessid = trimForSID( curRow );
+              contid = trimForCID( curRow );        
               var fbody = getFBody( curRow );       
               curCodings = sanitizeForCodings( sanitize( curCodings ) );
               curAnnots = sanitize( curAnnots );
-              alert( "open popup " + curCol + "for: \n" + contid + "\n" + fbody + "\n" + curCodings + "\n" + curAnnots );
+
               var popupAction = #{jsAction @JSONCodeDictionary.annotate() /}; 
-              console.log( popupAction );
-              var pu = window.open("/annotate");
+              var optionString = "width=500,height=800, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";       
+              var pu = window.open("/annotate", "Edit Annotation and Codings", optionString );
             }
           }
 	} );
+
+        representAllAnnots();
+        representAllCodings();
+
+
+
+
+
+
+
+
+        function getFDef( aRow ) {
+        // remove sid_ and replace double uncerscore in cid with single underscore
+           aRow = aRow.substring( aRow.indexOf( "_" ) + 1, aRow.length );
+           aRow = aRow.replace( "__", "_");
+           return aRow;
+        }
 
 
 
@@ -132,10 +167,21 @@
 
 
 
-        function trimForID( str ) {
-          // separate the id info and remove preceding chars "id"
+        function trimForSID( str ) {
+          // separate the session id info and remove preceding chars "sid"
           str = str.substring( 0, str.indexOf( "_" ) );
-          str = str.substring( 2, str.length );
+          str = str.substring( 3, str.length );
+          return str;
+        }
+
+
+
+
+        function trimForCID( str ) {
+        // separate the contribution id info and remove preceding chars "cid"
+          str = str.substring( 0, str.indexOf( "__" ) ); // NOTE: its a double underscore
+          var pos = str.indexOf( "_" ) + 1;
+          str = str.substring( pos + 3, str.length );
           return str;
         }
 
@@ -170,8 +216,21 @@
 	var oTable = $('#example').dataTable( {
                 'sScrollX': '800px',
                 'sScrollY': '600px',
-		'bPaginate': false} 
-        );
+		'bPaginate': false,
+                'aoColumns': [
+                               /*Student*/              null,
+                               /*SecsIn*/               null,
+                               /*Label*/                null,
+                               /*Contribution*/         null,
+                               /*CodingsShorthand*/     { 'bSearchable' : false,
+                                                          'bVisible'    : false },
+                               /*Codings*/              null,
+                               /*AnnotationsShorthand*/ { 'bSearchable' : false,
+                                                          'bVisible'    : false },
+                               /*Annotations*/          null,
+                               /*Valid*/                null
+                ] 
+        } );
 
 
 
@@ -180,6 +239,71 @@
         //buildUniqueStudents( allRawRows );
 
       } );
+
+
+
+
+      function representAllAnnots() {
+        $( '.annots' ).each( function( index ) { 
+          representAnnots( $(this) );
+        } );
+      }
+
+
+
+
+      function representAnnots( target ) {
+        var t = target.text();
+        if( t.indexOf( "|" ) == 0 ) {
+          target.text( t.substring( 1, t.length ) );
+        }
+      }
+
+
+
+
+      function representAllCodings() {
+        $( '.codings' ).each( function( index ) {
+          representCodings( $(this) );
+        } );
+      }
+
+
+
+
+      function representCodings( target ) {
+          var ret = "";
+          var prevcat = "";
+          var currcat = "";
+          var c = target.text();
+          if( c != "--" ) { // only if have codings
+            //trim head and tail off "|"
+            if( c.indexOf( "|" ) == 0 ) {
+              c = c.substring( 1, c.length );
+            }
+            if( c.indexOf( "|" ) == c.length - 1 ) {
+              c = c.substring( 0, c.length - 1 );
+            }
+            // split
+            var cdgs = c.split( "|" );
+            // loop through
+            for( i in cdgs ) {
+              var pieces = cdgs[ i ].split( ":" );
+              currcat = pieces[ 0 ];
+              if( currcat != prevcat ) {
+                ret += "   " + currcat + ":"
+              }
+              ret += pieces[ 1 ] + ",";
+              prevcat = currcat;
+            }
+            // trim ending ","
+            if( ret.length > 0 ) {
+              ret = ret.substring( 0, ret.length - 1 );
+            }
+            target.text( ret );
+          }
+      }
+
 
 
 
@@ -250,11 +374,11 @@
         }
 
         // update counts for each StudentStats
-        console.log( "Total number of students:" +studentStats.length );
+
 
         for( var i=0; i<studentStats.length; i++ ) {
           studentStats[ i ].updateCountValids();
-          console.log( studentStats[ i ].studID + " V:" + studentStats[ i ].validContribs + " IV:" + studentStats[ i ].invalidContribs );
+
         }
 
       }
@@ -274,6 +398,37 @@
         }
         return ret;
       }
+
+
+
+
+      function updateCodingsAnnotation( newCS, newAS ) {
+      // called by child window upon OK-ing codings and annotation
+        // update client display
+        anchoredCodings.text( newCS );
+        anchoredAnnotation.text( newAS );
+        
+        var postCodingsData = "";
+        var postAnnotationData = "";
+        var postBase = "";
+        postBase += "sessionId=" + sessid + "&";
+        postBase += "sequence=" + contid + "&";
+
+        // post codings update to database        
+        postCodingsData = postBase + "codings=" + newCS;
+        $.post( '/setCodingsForContribution', postCodingsData, function( data ) { console.log( data ); } );
+
+        // post annotation update to database
+        postAnnotationData = postBase + "annotations=" + newAS;
+        $.post( '/setAnnotationsForContribution', postAnnotationData, function( data ) { console.log( data ); } );
+
+        // represent Annotation and Codings for tidier display
+        representCodings( anchoredCodings );
+        representAnnots( anchoredAnnotation );
+        
+        // unlock hoverlocked
+        hoverlocked = false;
+      }
           
 
 
@@ -291,22 +446,24 @@
 			<th>SecsIn</th>
 			<th>Label</th>
 			<th>Contribution</th>
+                        <th>CodingsShorthand</th>
 			<th>Codings</th>
+                        <th>AnnotationsShorthand</th>
 			<th>Annotations</th>
 			<th>Valid</th>
 		</tr>
 	</thead>
 	<tbody>
 	  #{list items:contribs, as:'cont'}
-          <script type='text/javascript'>
-            console.log( "${cont.student.username}" );
-          </script>
-	  <tr class="gradeA" id="id${cont.getId()}_{${cont.student.username}_${cont.secondsIn}${cont.objectID}}(x)=${cont.body}">
+          <!-- NOTE: double underscore on separator for cid below -->
+	  <tr class="gradeA" id="sid${cont.session.id}_cid${cont.getId()}__{${cont.student.username}_${cont.secondsIn}${cont.objectID}}(x)=${cont.body}">
             <td class = "drawGGB">${cont.student.username}</td>
             <td class = "drawGGB">${cont.secondsIn}</td>
             <td class = "drawGGB">${cont.objectID}</td> 
             <td class = "drawGGB">${cont.body}</td>
+            <td class = "codingsSH">${cont.codingsShorthand()}</td>
             <td class = "codings">${cont.codingsShorthand()}</td>
+            <td class = "annotsSH">${cont.annotationsShorthand()}</td>
             <td class = "annots">${cont.annotationsShorthand()}</td>
             <td class = "drawGGB">${cont.isValid}</td>
           </tr>
