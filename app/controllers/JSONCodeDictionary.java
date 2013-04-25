@@ -40,11 +40,27 @@ public class JSONCodeDictionary extends Controller {
                 dict.put( "codeCategories", clist );
 		
 		ArrayList<String> funentry = new ArrayList<String>();
-		funentry.add("function() { alert('hello there.  this alert function definition came from the server'); }");
+		funentry.add(
+                    "function() { "+
+                        "alert('hello there.  this alert function definition came from the server'); "+
+                    "}"
+                );
 		dict.put("testfn", funentry );
 
                 ArrayList<String> funGetCategory = new ArrayList<String>();
-                funGetCategory.add("function( citem ) { var dself = mydict; for( var member in dself ) { var tempArr = eval( 'dself.' + member + '.valueOf()' ); if( tempArr instanceof Array && tempArr.indexOf( citem ) > -1 ) { return member; } } return 'ERR- No matching Code Category found'; }");
+                funGetCategory.add(
+                    "function( citem ) { "+
+                        "var dself = mydict; "+ 
+                        "for( var member in dself ) { "+
+                            "var tempArr = eval( 'dself.' + member + '.valueOf()' ); "+
+                            "if( tempArr instanceof Array && "+
+                                 "tempArr.indexOf( citem ) > -1 ) { "+
+                                "return member; "+
+                            "} "+
+                        "} "+
+                        "return 'ERR- No matching Code Category found'; "+
+                    "}"
+                );
 		dict.put( "getCategory", funGetCategory );                
             
 		

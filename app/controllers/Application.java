@@ -887,6 +887,19 @@ public class Application extends Controller {
 	    renderJSON( "ERROR - Cannot find Code Category: " + ccname );
 	}
     }
+
+    public static void getCodeCategories() {
+        List<CodeCategory> ccs = CodeCategory.find( "select c from CodeCategory c" ).fetch();
+        if( ccs == null ) {
+            renderJSON( "ERROR - NO CodeCategories found." );
+        } else {
+            String reply = "";
+	    for( CodeCategory cc : ccs ) {
+                reply += cc.toString() + "\n";
+	    }
+            renderJSON( reply );
+        }
+    }
     
     
     public static void getCodeDescriptorsByCategory( String ccname ) {
