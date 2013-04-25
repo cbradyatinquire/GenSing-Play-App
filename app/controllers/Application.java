@@ -889,5 +889,16 @@ public class Application extends Controller {
     }
     
     
+    public static void getCodeDescriptorsByCategory( String ccname ) {
+    	CodeCategory thecc = CodeCategory.findByName( ccname );
+    	List<CodeDescriptor>descs = CodeDescriptor.findByCategory(thecc);
+    	String result = "";
+    	for (CodeDescriptor cd : descs )
+    	{
+    		result+=cd.descri+"\n";
+    	}
+    	renderJSON( result );
+    }
+    
 
 }

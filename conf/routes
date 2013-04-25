@@ -91,6 +91,9 @@ GET		/playWithGeoGebra						QueryBuilder.playWithGeoGebra
 
 *		/createNewCodeDescriptor						Application.createNewCodeDescriptor
 
+
+GET		/getCodeDescriptorsByCategory			Application.getCodeDescriptorsByCategory
+
 *		/annotate								JSONCodeDictionary.annotate
 
 *      /admin              						module:crud

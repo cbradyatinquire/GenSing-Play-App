@@ -1,7 +1,8 @@
 package models;
 
-import java.util.ArrayList;
+
 import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -25,14 +26,17 @@ public class CodeDescriptor extends Model {
 		this.descri = d;
 		this.ccategory = ca;
 	}
-
-        public static List<CodeDescriptor> findByCategory( CodeCategory cc ) {
-            String qu = "select c from CodeDescriptor c WHERE c.ccategory = " + cc;
-            List<CodeDescriptor> cds = CodeDescriptor.find(qu, this).fetch();
-            return cds;
-        }
-
-	public static CodeDescriptor findByCategoryAndName(CodeCategory cc,
+	
+	public static CodeDescriptor connect(CodeCategory cc, String desc) {
+		desc = desc.trim();
+		return CodeDescriptor.find("byCcategoryAndDescri", cc, desc).first();
+	}
+	
+	public String toString() {
+		return ( ccategory.category + " " + descri );
+	}
+	
+	public static  CodeDescriptor findByCategoryAndName(CodeCategory cc,
 			String descri) {
 		descri = descri.trim();
 //		String qu = "select c from CodeDescriptor c WHERE c.ccategory = "+cc+" and c.descri = "+descri;
@@ -40,16 +44,12 @@ public class CodeDescriptor extends Model {
 //		return cd;
 		return find("byCcategoryAndDescri", cc, descri).first();
 	}
-	
-	public static CodeDescriptor connect(CodeCategory cc, String desc) {
-		desc = desc.trim();
-		return find("byCcategoryAndDescri", cc, desc).first();
-	}
-	
-	public String toString() {
-		return ( ccategory.category + " " + descri );
-	}
-	
 
+	 public static  List<CodeDescriptor> findByCategory( CodeCategory cc ) {
+         //String qu = "select c from CodeDescriptor c WHERE c.ccategory = " + cc;
+         return find("byCcategory", cc).fetch();
+        // return cds;
+     }
 
+	
 }
