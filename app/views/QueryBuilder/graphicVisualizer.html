@@ -25,6 +25,14 @@
       border-top : 1px solid #0033ff;
       border-bottom : 1px solid #0033ff;
     }
+    #shadow{
+      background-color: #000000;
+      opacity: 0.5;
+      position:absolute; 
+      left:0; top:0; 
+      width:100%; 
+      z-index:100;
+    }
   </style>
 
   <script src="/public/javascript/dynatree/jquery/jquery.js" type="text/javascript"></script>
@@ -40,6 +48,31 @@
 
 
   <script type="text/javascript">
+
+    function floatADiv( thediv, theurl ) {
+        $( '#shadow' ).css( { 'height' : $(document).height(),
+                              'position' : 'absolute',
+                              'z-index' : '100'
+                            } ).show();
+        thediv.load( theurl, 
+                     function() {
+                       var leftPos = ($( window ).width() - thediv.width() ) / 2;
+                       var topPos = ($( window ).height() - thediv.height() ) / 2
+                       thediv.css( { 'position' : 'absolute',
+                                     'z-index' : '101',
+                                     'left' : leftPos,
+                                     'top' : topPos,
+                                     'background-color' : '#ffffff'
+                                   } ).show( 100 );
+                     } );
+    } // end floatADiv()
+
+
+
+    function closeADiv( thediv ) {
+        thediv.css( { 'z-index' : '0' } ).hide();
+        $( '#shadow' ).hide();
+    } // end closeADiv()
 
     $(document).ready(function () {
 
@@ -104,7 +137,6 @@
       });    
 
     });
-
 
   </script>
     
@@ -214,6 +246,10 @@
 
     </div> <!-- end div geogebraPanel -->
   </div> <!-- end div mainArea -->
+
+  <div id="shadow"></div>
+
+  <div id="createCodingsFD"></div>
   
 </body>
     

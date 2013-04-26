@@ -4,6 +4,10 @@
 <title>Edit Contribution Coding and Annotation</title>
 
 <style>
+    #annotateContainer {
+        width : 460px;
+       height : 700px;
+    }
     h2 {
         text-align: center;
     }
@@ -29,8 +33,12 @@
 </style>
   <script src="/public/javascript/dynatree/jquery/jquery.js" type="text/javascript"></script>
 <script>
+  // this is a floating div meant to be called from googleTable.html
+  // and loaded into a div defined there. 
+  var selfJQPointer = $( '#annotateFD' ); // HARDCODED, see googleTable.html
+  var shadowJQPointer = $( '#shadow' );    // HARDCODED, see graphicVisualizer.html 
 
-  var cid = opener.contid;
+  var cid = contid;
   var fbody = "";
   var codingsShorthand = null;
   var annotationShorthand = null;
@@ -121,12 +129,16 @@
     $( '#okB' ).click( function() {
       var newCodingsShorthand = actvdict.chainCodeItems();
       var newAnnotationShorthand = $('#textBox').val();
-      opener.updateCodingsAnnotation( newCodingsShorthand, newAnnotationShorthand );
-      self.close();
+      updateCodingsAnnotation( newCodingsShorthand, newAnnotationShorthand );
+      closeADiv( selfJQPointer ); // closeADiv() is defined in graphicVisualizer.html
     } );
 
     $( '#cancelB' ).click( function() {
-      self.close();
+      closeADiv( selfJQPointer ); // closeADiv() is defined in graphicVisualizer.html
+    } );
+
+    $(document).keyup(function(e) {
+      if (e.keyCode == 27) { closeADiv( selfJQPointer ); }
     } );
  
   }); // end ready
@@ -219,6 +231,7 @@
 </script>
 </head>
 <body>
+  <div id="annotateContainer">
   <form id="annotate" action="">
     <span id="contribString"></span>
     <p>
@@ -262,5 +275,6 @@
 
     
   </form>
+  </div>
 </body>
 </html>

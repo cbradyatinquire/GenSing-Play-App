@@ -119,12 +119,12 @@
               sessid = trimForSID( curRow );
               contid = trimForCID( curRow );        
               var fbody = getFBody( curRow );       
-              curCodings = sanitizeForCodings( sanitize( curCodings ) );
-              curAnnots = sanitize( curAnnots );
+              // curCodings = sanitizeForCodings( sanitize( curCodings ) );
+              // curAnnots = sanitize( curAnnots );
 
-              var popupAction = #{jsAction @JSONCodeDictionary.annotate() /}; 
-              var optionString = "width=500,height=800, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";       
-              var pu = window.open("/annotate", "Edit Annotation and Codings", optionString );
+              floatADiv( $( '#annotateFD' ), "/annotate" );
+              //var optionString = "width=500,height=800, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";       
+              //var pu = window.open("/annotate", "Edit Annotation and Codings", optionString );
             }
           }
 	} );
@@ -254,8 +254,12 @@
 
       function representAnnots( target ) {
         var t = target.text();
-        if( t.indexOf( "|" ) == 0 ) {
-          target.text( t.substring( 1, t.length ) );
+        if( t == "" ) {
+          target.text( "--" );
+        } else {
+          if( t.indexOf( "|" ) == 0 ) {
+            target.text( t.substring( 1, t.length ) );
+          }
         }
       }
 
@@ -276,31 +280,35 @@
           var prevcat = "";
           var currcat = "";
           var c = target.text();
-          if( c != "--" ) { // only if have codings
-            //trim head and tail off "|"
-            if( c.indexOf( "|" ) == 0 ) {
-              c = c.substring( 1, c.length );
-            }
-            if( c.indexOf( "|" ) == c.length - 1 ) {
-              c = c.substring( 0, c.length - 1 );
-            }
-            // split
-            var cdgs = c.split( "|" );
-            // loop through
-            for( i in cdgs ) {
-              var pieces = cdgs[ i ].split( ":" );
-              currcat = pieces[ 0 ];
-              if( currcat != prevcat ) {
-                ret += "   " + currcat + ":"
+          if( c == "" ) {
+            target.text( "--" );
+          } else {
+            if( c != "--" ) { // only if have codings
+              //trim head and tail off "|"
+              if( c.indexOf( "|" ) == 0 ) {
+                c = c.substring( 1, c.length );
               }
-              ret += pieces[ 1 ] + ",";
-              prevcat = currcat;
+              if( c.indexOf( "|" ) == c.length - 1 ) {
+                c = c.substring( 0, c.length - 1 );
+              }
+              // split
+              var cdgs = c.split( "|" );
+              // loop through
+              for( i in cdgs ) {
+                var pieces = cdgs[ i ].split( ":" );
+                currcat = pieces[ 0 ];
+                if( currcat != prevcat ) {
+                  ret += "   " + currcat + ":"
+                }
+                ret += pieces[ 1 ] + ",";
+                prevcat = currcat;
+              }
+              // trim ending ","
+              if( ret.length > 0 ) {
+                ret = ret.substring( 0, ret.length - 1 );
+              }
+              target.text( ret );
             }
-            // trim ending ","
-            if( ret.length > 0 ) {
-              ret = ret.substring( 0, ret.length - 1 );
-            }
-            target.text( ret );
           }
       }
 
@@ -525,7 +533,9 @@ FOR TESTING ONLY -- USE THE FORM BELOW TO SET THE CODINGS FOR A CONTRIBUTION
 			
 			    
 </form>
-			
+
+<div id="annotateFD" style="width:460px; height:700px;">
+</div>			
 			
   </body>
   
