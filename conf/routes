@@ -100,6 +100,14 @@ GET		/getCodeDescriptorsByCategory			Application.getCodeDescriptorsByCategory
 
 *		/manageCodes								QueryBuilder.manageCodes
 
+GET		/getCodeCatDescription							Application.getCodeCatDescription
+
+GET		/getCodeDescDescription							Application.getCodeDescDescription
+
+*		/updateCodeCategory							Application.updateCodeCategory
+
+*		/updateCodeDescriptor							Application.updateCodeDescriptor
+
 *      /admin              						module:crud
 
 

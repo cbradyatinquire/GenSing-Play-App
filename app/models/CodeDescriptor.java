@@ -15,6 +15,8 @@ public class CodeDescriptor extends Model {
 	
 	@Required
 	public String descri;
+
+        public String description;
 	
 	@Required
 	@ManyToOne

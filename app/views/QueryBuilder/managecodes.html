@@ -43,8 +43,12 @@ i#{extends 'main.html' /}
 
   var codeCats;
   var selectedCodeCat;
+  var oldCodeCat;
+  var oldCodeCatOption;
   var codeDescsUnderCat;
   var selectedCodeDesc;
+  var oldCodeDesc;
+  var oldCodeDescOption;
 
   function populateCodeCatDropdown( catList ) {
     var ccD = $( '#codeCat' );
@@ -60,7 +64,7 @@ i#{extends 'main.html' /}
 
   function populateCodeItemsDropdown( theCat ) {
     var ciD = $( '#codeItems' );
-    ciD.html( "<select id='codeItems' name='CodeItems' multiple='yes' size='10' style='width: 100px'></select>" );
+    ciD.html( "<select id='codeItems' name='CodeItems' multiple='no' size='10' style='width: 100px'></select>" );
     if( theCat != "CREATE_NEW" ) {
       $.get( '/getCodeDescriptorsByCategory', { 'ccname' : theCat }, function(data) {  
         codeDescsUnderCat = data.split( "\n" );
@@ -103,11 +107,9 @@ i#{extends 'main.html' /}
       $( '#ccLabel' ).attr( 'readonly', true );
       $( '#ccDescription' ).attr( 'readonly', true );
       activeButtonLabel = "Edit";
-      alert( theCat );
       activeLabel = theCat;
-      $.get( '/getCodeDescriptorsByCategory', { 'ccname' : theCat }, function(data) {
+      $.get( '/getCodeCatDescription', { 'ccname' : theCat }, function(data) {
         activeDescription = data;
-        alert( activeDescription );
         setLabelsCCDetailsPanel( activeButtonLabel, activeLabel, activeDescription );
       }, "HTML" );
     }
@@ -148,9 +150,15 @@ i#{extends 'main.html' /}
       $( '#cdDescription' ).attr( 'readonly', true );
      activeButtonLabel = "Edit"; 
      activeLabel = theDesc;
-     $.get( '/getCodeDescriptorsByCategory', { 'ccname' : selectedCodeCat }, function(data) {
-       activeDescription = data;
-       setLabelsCDDetailsPanel( activeButtonLabel, activeLabel, activeDescription );
+     $.get( '/getCodeDescDescription', 
+            { 
+              'ccname' : selectedCodeCat, 
+              'cdname' : selectedCodeDesc 
+            }, 
+            function(data) {
+              console.log( data );
+              activeDescription = data;
+              setLabelsCDDetailsPanel( activeButtonLabel, activeLabel, activeDescription );
      }, "HTML" );
     }
   }
@@ -158,8 +166,19 @@ i#{extends 'main.html' /}
 
 
 
-  $(document).ready(function() { 
-  
+  function startDiv() {
+    codeCats = [];
+    selectedCodeCat = null;
+    oldCodeCat = null;
+    oldCodeCatOption = null;
+    $( '#codeCat' ).html( "<select id='codeCat' name='codeCategory' style='width: 100px'></select>" );
+    codeDescsUnderCat = [];
+    selectedCodeDesc = null;
+    oldCodeDesc = null;
+    oldCodeDescOption = null;
+    $( '#codeItems' ).html( "<select id='codeItems' name='CodeItems' multiple='no' size='10' style='width: 100px'></select>" );
+    
+
     $.get( '/getCodeCategories', function(data){
       codeCats = data.split( "\n" );
       if( codeCats[ codeCats.length-1 ] == "" ) {
@@ -173,8 +192,14 @@ i#{extends 'main.html' /}
       populateCodeItemsDropdown( selectedCodeCat );
       populateCDDetailsPanel( "" );
     }, "HTML" );
-  
+  }
 
+
+
+
+  $(document).ready(function() { 
+    startDiv();
+  
     $( '#codeCat' ).change( function() {
       selectedCodeCat = $( '#codeCat :selected' ).val();
       populateCCDetailsPanel( selectedCodeCat );
@@ -189,6 +214,54 @@ i#{extends 'main.html' /}
       if( selectedCodeCat != "CREATE_NEW" ) {
         selectedCodeDesc = $( '#codeItems :selected' ).val();
         populateCDDetailsPanel( selectedCodeDesc ); 
+      }
+    } );
+
+
+
+
+    $( '#ccDetailsPanelB' ).click( function () {
+      // mode Remove
+      if( $(this).val() == "Remove" ) {
+        if( confirm( "This will delete the Code Category from database. Are you sure?" ) ) {
+          alert( "Code Category deleted." );
+        } else {
+           // do nothing
+        }
+      } else if( $(this).val() == "Edit" ) { // mode Edit
+        $( this ).val( "Save" );
+        $( '#cclabel' ).attr( 'readonly', false );
+        $( '#ccDescription' ).attr( 'readonly', false );
+      } else if( $(this).val() == "Save" ) { // mode Save
+        // update db
+        var qryObj = { 'ccname' : ( $( '#ccLabel' ).val() + "" ), 
+                       'ccdesc' : ( $( '#ccDescription' ).val() + "" ) }; 
+        $.post( "/updateCodeCategory", qryObj, function(data){ alert(data);}, "HTML" ); 
+        // update client
+        startDiv();
+      }
+    } );
+
+
+
+    $( '#cdDetailsPanelB' ).click( function () {
+      // mode Remove
+      if( $(this).val() == "Remove" ) {
+        if( confirm( "This will delete the Code Descriptor from database. Are you sure?" ) ) {
+          alert( "Code Descriptor deleted." );
+        } else {
+           // do nothing
+        }
+      } else if( $(this).val() == "Edit" ) { // mode Edit
+        $( this ).val( "Save" );
+        $( '#cdlabel' ).attr( 'readonly', false );
+        $( '#cdDescription' ).attr( 'readonly', false );
+      } else if( $(this).val() == "Save" ) { // mode Save
+        
+        var qryObj = { 'ccname' : selectedCodeCat, 
+                       'cdname' : ( $( '#cdLabel' ).val() + "" ),
+                       'cddesc' : ( $( '#cdDescription' ).val() + "" ) }; 
+        $.post( "/updateCodeDescriptor", qryObj, function(data){ alert(data);}, "HTML" ); 
       }
     } );
 

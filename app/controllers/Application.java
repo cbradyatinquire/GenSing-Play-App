@@ -902,6 +902,8 @@ public class Application extends Controller {
     }
     
     
+
+
     public static void getCodeDescriptorsByCategory( String ccname ) {
     	CodeCategory thecc = CodeCategory.findByName( ccname );
     	List<CodeDescriptor>descs = CodeDescriptor.findByCategory(thecc);
@@ -911,6 +913,71 @@ public class Application extends Controller {
     		result+=cd.descri+"\n";
     	}
     	renderJSON( result );
+    }
+
+
+
+
+    public static void getCodeCatDescription( String ccname ) {
+        String reply = "";
+        CodeCategory thecc = CodeCategory.findByName( ccname );
+        if( thecc != null && thecc.description != null ) 
+	    reply = thecc.description;
+        renderJSON( reply );        
+    }
+
+
+
+
+    public static void getCodeDescDescription( String ccname, String cdname ) {
+        String reply = "";
+        CodeCategory thecc = CodeCategory.findByName( ccname );
+        CodeDescriptor thecd = CodeDescriptor.findByCategoryAndName( thecc, cdname );
+        if( thecd != null && thecd.description != null )
+	    reply = thecd.description;
+	System.err.println( "reply is:" + reply );
+        renderJSON( reply );
+    }
+
+
+
+
+    public static void updateCodeCategory( String ccname, String ccdesc ) {
+        String reply = "Update Code Category " + ccname + " : ";
+        CodeCategory thecc = CodeCategory.findByName( ccname );
+        if( thecc == null ) {
+	    thecc = new CodeCategory( ccname );
+            reply = "Create New Category " + ccname + " : ";
+        }
+	thecc.description = ccdesc;
+
+        try{
+            thecc.save();
+            renderJSON( reply + "SUCCESS" );
+        } catch( Exception e ) {
+            renderJSON( reply + "FAIL " + e.getMessage() );
+        }
+    }
+
+
+
+
+    public static void updateCodeDescriptor( String ccname, String cdname, String cddesc ) {
+        String reply = "Update Code Descriptor " + ccname + ":" + cdname + " : ";
+        CodeCategory thecc = CodeCategory.findByName( ccname );
+        CodeDescriptor thecd = CodeDescriptor.findByCategoryAndName( thecc, cdname );
+        if( thecd == null ) {
+            thecd = new CodeDescriptor( thecc, cdname );
+            reply = "Create New Code Descriptor " + ccname + ":" + cdname + " : ";       
+        }
+        thecd.description = cddesc;
+
+        try{
+            thecd.save();
+            renderJSON( reply + "SUCCESS" );
+        } catch( Exception e ) {
+            renderJSON( reply + "FAIL " + e.getMessage() );
+        }
     }
     
 
