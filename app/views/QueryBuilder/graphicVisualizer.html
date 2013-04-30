@@ -89,6 +89,10 @@
         }
       } );
 
+      $( '#manageCodes' ).click( function() {
+        floatADiv( $( '#manageCodesFD' ), '/manageCodes' );
+      } );
+
       console.log( childarray );
       $("#tree").dynatree({
         checkbox: true,
@@ -226,7 +230,9 @@
     The selection contains <span id="numStudentsSelected">0</span> student(s) and <span id="numSessionsSelected">0</span> class session(s).
     <br> 
    
-    <input id="sliderButton" type="button" value="Load Data Into Table"/><br>
+    <input id="sliderButton" type="button" value="Load Data Into Table"/> 
+    &nbsp &nbsp &nbsp
+    <input type="button" id="manageCodes" value="Manage Codes">
   </div>
 
   <div id="mainArea">
@@ -247,9 +253,10 @@
     </div> <!-- end div geogebraPanel -->
   </div> <!-- end div mainArea -->
 
+
   <div id="shadow"></div>
 
-  <div id="createCodingsFD"></div>
+  <div id="manageCodesFD" style="width:580px; height=500px"></div>
   
 </body>
     

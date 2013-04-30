@@ -363,4 +363,8 @@ public class QueryBuilder extends Controller {
     public static void playWithGeoGebra() {
     	render();
     }
+
+    public static void manageCodes() {
+        render();
+    }
 }

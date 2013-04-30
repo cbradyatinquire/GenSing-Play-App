@@ -98,6 +98,8 @@ GET		/getCodeDescriptorsByCategory			Application.getCodeDescriptorsByCategory
 
 *		/annotate								JSONCodeDictionary.annotate
 
+*		/manageCodes								QueryBuilder.manageCodes
+
 *      /admin              						module:crud
 
 

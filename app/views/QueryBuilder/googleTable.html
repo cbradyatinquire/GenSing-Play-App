@@ -508,18 +508,20 @@
 	</thead>
 	<tbody>
 
-    <tr >
-    <td>${numcontributions}</td>
-    <td>${numstudents}</td>
-    <td>${numvalids}</td> 
-    <td>${numinvalids}</td> 
+            <tr >
+                <td>${numcontributions}</td>
+                <td>${numstudents}</td>
+                <td>${numvalids}</td> 
+                <td>${numinvalids}</td> 
     
-    #{list items:counts, as:'count'}
-	<td>${count}</td>
-	#{/list}
-    </tr>
-	</tbody>
+            #{list items:counts, as:'count'}
+    	        <td>${count}</td>
+            </tr>
+            #{/list}
+        </tbody>
 </table>
+end of table
+<!--
 <br>
 <br>
 FOR TESTING ONLY -- USE THE FORM BELOW TO SET THE CODINGS FOR A CONTRIBUTION
@@ -533,6 +535,7 @@ FOR TESTING ONLY -- USE THE FORM BELOW TO SET THE CODINGS FOR A CONTRIBUTION
 			
 			    
 </form>
+-->
 
 <div id="annotateFD" style="width:460px; height:700px;">
 </div>			
