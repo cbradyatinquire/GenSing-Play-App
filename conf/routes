@@ -104,9 +104,13 @@ GET		/getCodeCatDescription							Application.getCodeCatDescription
 
 GET		/getCodeDescDescription							Application.getCodeDescDescription
 
-*		/updateCodeCategory							Application.updateCodeCategory
+POST		/updateCodeCategory							Application.updateCodeCategory
 
-*		/updateCodeDescriptor							Application.updateCodeDescriptor
+POST		/updateCodeDescriptor							Application.updateCodeDescriptor
+
+POST		/createCodeCategory							Application.createCodeCategory
+
+POST		/createCodeDescriptor							Application.createCodeDescriptor
 
 *      /admin              						module:crud
 

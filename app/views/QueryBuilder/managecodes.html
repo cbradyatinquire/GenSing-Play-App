@@ -43,15 +43,14 @@ i#{extends 'main.html' /}
 
   var codeCats;
   var selectedCodeCat;
-  var oldCodeCat;
-  var oldCodeCatOption;
+
   var codeDescsUnderCat;
   var selectedCodeDesc;
-  var oldCodeDesc;
-  var oldCodeDescOption;
+
 
   function populateCodeCatDropdown( catList ) {
     var ccD = $( '#codeCat' );
+    ccD.html( "<select id='codeCat' name='codeCategory' style='width: 100px'></select>" );
     for( cc in catList ) {
       ccD.append( "<option value=" + catList[ cc ] + ">" + catList[ cc ] + "</option>" );
     }
@@ -83,6 +82,18 @@ i#{extends 'main.html' /}
 
 
 
+  function refreshCodeItemsDropdown( newCDs ) {
+    var ciD = $( '#codeItems' );
+    ciD.html( "<select id='codeItems' name='CodeItems' multiple='no' size='10' style='width: 100px'></select>" );
+    for( cd in newCDs ) {
+      ciD.append( "<option value=" + newCDs[ cd ] + ">" + newCDs[ cd ] + "</options>" );
+    }
+    ciD.append( "<option value='CREATE_NEW' style='background-color:#66ff66'>CREATE_NEW</option>" );
+  }
+
+
+
+
   function setLabelsCCDetailsPanel( btnlbl, lbl, dscp ) {
     $( '#ccDetailsPanelB' ).val( btnlbl );
     $( '#ccLabel' ).val( lbl );
@@ -99,7 +110,7 @@ i#{extends 'main.html' /}
     if( theCat == "CREATE_NEW" ) {
      $( '#ccLabel' ).attr( 'readonly', false );
      $( '#ccDescription' ).attr( 'readonly', false ); 
-     activeButtonLabel = "Save";
+     activeButtonLabel = "Create";
       activeLabel = "Type a new label";
       activeDescription = "Type details for description";
        setLabelsCCDetailsPanel( activeButtonLabel, activeLabel, activeDescription );
@@ -141,7 +152,7 @@ i#{extends 'main.html' /}
     } else if( theDesc == "CREATE_NEW" ) {
       $( '#cdLabel' ).attr( 'readonly', false );
       $( '#cdDescription' ).attr( 'readonly', false );
-      activeButtonLabel = "Save";
+      activeButtonLabel = "Create";
       activeLabel = "Type a new label";
       activeDescription = "Type details for description";
       setLabelsCDDetailsPanel( activeButtonLabel, activeLabel, activeDescription );
@@ -166,19 +177,7 @@ i#{extends 'main.html' /}
 
 
 
-  function startDiv() {
-    codeCats = [];
-    selectedCodeCat = null;
-    oldCodeCat = null;
-    oldCodeCatOption = null;
-    $( '#codeCat' ).html( "<select id='codeCat' name='codeCategory' style='width: 100px'></select>" );
-    codeDescsUnderCat = [];
-    selectedCodeDesc = null;
-    oldCodeDesc = null;
-    oldCodeDescOption = null;
-    $( '#codeItems' ).html( "<select id='codeItems' name='CodeItems' multiple='no' size='10' style='width: 100px'></select>" );
-    
-
+  $(document).ready(function() { 
     $.get( '/getCodeCategories', function(data){
       codeCats = data.split( "\n" );
       if( codeCats[ codeCats.length-1 ] == "" ) {
@@ -192,13 +191,6 @@ i#{extends 'main.html' /}
       populateCodeItemsDropdown( selectedCodeCat );
       populateCDDetailsPanel( "" );
     }, "HTML" );
-  }
-
-
-
-
-  $(document).ready(function() { 
-    startDiv();
   
     $( '#codeCat' ).change( function() {
       selectedCodeCat = $( '#codeCat :selected' ).val();
@@ -221,47 +213,97 @@ i#{extends 'main.html' /}
 
 
     $( '#ccDetailsPanelB' ).click( function () {
-      // mode Remove
-      if( $(this).val() == "Remove" ) {
+      // mode Delete
+      if( $(this).val() == "Delete" ) {
         if( confirm( "This will delete the Code Category from database. Are you sure?" ) ) {
           alert( "Code Category deleted." );
         } else {
            // do nothing
         }
       } else if( $(this).val() == "Edit" ) { // mode Edit
-        $( this ).val( "Save" );
-        $( '#cclabel' ).attr( 'readonly', false );
+        $( this ).val( "Update" );
+        $( '#ccLabel' ).attr( 'readonly', false );
         $( '#ccDescription' ).attr( 'readonly', false );
-      } else if( $(this).val() == "Save" ) { // mode Save
+      } else if( $(this).val() == "Update" ) { // mode Update
         // update db
-        var qryObj = { 'ccname' : ( $( '#ccLabel' ).val() + "" ), 
+        var oldccname = ( $( '#codeCat :selected' ).val() + "");
+        var newccname = ( $( '#ccLabel' ).val() + "" );
+        var qryObj = { 'oldccname' : oldccname,
+                       'ccname' : newccname, 
                        'ccdesc' : ( $( '#ccDescription' ).val() + "" ) }; 
         $.post( "/updateCodeCategory", qryObj, function(data){ alert(data);}, "HTML" ); 
         // update client
-        startDiv();
-      }
+        codeCats[ codeCats.indexOf( oldccname ) ] = newccname;
+        populateCodeCatDropdown( codeCats );
+        $( '#codeCat' ).val( newccname );
+        selectedCodeCat = $( '#codeCat :selected' ).val();
+        populateCCDetailsPanel( selectedCodeCat );
+
+        populateCodeItemsDropdown( selectedCodeCat );
+        populateCDDetailsPanel( "" );        
+      } else if( $(this).val() == "Create" ) { // mode Create
+        // create db
+        var newccname = ( $( '#ccLabel' ).val() + "" );
+        var qryObj = { 'ccname' : newccname, 
+                       'ccdesc' : ( $( '#ccDescription' ).val() + "" ) }; 
+        $.post( "/createCodeCategory", qryObj, function(data){ alert(data);}, "HTML" );
+        // create client
+        codeCats.splice( codeCats.length, 0, newccname );
+        populateCodeCatDropdown( codeCats );
+        $( '#codeCat' ).val( newccname );
+        selectedCodeCat = $( '#codeCat :selected' ).val();
+        populateCCDetailsPanel( selectedCodeCat );
+
+        populateCodeItemsDropdown( selectedCodeCat );
+        populateCDDetailsPanel( "" );        
+      } 
     } );
 
 
 
     $( '#cdDetailsPanelB' ).click( function () {
-      // mode Remove
-      if( $(this).val() == "Remove" ) {
+      // mode Delete
+      if( $(this).val() == "Delete" ) {
         if( confirm( "This will delete the Code Descriptor from database. Are you sure?" ) ) {
           alert( "Code Descriptor deleted." );
         } else {
            // do nothing
         }
       } else if( $(this).val() == "Edit" ) { // mode Edit
-        $( this ).val( "Save" );
-        $( '#cdlabel' ).attr( 'readonly', false );
+        $( this ).val( "Update" );
+        $( '#cdLabel' ).attr( 'readonly', false );
         $( '#cdDescription' ).attr( 'readonly', false );
-      } else if( $(this).val() == "Save" ) { // mode Save
-        
-        var qryObj = { 'ccname' : selectedCodeCat, 
-                       'cdname' : ( $( '#cdLabel' ).val() + "" ),
+      } else if( $(this).val() == "Update" ) { // mode Update
+        // update db
+        var oldcdname = ( $( '#codeItems :selected' ).val() + "" );  
+        var newcdname = ( $( '#cdLabel' ).val() + "" );
+        var qryObj = { 'ccname' : selectedCodeCat,
+                       'oldcdname' : oldcdname, 
+                       'cdname' : newcdname,
                        'cddesc' : ( $( '#cdDescription' ).val() + "" ) }; 
-        $.post( "/updateCodeDescriptor", qryObj, function(data){ alert(data);}, "HTML" ); 
+        $.post( "/updateCodeDescriptor", qryObj, function(data){ alert(data);}, "HTML" );
+        // update client
+        codeDescsUnderCat[ codeDescsUnderCat.indexOf( oldcdname ) ] = newcdname;
+        refreshCodeItemsDropdown( codeDescsUnderCat );
+        $( '#codeItems' ).val( newcdname );
+        selectedCodeDesc = $( '#codeItems :selected' ).val();
+        // lock down existing fields and change button label
+        $( '#cdLabel' ).attr( 'readonly', true );
+        $( '#cdDescription' ).attr( 'readonly', true );
+        $( '#cdDetailsPanelB' ).val( 'Edit' );
+      } else if( $(this).val() == "Create" ){ // mode Create
+        // create db
+        var newcdname = ( $( '#cdLabel' ).val() + "" );
+        var qryObj = { 'ccname' : selectedCodeCat,
+                       'cdname' : newcdname,
+                       'cddesc' : ( $( '#cdDescription' ).val() + "" ) }; 
+        $.post( "/createCodeDescriptor", qryObj, function(data){ alert(data);}, "HTML" );
+        // create client
+        codeDescsUnderCat.splice( codeDescsUnderCat.length, 0, newcdname );
+        refreshCodeItemsDropdown( codeDescsUnderCat );
+        $( '#codeItems' ).val( newcdname );
+        selectedCodeDesc = $( '#codeItems :selected' ).val();
+        populateCDDetailsPanel( selectedCodeDesc );
       }
     } );
 
@@ -306,7 +348,7 @@ i#{extends 'main.html' /}
       <label>Label:</label>
       <br>
       <input type='text' id='ccLabel'>
-      <input type='button' id='ccDetailsPanelB' style='margin-left:80px;' value='Remove'>
+      <input type='button' id='ccDetailsPanelB' style='margin-left:80px;' value='Delete'>
       <br>
       <label>Description:</label>
       <br>
@@ -317,7 +359,7 @@ i#{extends 'main.html' /}
       <label>Label:</label>
       <br>
       <input type='text' id='cdLabel'>
-      <input type='button' id='cdDetailsPanelB' style='margin-left:80px;' value='Remove'>
+      <input type='button' id='cdDetailsPanelB' style='margin-left:80px;' value='Delete'>
       <br>
       <label>Description:</label>
       <br>
