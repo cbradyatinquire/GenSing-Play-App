@@ -71,6 +71,7 @@
 
     function closeADiv( thediv ) {
         thediv.css( { 'z-index' : '0' } ).hide();
+        thediv.html( "" );
         $( '#shadow' ).hide();
     } // end closeADiv()
 
