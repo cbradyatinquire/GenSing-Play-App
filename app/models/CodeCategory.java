@@ -16,7 +16,7 @@ public class CodeCategory extends Model {
 	@Required
 	public String category;
         
-        public String description;
+        public String details;
 	
 	@OneToMany (mappedBy="ccategory", cascade=CascadeType.ALL)
 	public List<CodeDescriptor>descriptors;

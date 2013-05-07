@@ -100,9 +100,9 @@ GET		/getCodeDescriptorsByCategory			Application.getCodeDescriptorsByCategory
 
 *		/manageCodes								QueryBuilder.manageCodes
 
-GET		/getCodeCatDescription							Application.getCodeCatDescription
+GET		/getCodeCatDetails							Application.getCodeCatDetails
 
-GET		/getCodeDescDescription							Application.getCodeDescDescription
+GET		/getCodeDescDetails							Application.getCodeDescDetails
 
 POST		/updateCodeCategory							Application.updateCodeCategory
 

@@ -917,35 +917,35 @@ public class Application extends Controller {
 
 
 
-    public static void getCodeCatDescription( String ccname ) {
+    public static void getCodeCatDetails( String ccname ) {
         String reply = "";
         CodeCategory thecc = CodeCategory.findByName( ccname );
-        if( thecc != null && thecc.description != null ) 
-	    reply = thecc.description;
+        if( thecc != null && thecc.details != null ) 
+	    reply = thecc.details;
         renderJSON( reply );        
     }
 
 
 
 
-    public static void getCodeDescDescription( String ccname, String cdname ) {
+    public static void getCodeDescDetails( String ccname, String cdname ) {
         String reply = "";
         CodeCategory thecc = CodeCategory.findByName( ccname );
         CodeDescriptor thecd = CodeDescriptor.findByCategoryAndName( thecc, cdname );
-        if( thecd != null && thecd.description != null )
-	    reply = thecd.description;
+        if( thecd != null && thecd.details != null )
+	    reply = thecd.details;
         renderJSON( reply );
     }
 
 
 
 
-    public static void createCodeCategory( String ccname, String ccdesc ) {
+    public static void createCodeCategory( String ccname, String ccdets ) {
         String reply = "Create New Code Category " + ccname + " : ";
         CodeCategory thecc = CodeCategory.findByName( ccname );
         if( thecc == null ) {
 	    thecc = new CodeCategory( ccname );     
-    	    thecc.description = ccdesc;
+    	    thecc.details = ccdets;
             try{
                 thecc.save();
                 renderJSON( reply + "SUCCESS" );
@@ -960,13 +960,13 @@ public class Application extends Controller {
 
 
 
-    public static void createCodeDescriptor( String ccname, String cdname, String cddesc ) {
+    public static void createCodeDescriptor( String ccname, String cdname, String cddets ) {
         String reply = "Create New Code Descriptor " + ccname + ":" + cdname + " : ";
         CodeCategory thecc = CodeCategory.findByName( ccname );
         CodeDescriptor thecd = CodeDescriptor.findByCategoryAndName( thecc, cdname );
         if( thecd == null ) {
             thecd = new CodeDescriptor( thecc, cdname );
-            thecd.description = cddesc;
+            thecd.details = cddets;
             try{
                 thecd.save();
                 renderJSON( reply + "SUCCESS" );
@@ -981,12 +981,12 @@ public class Application extends Controller {
 
 
 
-    public static void updateCodeCategory( String oldccname, String ccname, String ccdesc ) {
+    public static void updateCodeCategory( String oldccname, String ccname, String ccdets ) {
         String reply = "Update Code Category " + oldccname + " : ";
         CodeCategory thecc = CodeCategory.findByName( oldccname );
         if( thecc != null ) {
             thecc.category = ccname;
-            thecc.description = ccdesc;
+            thecc.details = ccdets;
             try{
                 thecc.save();
                 renderJSON( reply + "SUCCESS" );
@@ -1001,13 +1001,13 @@ public class Application extends Controller {
 
 
 
-    public static void updateCodeDescriptor( String ccname, String oldcdname, String cdname, String cddesc ) {
+    public static void updateCodeDescriptor( String ccname, String oldcdname, String cdname, String cddets ) {
         String reply = "Update Code Descriptor " + ccname + ":" + oldcdname + " : ";
         CodeCategory thecc = CodeCategory.findByName( ccname );
         CodeDescriptor thecd = CodeDescriptor.findByCategoryAndName( thecc, oldcdname );
         if( thecd != null ) {
             thecd.descri = cdname;
-            thecd.description = cddesc;
+            thecd.details = cddets;
             try{
                 thecd.save();
                 renderJSON( reply + "SUCCESS" );

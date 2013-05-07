@@ -44,7 +44,7 @@ i#{extends 'main.html' /}
   var codeCats;
   var selectedCodeCat;
 
-  var codeDescsUnderCat;
+  var codeDetsUnderCat;
   var selectedCodeDesc;
 
 
@@ -66,12 +66,12 @@ i#{extends 'main.html' /}
     ciD.html( "<select id='codeItems' name='CodeItems' multiple='no' size='10' style='width: 100px'></select>" );
     if( theCat != "CREATE_NEW" ) {
       $.get( '/getCodeDescriptorsByCategory', { 'ccname' : theCat }, function(data) {  
-        codeDescsUnderCat = data.split( "\n" );
-        if( codeDescsUnderCat[ codeDescsUnderCat.length-1 ] == "" )
-          codeDescsUnderCat.pop();
+        codeDetsUnderCat = data.split( "\n" );
+        if( codeDetsUnderCat[ codeDetsUnderCat.length-1 ] == "" )
+          codeDetsUnderCat.pop();
 
-        for( cd in codeDescsUnderCat ) {
-          ciD.append( "<option value=" + codeDescsUnderCat[ cd ] + ">" + codeDescsUnderCat[ cd ] + "</options>" );
+        for( cd in codeDetsUnderCat ) {
+          ciD.append( "<option value=" + codeDetsUnderCat[ cd ] + ">" + codeDetsUnderCat[ cd ] + "</options>" );
         }
         ciD.append( "<option value='CREATE_NEW' style='background-color:#66ff66'>CREATE_NEW</option>" );
       }, "HTML" );
@@ -94,10 +94,10 @@ i#{extends 'main.html' /}
 
 
 
-  function setLabelsCCDetailsPanel( btnlbl, lbl, dscp ) {
+  function setLabelsCCDetailsPanel( btnlbl, lbl, dtls ) {
     $( '#ccDetailsPanelB' ).val( btnlbl );
     $( '#ccLabel' ).val( lbl );
-    $( '#ccDescription' ).val( dscp );
+    $( '#ccDetails' ).val( dtls );
   }
 
 
@@ -105,23 +105,23 @@ i#{extends 'main.html' /}
 
   function populateCCDetailsPanel( theCat ) {
     var activeLabel;
-    var activeDescription;
+    var activeDetails;
     var activeButtonLabel;
     if( theCat == "CREATE_NEW" ) {
      $( '#ccLabel' ).attr( 'readonly', false );
-     $( '#ccDescription' ).attr( 'readonly', false ); 
+     $( '#ccDetails' ).attr( 'readonly', false ); 
      activeButtonLabel = "Create";
       activeLabel = "Type a new label";
-      activeDescription = "Type details for description";
-       setLabelsCCDetailsPanel( activeButtonLabel, activeLabel, activeDescription );
+      activeDetails = "Type details to describe";
+       setLabelsCCDetailsPanel( activeButtonLabel, activeLabel, activeDetails );
     } else {
       $( '#ccLabel' ).attr( 'readonly', true );
-      $( '#ccDescription' ).attr( 'readonly', true );
+      $( '#ccDetails' ).attr( 'readonly', true );
       activeButtonLabel = "Edit";
       activeLabel = theCat;
-      $.get( '/getCodeCatDescription', { 'ccname' : theCat }, function(data) {
-        activeDescription = data;
-        setLabelsCCDetailsPanel( activeButtonLabel, activeLabel, activeDescription );
+      $.get( '/getCodeCatDetails', { 'ccname' : theCat }, function(data) {
+        activeDetails = data;
+        setLabelsCCDetailsPanel( activeButtonLabel, activeLabel, activeDetails );
       }, "HTML" );
     }
   }
@@ -129,47 +129,47 @@ i#{extends 'main.html' /}
 
 
 
-  function setLabelsCDDetailsPanel( btnlbl, lbl, dscp ) {
+  function setLabelsCDDetailsPanel( btnlbl, lbl, dtls ) {
     $( '#cdLabel' ).val( lbl );
-    $( '#cdDescription' ).val( dscp );
+    $( '#cdDetails' ).val( dtls );
     $( '#cdDetailsPanelB' ).val( btnlbl );
   }
 
 
 
 
-  function populateCDDetailsPanel( theDesc ) {
+  function populateCDDetailsPanel( theDets ) {
     var activeLabel;
-    var activeDescription;
+    var activeDetails;
     var activeButtonLabel;
-    if( theDesc == "" ) {
+    if( theDets == "" ) {
       $( '#cdLabel' ).attr( 'readonly', true );
-      $( '#cdDescription' ).attr( 'readonly', true );
+      $( '#cdDetails' ).attr( 'readonly', true );
       activeButtonLabel = "--";
       activeLabel = "";
-      activeDescription = "";
-      setLabelsCDDetailsPanel( activeButtonLabel, activeLabel, activeDescription );
-    } else if( theDesc == "CREATE_NEW" ) {
+      activeDetails = "";
+      setLabelsCDDetailsPanel( activeButtonLabel, activeLabel, activeDetails );
+    } else if( theDets == "CREATE_NEW" ) {
       $( '#cdLabel' ).attr( 'readonly', false );
-      $( '#cdDescription' ).attr( 'readonly', false );
+      $( '#cdDetails' ).attr( 'readonly', false );
       activeButtonLabel = "Create";
       activeLabel = "Type a new label";
-      activeDescription = "Type details for description";
-      setLabelsCDDetailsPanel( activeButtonLabel, activeLabel, activeDescription );
+      activeDetails = "Type details to describe";
+      setLabelsCDDetailsPanel( activeButtonLabel, activeLabel, activeDetails );
     } else {
       $( '#cdLabel' ).attr( 'readonly', true );
-      $( '#cdDescription' ).attr( 'readonly', true );
+      $( '#cdDetails ).attr( 'readonly', true );
      activeButtonLabel = "Edit"; 
-     activeLabel = theDesc;
-     $.get( '/getCodeDescDescription', 
+     activeLabel = theDets;
+     $.get( '/getCodeDescDetails', 
             { 
               'ccname' : selectedCodeCat, 
               'cdname' : selectedCodeDesc 
             }, 
             function(data) {
               console.log( data );
-              activeDescription = data;
-              setLabelsCDDetailsPanel( activeButtonLabel, activeLabel, activeDescription );
+              activeDetails = data;
+              setLabelsCDDetailsPanel( activeButtonLabel, activeLabel, activeDetails );
      }, "HTML" );
     }
   }
@@ -223,14 +223,14 @@ i#{extends 'main.html' /}
       } else if( $(this).val() == "Edit" ) { // mode Edit
         $( this ).val( "Update" );
         $( '#ccLabel' ).attr( 'readonly', false );
-        $( '#ccDescription' ).attr( 'readonly', false );
+        $( '#ccDetails' ).attr( 'readonly', false );
       } else if( $(this).val() == "Update" ) { // mode Update
         // update db
         var oldccname = ( $( '#codeCat :selected' ).val() + "");
         var newccname = ( $( '#ccLabel' ).val() + "" );
         var qryObj = { 'oldccname' : oldccname,
                        'ccname' : newccname, 
-                       'ccdesc' : ( $( '#ccDescription' ).val() + "" ) }; 
+                       'ccdets' : ( $( '#ccDetails' ).val() + "" ) }; 
         $.post( "/updateCodeCategory", qryObj, function(data){ alert(data);}, "HTML" ); 
         // update client
         codeCats[ codeCats.indexOf( oldccname ) ] = newccname;
@@ -245,7 +245,7 @@ i#{extends 'main.html' /}
         // create db
         var newccname = ( $( '#ccLabel' ).val() + "" );
         var qryObj = { 'ccname' : newccname, 
-                       'ccdesc' : ( $( '#ccDescription' ).val() + "" ) }; 
+                       'ccdets' : ( $( '#ccDetails' ).val() + "" ) }; 
         $.post( "/createCodeCategory", qryObj, function(data){ alert(data);}, "HTML" );
         // create client
         codeCats.splice( codeCats.length, 0, newccname );
@@ -272,7 +272,7 @@ i#{extends 'main.html' /}
       } else if( $(this).val() == "Edit" ) { // mode Edit
         $( this ).val( "Update" );
         $( '#cdLabel' ).attr( 'readonly', false );
-        $( '#cdDescription' ).attr( 'readonly', false );
+        $( '#cdDetails' ).attr( 'readonly', false );
       } else if( $(this).val() == "Update" ) { // mode Update
         // update db
         var oldcdname = ( $( '#codeItems :selected' ).val() + "" );  
@@ -280,27 +280,27 @@ i#{extends 'main.html' /}
         var qryObj = { 'ccname' : selectedCodeCat,
                        'oldcdname' : oldcdname, 
                        'cdname' : newcdname,
-                       'cddesc' : ( $( '#cdDescription' ).val() + "" ) }; 
+                       'cddets' : ( $( '#cdDetails' ).val() + "" ) }; 
         $.post( "/updateCodeDescriptor", qryObj, function(data){ alert(data);}, "HTML" );
         // update client
-        codeDescsUnderCat[ codeDescsUnderCat.indexOf( oldcdname ) ] = newcdname;
-        refreshCodeItemsDropdown( codeDescsUnderCat );
+        codeDetsUnderCat[ codeDetsUnderCat.indexOf( oldcdname ) ] = newcdname;
+        refreshCodeItemsDropdown( codeDetsUnderCat );
         $( '#codeItems' ).val( newcdname );
         selectedCodeDesc = $( '#codeItems :selected' ).val();
         // lock down existing fields and change button label
         $( '#cdLabel' ).attr( 'readonly', true );
-        $( '#cdDescription' ).attr( 'readonly', true );
+        $( '#cdDetails' ).attr( 'readonly', true );
         $( '#cdDetailsPanelB' ).val( 'Edit' );
       } else if( $(this).val() == "Create" ){ // mode Create
         // create db
         var newcdname = ( $( '#cdLabel' ).val() + "" );
         var qryObj = { 'ccname' : selectedCodeCat,
                        'cdname' : newcdname,
-                       'cddesc' : ( $( '#cdDescription' ).val() + "" ) }; 
+                       'cddets' : ( $( '#cdDetails' ).val() + "" ) }; 
         $.post( "/createCodeDescriptor", qryObj, function(data){ alert(data);}, "HTML" );
         // create client
-        codeDescsUnderCat.splice( codeDescsUnderCat.length, 0, newcdname );
-        refreshCodeItemsDropdown( codeDescsUnderCat );
+        codeDetsUnderCat.splice( codeDetsUnderCat.length, 0, newcdname );
+        refreshCodeItemsDropdown( codeDetsUnderCat );
         $( '#codeItems' ).val( newcdname );
         selectedCodeDesc = $( '#codeItems :selected' ).val();
         populateCDDetailsPanel( selectedCodeDesc );
@@ -350,9 +350,9 @@ i#{extends 'main.html' /}
       <input type='text' id='ccLabel'>
       <input type='button' id='ccDetailsPanelB' style='margin-left:80px;' value='Delete'>
       <br>
-      <label>Description:</label>
+      <label>Details:</label>
       <br>
-      <textArea id="ccDescription" rows="2" cols="50" style="vertical-align:top"></textArea>
+      <textArea id="ccDetails" rows="2" cols="50" style="vertical-align:top"></textArea>
     </div>
 
     <div id="cdDetailsPanel" class="Panel" style="width : 400px; height : 250px; position : absolute; right : 0px; top : 170px">
@@ -361,9 +361,9 @@ i#{extends 'main.html' /}
       <input type='text' id='cdLabel'>
       <input type='button' id='cdDetailsPanelB' style='margin-left:80px;' value='Delete'>
       <br>
-      <label>Description:</label>
+      <label>Details:</label>
       <br>
-      <textArea id='cdDescription' rows='5' cols='50' style='vertical-align:top'></textArea>
+      <textArea id='cdDetails' rows='5' cols='50' style='vertical-align:top'></textArea>
     </div>
 
     <div id="bottomPanel" style="position : absolute; bottom : 0px">
