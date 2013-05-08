@@ -39,6 +39,7 @@
   var shadowJQPointer = $( '#shadow' );    // HARDCODED, see graphicVisualizer.html 
 
   var cid = contid;
+  var seqNum = "";
   var fbody = "";
   var codingsShorthand = null;
   var annotationShorthand = null;
@@ -129,7 +130,7 @@
     $( '#okB' ).click( function() {
       var newCodingsShorthand = actvdict.chainCodeItems();
       var newAnnotationShorthand = $('#textBox').val();
-      updateCodingsAnnotation( newCodingsShorthand, newAnnotationShorthand );
+      updateCodingsAnnotation( seqNum, newCodingsShorthand, newAnnotationShorthand );
       closeADiv( selfJQPointer ); // closeADiv() is defined in graphicVisualizer.html
     } );
 
@@ -158,6 +159,7 @@
 
   function parseCont( data ) {
     var tempRows = data.split( "\t" );
+    seqNum = tempRows[ 0 ];
     fbody = tempRows[ 6 ];
     codingsShorthand = tempRows[ 7 ].substring( 1, tempRows[7].length );
     codings = codingsShorthand.split( "|" );

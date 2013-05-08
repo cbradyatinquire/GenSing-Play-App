@@ -410,7 +410,7 @@
 
 
 
-      function updateCodingsAnnotation( newCS, newAS ) {
+      function updateCodingsAnnotation( seqNum, newCS, newAS ) {
       // called by child window upon OK-ing codings and annotation
         // update client display
         anchoredCodings.text( newCS );
@@ -420,7 +420,7 @@
         var postAnnotationData = "";
         var postBase = "";
         postBase += "sessionId=" + sessid + "&";
-        postBase += "sequence=" + contid + "&";
+        postBase += "sequence=" + seqNum + "&";
 
         // post codings update to database        
         postCodingsData = postBase + "codings=" + newCS;
