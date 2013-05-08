@@ -424,10 +424,12 @@
 
         // post codings update to database        
         postCodingsData = postBase + "codings=" + newCS;
+        console.log( postCodingsData );
         $.post( '/setCodingsForContribution', postCodingsData, function( data ) { console.log( data ); } );
 
         // post annotation update to database
         postAnnotationData = postBase + "annotations=" + newAS;
+        console.log( postAnnotationData );
         $.post( '/setAnnotationsForContribution', postAnnotationData, function( data ) { console.log( data ); } );
 
         // represent Annotation and Codings for tidier display
