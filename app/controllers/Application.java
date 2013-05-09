@@ -983,19 +983,32 @@ public class Application extends Controller {
 
     public static void updateCodeCategory( String oldccname, String ccname, String ccdets ) {
         String reply = "Update Code Category " + oldccname + " : ";
+        // Update the CodeCategory table
         CodeCategory thecc = CodeCategory.findByName( oldccname );
         if( thecc != null ) {
             thecc.category = ccname;
             thecc.details = ccdets;
             try{
                 thecc.save();
-                renderJSON( reply + "SUCCESS" );
+                reply += "CodeCategory table updated - ";
             } catch( Exception e ) {
-                renderJSON( "FAIL - " + e.getMessage() );
+                renderJSON( "FAIL. Unable to update CodeCategory table - " + e.getMessage() );
             }
         } else {
             renderJSON( "FAIL - Cannot find " +  oldccname  + " to update." );
         }
+        
+        // update Coding table
+        List<Coding> involvedCodings = Coding.find( "SELECT c FROM Coding c WHERE c.categ LIKE '"+ oldccname +"' " ).fetch();
+        try{
+            for( Coding toUpdate : involvedCodings ) {
+                toUpdate.categ = ccname;
+                toUpdate.save();
+            }
+            renderJSON( reply + "Codings table updated - SUCCESS" );
+        } catch( Exception e ) {
+	    renderJSON( "FAIL - Unable to update Coding table - " + e.getMessage() );
+	} 
     }
 
 
@@ -1003,6 +1016,7 @@ public class Application extends Controller {
 
     public static void updateCodeDescriptor( String ccname, String oldcdname, String cdname, String cddets ) {
         String reply = "Update Code Descriptor " + ccname + ":" + oldcdname + " : ";
+	// update the CodeDescriptor table 
         CodeCategory thecc = CodeCategory.findByName( ccname );
         CodeDescriptor thecd = CodeDescriptor.findByCategoryAndName( thecc, oldcdname );
         if( thecd != null ) {
@@ -1010,13 +1024,25 @@ public class Application extends Controller {
             thecd.details = cddets;
             try{
                 thecd.save();
-                renderJSON( reply + "SUCCESS" );
+                reply += "CodeDescriptor table updated - ";
             } catch( Exception e ) {
                 renderJSON( reply + "FAIL - " + e.getMessage() );
             }
         } else {
             renderJSON( "FAIL - Cannot find " + ccname + ":" + oldcdname + " to update." );
         }
+        
+        // update Coding table
+       List<Coding> involvedCodings = Coding.find( "SELECT c FROM Coding c WHERE c.descrip LIKE '"+ oldcdname +"' " ).fetch();
+        try{
+            for( Coding toUpdate : involvedCodings ) {
+                toUpdate.descrip = cdname;
+                toUpdate.save();
+            }
+            renderJSON( reply + "Codings table updated - SUCCESS" );
+        } catch( Exception e ) {
+	    renderJSON( "FAIL - Unable to update Coding table - " + e.getMessage() );
+	}
     }
     
 
