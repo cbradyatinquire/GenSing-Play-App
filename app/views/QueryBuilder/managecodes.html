@@ -189,6 +189,7 @@ i#{extends 'main.html' /}
 
 
 
+    
   $(document).ready(function() { 
     $.get( '/getCodeCategories', function(data){
       codeCats = data.split( "\n" );
@@ -321,6 +322,17 @@ i#{extends 'main.html' /}
 
 
 
+    function refreshGraphVizTable() {
+      // execute this before going back to graphicVisualizer
+      // refreshing by 'clicking' on the #sliderButton 
+      // (defined in graphicVisualizer.html) two times
+      $( '#sliderButton' ).trigger( 'click' );
+      $( '#sliderButton' ).trigger( 'click' );
+    }
+
+
+
+
     $( '#cdDetailsPanelB1' ).click( function () {
       if( $(this).val() == "Edit" ) { // mode Edit
         $( this ).val( "Update" );
@@ -371,14 +383,16 @@ i#{extends 'main.html' /}
 
 
     $( '#backB' ).click( function() {
+      refreshGraphVizTable();
       closeADiv( selfJQPointer ); // closeADiv() is defined in graphicVisualizer.html
     } );
 
-
-
-    $(document).keyup(function(e) {
-      if (e.keyCode == 27) { closeADiv( selfJQPointer ); }
-    } );
+    $(document).keyup( function(e) {
+      if (e.keyCode == 27) { 
+        refreshGraphVizTable();
+        closeADiv( selfJQPointer ); 
+      }
+    } ); 
 
   } ); // end ready()
 

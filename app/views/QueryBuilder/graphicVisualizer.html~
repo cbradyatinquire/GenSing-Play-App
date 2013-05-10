@@ -76,7 +76,7 @@
         $( '#shadow' ).hide();
 
         // unbind keyup of esc key
-        $(document).unbind( 'keyup' );
+        $(document).unbind( 'keyup', keyuphandler );
     } // end closeADiv()
 
     $(document).ready(function () {
