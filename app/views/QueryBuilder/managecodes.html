@@ -96,7 +96,7 @@ i#{extends 'main.html' /}
 
 
   function setLabelsCCDetailsPanel( btnlbl, lbl, dtls ) {
-    $( '#ccDetailsPanelB' ).val( btnlbl );
+    $( '#ccDetailsPanelB1' ).val( btnlbl );
     $( '#ccLabel' ).val( lbl );
     $( '#ccDetails' ).val( dtls );
   }
@@ -108,10 +108,17 @@ i#{extends 'main.html' /}
     var activeLabel;
     var activeDetails;
     var activeButtonLabel;
-    if( theCat == "CREATE_NEW" ) {
-     $( '#ccLabel' ).attr( 'readonly', false );
-     $( '#ccDetails' ).attr( 'readonly', false ); 
-     activeButtonLabel = "Create";
+    if( theCat == "" ) {
+      $( '#ccLabel' ).attr( 'readonly', true );
+      $( '#ccDetails' ).attr( 'readonly', true ); 
+      activeButtonLabel = "--";
+      activeLabel = "";
+      activeDetails = "";
+       setLabelsCCDetailsPanel( activeButtonLabel, activeLabel, activeDetails );
+    } else if( theCat == "CREATE_NEW" ) {
+      $( '#ccLabel' ).attr( 'readonly', false );
+      $( '#ccDetails' ).attr( 'readonly', false ); 
+      activeButtonLabel = "Create";
       activeLabel = "Type a new label";
       activeDetails = "Type details to describe";
        setLabelsCCDetailsPanel( activeButtonLabel, activeLabel, activeDetails );
@@ -125,6 +132,7 @@ i#{extends 'main.html' /}
         setLabelsCCDetailsPanel( activeButtonLabel, activeLabel, activeDetails );
       }, "HTML" );
     }
+    $( '#ccDetailsPanelB2' ).hide();
   }
 
 
@@ -133,7 +141,7 @@ i#{extends 'main.html' /}
   function setLabelsCDDetailsPanel( btnlbl, lbl, dtls ) {
     $( '#cdLabel' ).val( lbl );
     $( '#cdDetails' ).val( dtls );
-    $( '#cdDetailsPanelB' ).val( btnlbl );
+    $( '#cdDetailsPanelB1' ).val( btnlbl );
   }
 
 
@@ -150,6 +158,7 @@ i#{extends 'main.html' /}
       activeLabel = "";
       activeDetails = "";
       setLabelsCDDetailsPanel( activeButtonLabel, activeLabel, activeDetails );
+
     } else if( theDets == "CREATE_NEW" ) {
       $( '#cdLabel' ).attr( 'readonly', false );
       $( '#cdDetails' ).attr( 'readonly', false );
@@ -174,6 +183,7 @@ i#{extends 'main.html' /}
                setLabelsCDDetailsPanel( activeButtonLabel, activeLabel, activeDetails );
       }, "HTML" );
     }
+    $( '#cdDetailsPanelB2' ).hide();
   }
 
 
@@ -214,16 +224,10 @@ i#{extends 'main.html' /}
 
 
 
-    $( '#ccDetailsPanelB' ).click( function () {
-      // mode Delete
-      if( $(this).val() == "Delete" ) {
-        if( confirm( "This will delete the Code Category from database. Are you sure?" ) ) {
-          alert( "Code Category deleted." );
-        } else {
-           // do nothing
-        }
-      } else if( $(this).val() == "Edit" ) { // mode Edit
+    $( '#ccDetailsPanelB1' ).click( function () {
+      if( $(this).val() == "Edit" ) { // mode Edit
         $( this ).val( "Update" );
+        $( '#ccDetailsPanelB2' ).show();
         $( '#ccLabel' ).attr( 'readonly', false );
         $( '#ccDetails' ).attr( 'readonly', false );
       } else if( $(this).val() == "Update" ) { // mode Update
@@ -242,37 +246,85 @@ i#{extends 'main.html' /}
         populateCCDetailsPanel( selectedCodeCat );
 
         populateCodeItemsDropdown( selectedCodeCat );
-        populateCDDetailsPanel( "" );        
+        populateCDDetailsPanel( "" );
+        // hide Delete button
+        $( '#ccDetailsPanelB2' ).hide();        
       } else if( $(this).val() == "Create" ) { // mode Create
         // create db
-        var newccname = ( $( '#ccLabel' ).val() + "" );
+        var newccname = ( $( '#ccLabel' ).val() + "" ).replace( / /g, '_' );
         var qryObj = { 'ccname' : newccname, 
                        'ccdets' : ( $( '#ccDetails' ).val() + "" ) }; 
-        $.post( "/createCodeCategory", qryObj, function(data){ alert(data);}, "HTML" );
-        // create client
-        codeCats.splice( codeCats.length, 0, newccname );
-        populateCodeCatDropdown( codeCats );
-        $( '#codeCat' ).val( newccname );
-        selectedCodeCat = $( '#codeCat :selected' ).val();
-        populateCCDetailsPanel( selectedCodeCat );
+        $.post( "/createCodeCategory", qryObj, function(data){ 
+          alert(data);
+          if( data.indexOf( "SUCCESS" ) > -1 ) {
+            // create client
+            codeCats.splice( codeCats.length, 0, newccname );
+            populateCodeCatDropdown( codeCats );
+            $( '#codeCat' ).val( newccname );
+            selectedCodeCat = $( '#codeCat :selected' ).val();
+            populateCCDetailsPanel( selectedCodeCat );
 
-        populateCodeItemsDropdown( selectedCodeCat );
-        populateCDDetailsPanel( "" );        
+            populateCodeItemsDropdown( selectedCodeCat );
+            populateCDDetailsPanel( "" );        
+          }
+        }, "HTML" );
       } 
     } );
 
 
 
-    $( '#cdDetailsPanelB' ).click( function () {
+
+    $( '#ccDetailsPanelB2' ).click( function() {
       // mode Delete
-      if( $(this).val() == "Delete" ) {
+      if( confirm( "This will delete the Code Category from database. Are you sure?" ) ) {
+        // delete db
+        var theUrl = "/deleteCodeCategory";
+        var qryObj = { 'ccname' : selectedCodeCat };
+        $.get( theUrl, qryObj, function(data) { alert(data); }, "HTML" );
+        
+        // delete client
+        codeCats.splice( codeCats.indexOf( selectedCodeCat ), 1 );
+        populateCodeCatDropdown( codeCats );
+        selectedCodeCat = $( '#codeCat :selected' ).val();
+        populateCCDetailsPanel( selectedCodeCat );
+
+        populateCodeItemsDropdown( selectedCodeCat );
+        populateCDDetailsPanel( "" );        
+
+        // hide delete button
+        $( '#ccDetailsPanelB2' ).hide();
+      }
+    } );
+
+
+
+    
+    $( '#cdDetailsPanelB2' ).click( function() {
+      // mode Delete
         if( confirm( "This will delete the Code Descriptor from database. Are you sure?" ) ) {
-          alert( "Code Descriptor deleted." );
-        } else {
-           // do nothing
-        }
-      } else if( $(this).val() == "Edit" ) { // mode Edit
+          // delete db
+          var theUrl = "/deleteCodeDescriptor";
+          var qryObj = { 'ccname' : selectedCodeCat,
+                         'cdname' : selectedCodeDesc };
+          $.get( theUrl, qryObj, function(data) { alert(data); }, "HTML" );
+
+          // delete client
+          codeDetsUnderCat.splice( codeDetsUnderCat.indexOf( selectedCodeDesc ), 1 );
+          refreshCodeItemsDropdown( codeDetsUnderCat );
+          $( '#codeItems option:first' ).attr( 'selected', true );
+          selectedCodeDesc = $( '#codeItems :selected' ).val();
+          populateCDDetailsPanel( selectedCodeDesc );
+        }         
+    } );
+
+
+
+
+
+    $( '#cdDetailsPanelB1' ).click( function () {
+      if( $(this).val() == "Edit" ) { // mode Edit
         $( this ).val( "Update" );
+        $( '#cdDetailsPanelB2' ).show();
         $( '#cdLabel' ).attr( 'readonly', false );
         $( '#cdDetails' ).attr( 'readonly', false );
       } else if( $(this).val() == "Update" ) { // mode Update
@@ -292,20 +344,26 @@ i#{extends 'main.html' /}
         // lock down existing fields and change button label
         $( '#cdLabel' ).attr( 'readonly', true );
         $( '#cdDetails' ).attr( 'readonly', true );
-        $( '#cdDetailsPanelB' ).val( 'Edit' );
+        $( '#cdDetailsPanelB1' ).val( 'Edit' );
+        // hide Delete button
+        $( '#cdDetailsPanelB2' ).hide();
       } else if( $(this).val() == "Create" ){ // mode Create
         // create db
-        var newcdname = ( $( '#cdLabel' ).val() + "" );
+        newcdname = ( $( '#cdLabel' ).val() + "" ).replace( / /g, '_' );
         var qryObj = { 'ccname' : selectedCodeCat,
                        'cdname' : newcdname,
                        'cddets' : ( $( '#cdDetails' ).val() + "" ) }; 
-        $.post( "/createCodeDescriptor", qryObj, function(data){ alert(data);}, "HTML" );
-        // create client
-        codeDetsUnderCat.splice( codeDetsUnderCat.length, 0, newcdname );
-        refreshCodeItemsDropdown( codeDetsUnderCat );
-        $( '#codeItems' ).val( newcdname );
-        selectedCodeDesc = $( '#codeItems :selected' ).val();
-        populateCDDetailsPanel( selectedCodeDesc );
+        $.post( "/createCodeDescriptor", qryObj, function(data){ 
+          alert(data);
+          if( data.indexOf( "SUCCESS" ) > -1 ) {
+            // create client
+            codeDetsUnderCat.splice( codeDetsUnderCat.length, 0, newcdname );
+            refreshCodeItemsDropdown( codeDetsUnderCat );
+            $( '#codeItems' ).val( newcdname );
+            selectedCodeDesc = $( '#codeItems :selected' ).val();
+            populateCDDetailsPanel( selectedCodeDesc );
+          }
+        }, "HTML" );
       }
     } );
 
@@ -343,14 +401,15 @@ i#{extends 'main.html' /}
     <div id="cdPanel" class="Panel" style="width : 180px; height : 250px; position : absolute; left : 0px; top : 170px">
       <label>Code Items:</label>
       <br>
-      <select id="codeItems" name="CodeItems" multiple="no" size="10" style="width: 100px"></select>
+      <select id="codeItems" name="codeItems" multiple="no" size="10" style="width: 100px"></select>
     </div>
 
     <div id="ccDetailsPanel" class="Panel" style="width : 400px; height : 120px; position : absolute; right : 0px">
       <label>Label:</label>
       <br>
       <input type='text' id='ccLabel'>
-      <input type='button' id='ccDetailsPanelB' style='margin-left:80px;' value='Delete'>
+      <input type='button' id='ccDetailsPanelB1' style='margin-left:10px;' value='--'>
+      <input type='button' id='ccDetailsPanelB2' value='Delete' hidden='true'>
       <br>
       <label>Details:</label>
       <br>
@@ -358,10 +417,11 @@ i#{extends 'main.html' /}
     </div>
 
     <div id="cdDetailsPanel" class="Panel" style="width : 400px; height : 250px; position : absolute; right : 0px; top : 170px">
-      <label>Label:</label>
+      <label>Label:</label>     
       <br>
       <input type='text' id='cdLabel'>
-      <input type='button' id='cdDetailsPanelB' style='margin-left:80px;' value='Delete'>
+      <input type='button' id='cdDetailsPanelB1' style='margin-left:10px;' value='--'>
+      <input type='button' id='cdDetailsPanelB2' value='Delete' hidden='true'>
       <br>
       <label>Details:</label>
       <br>

@@ -974,7 +974,7 @@ public class Application extends Controller {
                 renderJSON( reply + "FAIL " + e.getMessage() );
             }
         } else {
-            renderJSON( reply + "FAIL - " + ccname + ":" + cdname + "already exists." );
+            renderJSON( reply + "FAIL - " + ccname + ":" + cdname + " already exists." );
         } 
     }
 
@@ -1038,6 +1038,68 @@ public class Application extends Controller {
             for( Coding toUpdate : involvedCodings ) {
                 toUpdate.descrip = cdname;
                 toUpdate.save();
+            }
+            renderJSON( reply + "Codings table updated - SUCCESS" );
+        } catch( Exception e ) {
+	    renderJSON( "FAIL - Unable to update Coding table - " + e.getMessage() );
+	}
+    }
+
+
+
+
+    public static void deleteCodeCategory( String ccname ) {
+        String reply = "Deleting CodeCategory " + ccname + " ";
+        // first delete all CodeDescriptors under it
+        CodeCategory thecc = CodeCategory.findByName( ccname );
+        if( thecc != null ){ 
+            // update CodeCategory table
+	    try {
+                thecc.delete();
+                reply += "CodeCategory table updated - ";
+            } catch( Exception e ) {
+                renderJSON( reply + "Can't update CodeCategory table - FAIL" + e.getMessage() );
+	    }
+
+            // update Coding table
+            List<Coding> involvedCodings = Coding.find( "SELECT c FROM Coding c WHERE c.categ LIKE '"+ ccname +"' " ).fetch();
+            try{
+                for( Coding toDelete : involvedCodings ) {
+                    toDelete.delete();
+                }
+                renderJSON( reply + "Coding table updated - SUCCESS"  );
+            } catch( Exception e ) {
+                renderJSON( reply + "Cant update Coding table - FAIL" );
+	    }
+	} else {
+            renderJSON( "FAIL - Cant find CodeCategory " + ccname + " to delete." );
+        }
+    }
+
+
+
+
+    public static void deleteCodeDescriptor( String ccname, String cdname ) {
+        String reply = "Deleting " + ccname + ":" + cdname + " - " ;
+        // update CodeDescriptor table
+        CodeCategory thecc = CodeCategory.findByName( ccname );
+        CodeDescriptor thecd = CodeDescriptor.findByCategoryAndName( thecc, cdname );
+        if( thecd != null ) {
+            try{
+                thecd.delete();
+                reply += "CodeDescriptor deleted - ";
+            } catch( Exception e ) {
+                renderJSON( reply + "FAIL - " + e.getMessage() );
+            }
+        } else {
+            renderJSON( "FAIL - Cannot find " + ccname + ":" + cdname + " to delete." );
+        }
+        
+        // update Coding table
+        List<Coding> involvedCodings = Coding.find( "SELECT c FROM Coding c WHERE c.descrip LIKE '"+ cdname +"' " ).fetch();
+        try{
+            for( Coding toDelete : involvedCodings ) {
+                toDelete.delete();       
             }
             renderJSON( reply + "Codings table updated - SUCCESS" );
         } catch( Exception e ) {
