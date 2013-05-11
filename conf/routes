@@ -104,6 +104,10 @@ GET		/getCodeCatDetails							Application.getCodeCatDetails
 
 GET		/getCodeDescDetails							Application.getCodeDescDetails
 
+GET		/deleteCodeCategory							Application.deleteCodeCategory
+
+GET		/deleteCodeDescriptor							Application.deleteCodeDescriptor
+
 POST		/updateCodeCategory							Application.updateCodeCategory
 
 POST		/updateCodeDescriptor							Application.updateCodeDescriptor
