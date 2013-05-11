@@ -76,7 +76,7 @@
         $( '#shadow' ).hide();
 
         // unbind keyup of esc key
-        $(document).unbind( 'keyup', keyuphandler );
+        $(document).unbind( 'keyup' );
     } // end closeADiv()
 
     $(document).ready(function () {
@@ -242,20 +242,28 @@
 
   <div id="mainArea">
     <div id="geogebraPanel">
-      <article name="geogebraInstance" class="geogebraweb" data-param-width="400" data-param-height="400"
-        data-param-showResetIcon="false" data-param-enableLabelDrags="false" data-param-showMenuBar="false"
+      <article name="geogebraInstance" class="geogebraweb" 
+        data-param-width="400" 
+        data-param-height="400"
+        data-param-showResetIcon="false" 
+        data-param-enableLabelDrags="false" 
+        data-param-showMenuBar="false"
+        data-param-enableShiftDragZoom="true"
         data-param-showToolBar="false" data-param-showAlgebraInput="false" data-param-ggbbase64="UEsDBBQACAgIAFYvbkIAAAAAAAAAAAAAAAAWAAAAZ2VvZ2VicmFfamF2YXNjcmlwdC5qc0srzUsuyczPU0hPT/LP88zLLNHQVKiuBQBQSwcI1je9uRkAAAAXAAAAUEsDBBQACAgIAFYvbkIAAAAAAAAAAAAAAAAMAAAAZ2VvZ2VicmEueG1svVZRb9s2EH5Of8VBz7FNipQsB3KKtUCBAlk3IN0w7I2SaJmLLBoiZTtFf/yOpGTLaVd06LAg8unIj/fdHe9I5a9PuwYOsjNKt+uIzkkEsi11pdp6HfV2M8ui1/ev8lrqWhadgI3udsKuI+6QqlpHJIslyTIyq1ZJOuPJJpuJkrMZL4s042nMi1JEACej7lr9Qeyk2YtSPpZbuRMPuhTWE2+t3d8tFsfjcT5SzXVXL+q6mJ9MFQG62Zp1NLzcobmrRUfm4TEhdPHHzw/B/Ey1xoq2lBG4EHp1/+omP6q20kc4qspuMQxCI9hKVW9dTEkawcKB9piQvSytOkiDSyeqj9nu9pGHidbN34Q3aM7hRFCpg6pkh/mZx3zFlmmSZClhfEXjLALdKdnaAUwH0sVoLj8oeQx23Zun5BFYrZtCOJPw+TPEJCZw6wQNIkaRpmGKhDHCgoiD4EEkAcPDch6gPGB4wHAWwUEZVTRyHW1EYzCFqt10uH1n3djnRnp/hoFL+PQWYzLqE4IZwToJOcdxQm7dk+LD3cTiOkg6YbVd/y9Jz5Sr1fdTxj8UKBs56dfCjJN/CDP9BmmI+3vipMmEE6n8v3++YGTfCvMlY9B/jDDl/0uI+WJslXzoDjBbhx0prdwZ1zBsBcnK1T2FBJsjXWKZJ0BXKJYxYDsATYAnqNIMUieXwJY4wYFBBg5HGfjuSDL84UtvLIUEjbnRJTYlUCTikDCgvqk4YCuBb0xs0pghIkkgwUWOnsbOBEuBp6ixDDj66HpySRHIcCHqSB8Do8DcYrqEOIXU2aPc9XqaOdfRZAwpgZQ6g9jW2NKhnRGfAXPRjAebave9vc5RuavGLbF6fx5GOJ5Il4MvnFBX5+JN3ohCNnhVPLq9BDiIxvWEZ9ro1sK4jXEYqzux36rSPEprcZWBv8RBPAgrT+8QbUZujy11a37ttH2rm37XGoBSN2R0FN/p5D2+BKMbNpng04lkMpFO3pdf5dU4A72RyK87M8JFVb13iMvhgKn8pW2e33RSPO21ug4jX/hbJ5d92ahKifZ3LFfH4vIC4yXkD6zxEmLLeHREd9Xjs8EShtOfstOYx9VqnkTwPGhZOifTP7RiStH4I3COyvNU8zbl4Zx6cZLnqOrO9ewQkVPemze6uQz5uN6Kve07/12Ax17nvP2prRvp9973LF665VOhT49h01mw9fF5jxoJDhS1zydg18cJhlIPsgjSY5xnZxTxGOIRZKwiVZ3n6Sr2CC+LID0KyzK4NkRKxzApGWmUCV8w0dAQw8Hnatpd4X2r7MOoWFU+XSJ1+A/9rpDnyrg2Sf8jk/niReXkT7JrZTMUKu5kr3sT+m5Sw5Us1Q7VMDEkRLjN+g0dCKOVrDs5+t34L66QLj9LpjX4xbA39a7Tu/ft4SNWwgsH8sXoZW7KTu1dwUGBx/uTvNRUpYzA26GarnOdhaGX7hbA9FiXGuy53m515z+q8KhA6RimUN9nw1fj/d9QSwcIcO9AW2EEAADSCgAAUEsBAhQAFAAICAgAVi9uQtY3vbkZAAAAFwAAABYAAAAAAAAAAAAAAAAAAAAAAGdlb2dlYnJhX2phdmFzY3JpcHQuanNQSwECFAAUAAgICABWL25CcO9AW2EEAADSCgAADAAAAAAAAAAAAAAAAABdAAAAZ2VvZ2VicmEueG1sUEsFBgAAAAACAAIAfgAAAPgEAAAAAA=="></article>
-      </div>
-    
-      <div id="dataPanel">
-        <div id="queryresults">
+     <label style="font-size:70%">
+      To move: Shift + mouse drag <br>
+      To zoom: Shift + mouse wheel
+      </label>
+    </div>
+    <div id="dataPanel">
+      <div id="queryresults">
       </div>
 
       <iframe id="datatable" src="" width="800px" height="700px" scrolling="no" seamless>
   	<p>Your browser does not support iframes.</p>
       </iframe>
 
-    </div> <!-- end div geogebraPanel -->
+    </div> <!-- end div dataPanel -->
   </div> <!-- end div mainArea -->
 
 
