@@ -98,36 +98,42 @@
     	  } else {
 
             if( curCol == 'drawGGB' ) {
-              var functiondef = getFDef( curRow );
-              var fname = getFName( functiondef ); 
-              //send to ggb
-	      document.ggbApplet.evalCommand(functiondef);
-
-	      var cl = $(this).attr("class");
-	      if ( cl.indexOf("row_selected") > 0 ) {
-	        //was visible, going to be made invisible
-	        document.ggbApplet.setVisible(fname, false);
-	      } else {
-	        //was invisible, going to be made visible
-	        document.ggbApplet.setVisible(fname, true)
-	      }
-		
-	      $(this).toggleClass('row_selected');
+              toggleGraph( $(this), curRow );
 	    }  else {
               // open popup for editing codings or annots
               hoverlocked = true;
               sessid = trimForSID( curRow );
               contid = trimForCID( curRow );        
               var fbody = getFBody( curRow );       
-              // curCodings = sanitizeForCodings( sanitize( curCodings ) );
-              // curAnnots = sanitize( curAnnots );
 
               floatADiv( $( '#annotateFD' ), "/annotate" );
-              //var optionString = "width=500,height=800, menubar=no, toolbar=no,scrollbar=no,location=no,resizable=no";       
-              //var pu = window.open("/annotate", "Edit Annotation and Codings", optionString );
             }
           }
 	} );
+
+        // draw all VALID contributions in the GGB panel
+        $("#selectall").click(function () {
+            $( '.gradeA' ).each( function() {
+                if( $(this).children( '.contValidity').text().toLowerCase() == "true" ) {
+                    var curRow = this.id.toLowerCase();
+                    drawGraph( $(this), curRow );
+	        }
+
+            } );
+        });
+
+        // hide all VALID contributions in the GGB panel
+        $( '#clearall' ).click( function() {
+            $( '.gradeA' ).each( function() {
+                if( $(this).children( '.contValidity' ).text().toLowerCase() == "true" ) {
+                    var curRow = this.id.toLowerCase();
+                    clearGraph( $(this), curRow );
+                }
+            } );
+        } );
+
+
+
 
         representAllAnnots();
         representAllCodings();
@@ -163,6 +169,55 @@
           str = str.substring( str.indexOf( "(x)=" ) + 4, str.length ); 
           return str;
         }
+
+
+
+
+        function toggleGraph( target, trIdLowercased ) { 
+        // sends contribution to GGB to be graphed
+        // if contribution is already graphed, hide it
+            var functiondef = getFDef( trIdLowercased );
+            var fname = getFName( functiondef ); 
+            //send to ggb
+	    document.ggbApplet.evalCommand(functiondef);
+
+	    var cl = target.attr("class");
+	    if ( cl.indexOf("row_selected") > 0 ) {
+	        //was visible, going to be made invisible
+	        document.ggbApplet.setVisible(fname, false);
+	    } else {
+	        //was invisible, going to be made visible
+	        document.ggbApplet.setVisible(fname, true)
+	    }
+            target.toggleClass('row_selected');
+        }
+
+
+
+
+        function drawGraph( target, trIdLowercased ) { 
+            var functiondef = getFDef( trIdLowercased );
+            var fname = getFName( functiondef ); 
+	    document.ggbApplet.evalCommand(functiondef);
+            // show the graph in GGBPanel
+            document.ggbApplet.setVisible(fname, true);
+            // update table
+            target.addClass('row_selected');
+        }
+
+
+
+
+        function clearGraph( target, trIdLowercased ) {
+            var functiondef = getFDef( trIdLowercased );
+            var fname = getFName( functiondef );
+            document.ggbApplet.evalCommand( functiondef );
+            // hide the graph in GGBPanel
+            document.ggbApplet.setVisible( fname, false );
+            // update table
+            target.removeClass( 'row_selected' );
+        }
+
 
 
 
@@ -237,6 +292,7 @@
 
         //var allRawRows = oTable._( '#example tr' );
         //buildUniqueStudents( allRawRows );
+
 
       } );
 
@@ -467,6 +523,7 @@
 	  #{list items:contribs, as:'cont'}
           <!-- NOTE: double underscore on separator for cid below -->
 	  <tr class="gradeA" id="sid${cont.session.id}_cid${cont.getId()}__{${cont.student.username}_${cont.secondsIn}${cont.objectID}}(x)=${cont.body}">
+
             <td class = "drawGGB">${cont.student.username}</td>
             <td class = "drawGGB">${cont.secondsIn}</td>
             <td class = "drawGGB">${cont.objectID}</td> 
@@ -475,24 +532,21 @@
             <td class = "codings">${cont.codingsShorthand()}</td>
             <td class = "annotsSH">${cont.annotationsShorthand()}</td>
             <td class = "annots">${cont.annotationsShorthand()}</td>
-            <td class = "drawGGB">${cont.isValid}</td>
+            <td class = "drawGGB contValidity">${cont.isValid}</td>
           </tr>
           #{/list}
 	</tbody>
-	 <tfoot>
-		<tr>
-			<th>Student</th>
-			<th>SecsIn</th>
-			<th>Label</th>
-			<th>Contribution</th>
-			<th>Codings</th>
-			<th>Annotations</th>
-			<th>Valid</th>
-		</tr>
-	</tfoot>
-</table>
+  </table>
 </div>
+  <br>
+  <br>
+  <input type="button" id="selectall" value="Graph All Valid Contributions">
+  &nbsp &nbsp
+  <input type="button", id="clearall" value="Clear All">
+
+
 <div id="stattable">
+<br>
 <br>
 <br>
 <table cellpadding="0" cellspacing="0" border="0" class="stats" id="stats">
