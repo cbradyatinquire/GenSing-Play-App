@@ -283,6 +283,8 @@
                                /*AnnotationsShorthand*/ { 'bSearchable' : false,
                                                           'bVisible'    : false },
                                /*Annotations*/          null,
+			       /*Target*/		null,
+			       /*isHit*/		null,
                                /*Valid*/                null
                 ] 
         } );
@@ -516,6 +518,8 @@
 			<th>Codings</th>
                         <th>AnnotationsShorthand</th>
 			<th>Annotations</th>
+                        <th>TargetEquation</th>
+                        <th>Hit</th>
 			<th>Valid</th>
 		</tr>
 	</thead>
@@ -532,6 +536,8 @@
             <td class = "codings">${cont.codingsShorthand()}</td>
             <td class = "annotsSH">${cont.annotationsShorthand()}</td>
             <td class = "annots">${cont.annotationsShorthand()}</td>
+            <td class = "drawGGB">${cont.target}</td>
+            <td class = "drawGGB">${cont.isHit}</td>
             <td class = "drawGGB contValidity">${cont.isValid}</td>
           </tr>
           #{/list}

@@ -116,8 +116,6 @@ POST		/createCodeCategory							Application.createCodeCategory
 
 POST		/createCodeDescriptor							Application.createCodeDescriptor
 
-POST		/assessContributions							Application.assessContributions
-
 *      /admin              						module:crud
 
 

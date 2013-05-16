@@ -94,6 +94,22 @@
         }
       } );
 
+      $( '#assessConts' ).click( function() {
+        var postData = { 'cids' : '1,2,3',
+                         'eq' : 'just for testing',
+                         'hits' : 'HIT, NO-HIT, HIT' };
+        $.post( "/assessContributions", postData, function( data ) {
+          alert( data );
+        }, "HTML" );
+        document.ggbApplet.evalCommand( 'a(x)=3x+3x' );
+        console.log( document.ggbApplet.getValueString( "a" ) ); 
+        document.ggbApplet.evalCommand( "b(x)=Simplify[a(x)]+2" );
+        console.log( document.ggbApplet.getValueString( "b" ) );
+
+
+              
+      } );
+
       $( '#manageCodes' ).click( function() {
         floatADiv( $( '#manageCodesFD' ), '/manageCodes' );
       } );
@@ -236,6 +252,8 @@
     <br> 
    
     <input id="sliderButton" type="button" value="Load Data Into Table"/> 
+    &nbsp &nbsp &nbsp
+    <input type="button" id="assessConts" value="Assess Contributions">
     &nbsp &nbsp &nbsp
     <input type="button" id="manageCodes" value="Manage Codes">
   </div>

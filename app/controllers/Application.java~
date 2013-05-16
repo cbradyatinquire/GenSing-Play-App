@@ -1124,7 +1124,6 @@ public class Application extends Controller {
                 Contribution c = Contribution.getContribution( cid );
                 c.target = assessedEq;
                 c.isHit = isHit;
-                c.save();
             }
             renderJSON( reply + "SUCCESS" );
         }
