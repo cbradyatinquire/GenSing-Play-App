@@ -1,0 +1,250 @@
+i#{extends 'main.html' /}
+<head>
+<meta charset="UTF-8">
+<title>Assess Contributions</title>
+
+<style>
+    #assessContributionsContainer {
+        width : 300px;
+       height : 100px;
+    }
+    h2 {
+        text-align: center;
+    }
+    .Panel {
+        padding: 10px 10px 10px 10px;
+    }
+    select {
+        vertical-align : top;
+    }
+    form {
+	padding: 10px 10px 10px 10px;
+    }
+    label {
+        font-size: small;
+	display: inline-block;
+	text-align:left;
+	margin: 0 15px 0 0;
+	color: black;
+    }
+    input {
+	font-size: 14px;	
+    }
+    #button {
+	margin-left: 115px;	
+    }
+</style>
+  <script src="/public/javascript/dynatree/jquery/jquery.js" type="text/javascript"></script>
+<script>
+  var selfJQPointer = $( '#assessContributionsFD' );
+
+  function validateEq( theEq ) {
+    var cmdCreateTargetEq = "targetEq(x)=Simplify[" + theEq + "]";
+    var cmdValidateTargetEq = "IsDefined[targetEq]";
+    document.ggbApplet.evalCommand( cmdCreateTargetEq );
+    var valResult = document.ggbApplet.evalCommand( cmdValidateTargetEq );
+    console.log( valResult );
+    return valResult;
+  }
+
+
+
+
+  function getSimplifiedTargetEq() {
+    var simplifiedTargetEq = document.ggbApplet.getValueString( "targetEq" );
+    if( document.ggbApplet.evalCommand( "IsDefined[targetEq]" ) ) {
+      document.ggbApplet.evalCommand( "Delete[targetEq]" );
+    }
+    // only keep the right hand side of the equation
+    simplifiedTargetEq = simplifiedTargetEq.substring( (simplifiedTargetEq.indexOf("=")+1), simplifiedTargetEq.length );
+    return( simplifiedTargetEq );
+  }
+
+
+
+
+        function getFDef( aRow ) {
+        // remove sid_ and replace double uncerscore in cid with single underscore
+           aRow = aRow.substring( aRow.indexOf( "_" ) + 1, aRow.length );
+           aRow = aRow.replace( "__", "_");
+           console.log( aRow );
+           return aRow;
+        }
+
+
+
+
+        function getFName( str ) {
+          // returns only the GGB identifiable name
+          str = str.substring(0, str.indexOf("(x)="));
+          return str;
+        }
+
+
+
+
+  function getFnObjNames() {
+    var re = [];
+    $( ".row_selected" ).each( function() {
+      var fdef = getFDef( this.id.toLowerCase() );
+      var fname = getFName( fdef );
+      re.push( fname );
+    } );
+    console.log( re ); // verify that the order matches the table
+    return re;
+  }
+
+
+ 
+    
+  function getCID( aString ) {
+    return( aString.substring( 3, aString.indexOf( "_" ) ) );
+  }
+
+
+
+ 
+  function getCIDs() {
+    var re = [];
+    $( '.row_selected' ).each( function() {
+      var fdef = getFDef( this.id.toLowerCase() );
+      var cid = getCID( fdef );
+      re.push( cid );
+    } );
+    console.log( re ); // verify the order
+    return re;
+  }
+
+
+
+
+  function getSimplifiedContributions( objNameList ) {
+    var re = [];
+    for( var i=0; i<objNameList.length; i++ ) {
+       var simplifiedCont = "";
+      var fnObjNameSimplified = objNameList[ i ] + "Simplified(x)";
+      var fnObjName = objNameList[ i ];
+      var cmdString = "currentCont=Simplify[" + fnObjName + "]"
+      document.ggbApplet.evalCommand( cmdString ); 
+      console.log( cmdString );
+
+      console.log( "     " + "IsDefined[currentCont]" );
+
+      if( document.ggbApplet.evalCommand( "IsDefined[currentCont]" ) ) {
+        simplifiedCont = document.ggbApplet.getValueString( "currentCont" );
+        document.ggbApplet.evalCommand( "Delete[currentCont]" );
+        // only keep the right hand side of the equation
+        simplifiedCont = simplifiedCont.substring( (simplifiedCont.indexOf( "=" )+1), simplifiedCont.length );
+      } else {
+        simplifiedCont = "NOT DEFINED - INVALID CONTRIBUTION";
+      }
+      re.push( simplifiedCont );
+    }
+    console.log( re ); 
+    return re;   
+  }
+
+
+
+
+  function postAssessedContributions( theCIDs, theEq, theHits ) {
+    if( theCIDs.length == theHits.length && theCIDs.length > 0 ) {
+      var postData = { 'cids' : theCIDs.join(),
+                       'eq' : theEq,
+                       'hits' : theHits.join() };
+      $.post( "/assessContributions", postData, function( data ) {
+        alert( data );
+      }, "HTML" );
+    }
+  }
+
+
+
+  
+  function assessContributions( conts, tgt ) {
+    var assessed = [];
+    for( var i = 0; i < conts.length; i++ ) {
+      if( conts[ i ] == tgt ) {
+        assessed.push( "HIT" );
+      } else {
+        assessed.push( "NO-HIT" );
+      }
+    }
+    console.log( assessed );
+    return assessed;
+  }
+
+
+
+
+  $(document).ready( function() { 
+
+    $( '#okBtn' ).click( function() {
+      console.log( "initializing variables" );
+      var simplifiedTargetEq = "";
+      var fnObjNames = [];
+      var cids = [];
+      var simplifiedContributions = [];
+      var assessedResults = [];
+      
+      console.log( "validating targetEq" );
+      if( validateEq( $( '#targetEq' ).val() ) ) {
+        console.log( "getting simplified targeteq" );
+        simplifiedTargetEq = getSimplifiedTargetEq();
+        console.log( "getting fnobjnames" );
+        fnObjNames = getFnObjNames();
+        console.log( "getting cids" );
+        cids = getCIDs();
+        console.log( "getting simplified contributions" );
+        simplifiedContributions = getSimplifiedContributions( fnObjNames );
+
+        console.log( cids );
+
+        assessedResults = assessContributions( simplifiedContributions, simplifiedTargetEq );
+        
+        postAssessedContributions( cids, simplifiedTargetEq, assessedResults );
+
+      } else {
+        alert( "You have entered an invalid target equation:\n" + 
+               "f(x)=" + $( '#targetEq' ).val() + "\n" +
+               "Please try again." );
+        
+      }
+    } );
+
+    $( '#cancelBtn' ).click( function() {
+      //refreshGraphVizTable();
+      closeADiv( selfJQPointer ); // closeADiv() is defined in graphicVisualizer.html
+    } );
+
+    $(document).keyup( function(e) {
+      if (e.keyCode == 27) { 
+        //refreshGraphVizTable();
+        closeADiv( selfJQPointer ); 
+      }
+    } ); 
+
+  } ); // end ready()
+
+
+ 
+
+
+
+</script>
+</head>
+<body>
+  <div id="assessContributionsContainer">
+  <form id="assess" action="">
+      <label>Type in the target equation:</label>
+      <br>
+          f(x)=<input type="text" id="targetEq"  style="width:300px">
+      <br>
+           <input type="button" id="cancelBtn" value="Cancel">
+           &nbsp &nbsp &nbsp 
+           <input type="button" id="okBtn" value="OK">    
+  </form>
+  </div>
+
+</body>
+</html>

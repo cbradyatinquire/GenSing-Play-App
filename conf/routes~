@@ -116,6 +116,10 @@ POST		/createCodeCategory							Application.createCodeCategory
 
 POST		/createCodeDescriptor							Application.createCodeDescriptor
 
+GET		/assessContributionsFD							QueryBuilder.assessContributionsFD
+
+POST		/assessContributions							QueryBuilder.assessContributions
+
 *      /admin              						module:crud
 
 

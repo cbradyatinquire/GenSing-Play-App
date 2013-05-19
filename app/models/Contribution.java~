@@ -81,7 +81,7 @@ public class Contribution extends Model {
 
 	}
 	
-	//keeping old contribution constructor for backwards compatibility -- all contributions here will be "valid", have a target of "" and isHit of "N/A"
+	//keeping old contribution constructor for backwards compatibility -- all contributions here will be "valid", have a target of "" and isHit of null
 	public Contribution( ContributionType type, StudentUser stud, Session act, String id, String body )
 	{
 		this.type = type;

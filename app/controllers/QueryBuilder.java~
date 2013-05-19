@@ -368,7 +368,7 @@ public class QueryBuilder extends Controller {
         render();
     }
 
-    public static void assessContributionsFD() {
+    public static void assessContributions() {
         render();
     }
 }
