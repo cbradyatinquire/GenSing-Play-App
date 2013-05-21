@@ -124,12 +124,7 @@
 
         // hide all VALID contributions in the GGB panel
         $( '#clearall' ).click( function() {
-            $( '.gradeA' ).each( function() {
-                if( $(this).children( '.contValidity' ).text().toLowerCase() == "true" ) {
-                    var curRow = this.id.toLowerCase();
-                    clearGraph( $(this), curRow );
-                }
-            } );
+            clearAllGraphs();
         } );
 
 
@@ -198,6 +193,7 @@
         function drawGraph( target, trIdLowercased ) { 
             var functiondef = getFDef( trIdLowercased );
             var fname = getFName( functiondef ); 
+         
 	    document.ggbApplet.evalCommand(functiondef);
             // show the graph in GGBPanel
             document.ggbApplet.setVisible(fname, true);
@@ -211,12 +207,26 @@
         function clearGraph( target, trIdLowercased ) {
             var functiondef = getFDef( trIdLowercased );
             var fname = getFName( functiondef );
+           
             document.ggbApplet.evalCommand( functiondef );
-            // hide the graph in GGBPanel
-            document.ggbApplet.setVisible( fname, false );
+            // delete the graph in GGBPanel
+            document.ggbApplet.evalCommand( "Delete[" + fname + "]" );
             // update table
             target.removeClass( 'row_selected' );
         }
+
+
+
+
+      function clearAllGraphs() {
+            $( '.gradeA' ).each( function() {
+                if( $(this).children( '.contValidity' ).text().toLowerCase() == "true" ) {
+                    var curRow = this.id.toLowerCase();
+                    clearGraph( $(this), curRow );
+                }
+            } );
+
+      }
 
 
 

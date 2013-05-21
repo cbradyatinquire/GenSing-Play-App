@@ -49,6 +49,8 @@
 
   <script type="text/javascript">
 
+
+
     function activateShadow() {
         $( '#shadow' ).css( { 'width' : $( document ).width(),
                               'height' : $(document).height(),
@@ -84,6 +86,7 @@
 
 
 
+
     function closeADiv( thediv ) {
         thediv.css( { 'z-index' : '0' } ).hide();
         thediv.html( "" );
@@ -93,8 +96,20 @@
         $(document).unbind( 'keyup' );
     } // end closeADiv()
 
+
+
+
+    function refreshGraphVizTable() {
+      clearAllGraphs(); // defined in googleTable.html
+      // refreshing by 'clicking' on the #sliderButton two times
+      $( '#sliderButton' ).trigger( 'click' );
+      $( '#sliderButton' ).trigger( 'click' );
+    } // end refreshGraphVizTable()
+
+
+
+
     $(document).ready(function () {
-      activateShadow();
       var qryobj = { schoolname : "SchoolForTesting" };
 
       $('#sliderButton').click( function() {
@@ -259,7 +274,7 @@
         if( document.ggbApplet.exists( "CAS_init" ) ) {
             document.ggbApplet.evalCommand( "Delete[CAS_init]" );
         }
-        deactivateShadow();
+
     }
   </script>
 	

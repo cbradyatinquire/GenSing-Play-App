@@ -189,6 +189,13 @@ i#{extends 'main.html' /}
 
 
 
+  function closeSelf() {
+      refreshGraphVizTable(); // refreshGraphVizTable() is defined in graphicVisualizer.html
+      closeADiv( selfJQPointer ); // closeADiv() is defined in graphicVisualizer.html
+  }
+
+
+
     
   $(document).ready(function() { 
     $.get( '/getCodeCategories', function(data){
@@ -322,17 +329,6 @@ i#{extends 'main.html' /}
 
 
 
-    function refreshGraphVizTable() {
-      // execute this before going back to graphicVisualizer
-      // refreshing by 'clicking' on the #sliderButton 
-      // (defined in graphicVisualizer.html) two times
-      $( '#sliderButton' ).trigger( 'click' );
-      $( '#sliderButton' ).trigger( 'click' );
-    }
-
-
-
-
     $( '#cdDetailsPanelB1' ).click( function () {
       if( $(this).val() == "Edit" ) { // mode Edit
         $( this ).val( "Update" );
@@ -383,14 +379,12 @@ i#{extends 'main.html' /}
 
 
     $( '#backB' ).click( function() {
-      refreshGraphVizTable();
-      closeADiv( selfJQPointer ); // closeADiv() is defined in graphicVisualizer.html
+      closeSelf();
     } );
 
     $(document).keyup( function(e) {
       if (e.keyCode == 27) { 
-        refreshGraphVizTable();
-        closeADiv( selfJQPointer ); 
+        closeSelf();
       }
     } ); 
 

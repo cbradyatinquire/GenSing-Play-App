@@ -49,6 +49,8 @@
 
   <script type="text/javascript">
 
+
+
     function activateShadow() {
         $( '#shadow' ).css( { 'width' : $( document ).width(),
                               'height' : $(document).height(),
@@ -84,6 +86,7 @@
 
 
 
+
     function closeADiv( thediv ) {
         thediv.css( { 'z-index' : '0' } ).hide();
         thediv.html( "" );
@@ -92,6 +95,19 @@
         // unbind keyup of esc key
         $(document).unbind( 'keyup' );
     } // end closeADiv()
+
+
+
+
+    function refreshGraphVizTable() {
+
+      // refreshing by 'clicking' on the #sliderButton two times
+      $( '#sliderButton' ).trigger( 'click' );
+      $( '#sliderButton' ).trigger( 'click' );
+    } // end refreshGraphVizTable()
+
+
+
 
     $(document).ready(function () {
       var qryobj = { schoolname : "SchoolForTesting" };
@@ -258,6 +274,7 @@
         if( document.ggbApplet.exists( "CAS_init" ) ) {
             document.ggbApplet.evalCommand( "Delete[CAS_init]" );
         }
+
     }
   </script>
 	
