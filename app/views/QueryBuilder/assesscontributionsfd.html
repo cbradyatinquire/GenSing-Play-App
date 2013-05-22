@@ -5,8 +5,8 @@ i#{extends 'main.html' /}
 
 <style>
     #assessContributionsContainer {
-        width : 300px;
-       height : 100px;
+        width : 450px;
+       height : 150px;
     }
     h2 {
         text-align: center;
@@ -196,7 +196,7 @@ i#{extends 'main.html' /}
         }
 
         // update database
-        postAssessedContributions( aContributions, simplifiedTargetEq );
+        postAssessedContributions( aContributions, $( '#targetEq' ).val());
         closeSelf();
         
       } else {
@@ -230,11 +230,12 @@ i#{extends 'main.html' /}
   <form id="assess" action="">
       <label>Type in the target equation:</label>
       <br>
-          f(x)=<input type="text" id="targetEq"  style="width:300px">
-      <br>
+          f(x)=<input type="text" id="targetEq"  style="width:250px">
+      <br> <br>
            <input type="button" id="cancelBtn" value="Cancel">
            &nbsp &nbsp &nbsp 
-           <input type="button" id="okBtn" value="OK">    
+           <input type="button" id="okBtn" value="OK"> 
+           <label>Note: This could take a while, please be patient.</label>   
   </form>
   </div>
 

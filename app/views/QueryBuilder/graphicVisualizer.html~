@@ -49,6 +49,26 @@
 
   <script type="text/javascript">
 
+    var memSelectedRows = [];
+
+    function memorizeSelectedRows() {
+        $( '.row_selected' ).each( function() {
+            memSelectedRows.push( this.id ) ;
+        } );
+    }
+
+
+
+
+    function applySelectedRows() {
+        $( '.gradeA' ).each( function() {
+            if( memSelectedRows.indexOf( this.id ) > -1 ) {
+                $(this).addClass( 'row_selected' );            
+            }
+        } );
+        memSelectedRows = [];
+    }
+
 
 
     function activateShadow() {
@@ -70,6 +90,7 @@
 
 
     function floatADiv( thediv, theurl ) {
+        memorizeSelectedRows();
         activateShadow();
         thediv.load( theurl, 
                      function() {
@@ -94,13 +115,14 @@
 
         // unbind keyup of esc key
         $(document).unbind( 'keyup' );
+
     } // end closeADiv()
 
 
 
 
     function refreshGraphVizTable() {
-      clearAllGraphs(); // defined in googleTable.html
+
       // refreshing by 'clicking' on the #sliderButton two times
       $( '#sliderButton' ).trigger( 'click' );
       $( '#sliderButton' ).trigger( 'click' );
@@ -264,6 +286,7 @@
       $('#queryresults').load(
         third({sessionIDs: sessIDs, studentIDs: studIDs}),
 	function( data ) {
+            applySelectedRows();
         }
       );
     } // end ggT()
@@ -329,7 +352,7 @@
 
   <div id="manageCodesFD" style="width:600px; height=500px"></div>
 
-  <div id="assessContributionsFD" style="width:400px; height=100px"></div>
+  <div id="assessContributionsFD" style="width:450px; height=150px"></div>
   
 </body>
     
