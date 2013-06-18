@@ -121,7 +121,16 @@ public class Application extends Controller {
 			renderJSON("COULDNT FIND SCHOOL" + schoolname );
 		}
     }
+
+
+
+
+    private static String trimToLength ( String s, int l ) {
+        return( s.substring( 0, Math.min( s.length(), l ) ) );
+    }
     
+
+
     
     public static void logContribution(String stype, String username, Long actid, String contribid, String contribution, boolean validity ) {
     	System.err.println("contribution logged");
@@ -144,10 +153,11 @@ public class Application extends Controller {
     			ContributionType ct = ContributionType.POINT;
     			if ( stype.equals("EQUATION") )
     				ct = ContributionType.EQUATION;
+                        String contributionTrimmed = trimToLength( contribution, 256 );
 
-    			Contribution c = new Contribution(ct, theGuy, act, contribid, contribution, validity );
+    			Contribution c = new Contribution(ct, theGuy, act, contribid, contributionTrimmed, validity );
     			c.save();
-    			renderJSON("Logged contribution from user: " + username + ":" + croom.toString() +  "\nContents: " + contribution );
+    			renderJSON("Logged contribution from user: " + username + ":" + croom.toString() +  "\nContents: " + contributionTrimmed );
     		}
     	}
     }
