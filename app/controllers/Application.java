@@ -153,7 +153,7 @@ public class Application extends Controller {
     			ContributionType ct = ContributionType.POINT;
     			if ( stype.equals("EQUATION") )
     				ct = ContributionType.EQUATION;
-                        String contributionTrimmed = trimToLength( contribution, 256 );
+                        String contributionTrimmed = trimToLength( contribution, 511 );
 
     			Contribution c = new Contribution(ct, theGuy, act, contribid, contributionTrimmed, validity );
     			c.save();
