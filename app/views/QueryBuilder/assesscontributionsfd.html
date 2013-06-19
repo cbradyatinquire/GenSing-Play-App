@@ -42,7 +42,7 @@ i#{extends 'main.html' /}
 
 
 
-  var AContribution = function AContribution( fullid, isvalidtext ) {
+  var AContribution = function AContribution( fullid, cType, isvalidtext ) {
 
       // complex id
       this.id = fullid;
@@ -53,6 +53,10 @@ i#{extends 'main.html' /}
                          aRow = aRow.replace( "__", "_");
                          return aRow;
                      }
+
+      // contribution type
+      // "POINT" or "EQUATION" - see /app/models/ContributionType.java
+      this.contType = cType;
 
       // simple function definition
       this.fdef = this.getFdef( fullid ); 
@@ -84,7 +88,7 @@ i#{extends 'main.html' /}
       this.isValid = isvalidtext;
 
       // HIT/NO-HIT
-      this.Aresult= "NO-HIT";
+      this.Aresult= "N/A";
 
       this.toLog = function() {
                                       console.log( this.id + " " + this.cid + "\n" + 
@@ -93,30 +97,35 @@ i#{extends 'main.html' /}
                                       this.fdefA + "      " + this.fnameA + "\n" +      
                                       this.fdefS + "      " + this.fnameS + "\n" +   
                                       this.fbodyS + "\n" +   
+                                      this.contType + "\n" +
                                       this.isValid + " " + this.Aresult );	
                               }
 
       this.assess = function( simpTargetEq ) {
-                         
-                        if( this.isValid == "false" ) {
-                            return "NO-HIT";
-                        } else {
-                            
-                            document.ggbApplet.evalCommand( this.fdefA ); // create ASSESSMENT object in GGB
-                            document.ggbApplet.evalCommand( this.fdefS ); // create SIMPLIFIED object in GGB
-                            this.fbodyS = document.ggbApplet.getValueString( this.fnameS ); // read simplified object in GGB
-                            this.fbodyS = this.fbodyS.substring( this.fbodyS.indexOf( "=" ) + 1, this.fbodyS.length );
+          if( this.contType == "POINT" ) {
+              this.Aresult = "N/A";
 
-                            document.ggbApplet.evalCommand( "Delete[" + this.fnameA + "]" ); // delete ASSESSMENT and SIMPLIFIED objects
-                            //document.ggbApplet.evalCommand( "Delete[" + this.fnameS + "]" ); 
-                            // string comparison with simplified target eq
-                            if( this.fbodyS == simpTargetEq ) {
-                                return "HIT";
-                            } else {
-                                return "NO-HIT";
-                            }
-                        }
-                    }
+          } else {
+              if( this.contType == "EQUATION" && this.isValid == "false" ) {
+                  this.Aresult = "NO-HIT";
+
+              } else {
+                  document.ggbApplet.evalCommand( this.fdefA ); // create ASSESSMENT object in GGB
+                  document.ggbApplet.evalCommand( this.fdefS ); // create SIMPLIFIED object in GGB
+                  this.fbodyS = document.ggbApplet.getValueString( this.fnameS ); // read simplified object in GGB
+                  this.fbodyS = this.fbodyS.substring( this.fbodyS.indexOf( "=" ) + 1, this.fbodyS.length );
+
+                  document.ggbApplet.evalCommand( "Delete[" + this.fnameA + "]" ); // delete ASSESSMENT and SIMPLIFIED objects
+                  //document.ggbApplet.evalCommand( "Delete[" + this.fnameS + "]" ); 
+                  // string comparison with simplified target eq
+                  if( this.fbodyS == simpTargetEq ) {
+                      this.Aresult = "HIT";
+                  } else {
+                      this.Aresult = "NO-HIT";
+                  }
+              }
+          }
+      }
   }  // end constructor AContribution()
     
 
@@ -152,7 +161,7 @@ i#{extends 'main.html' /}
     for( var i =0; i < theConts.length; i++ ) {
       theCIDs[ i ] = theConts[ i ].cid;
       theHits[ i ] = theConts[ i ].Aresult;
-      console.log( theCIDs[ i ] + " " + theHits[ i ] );
+      //console.log( theCIDs[ i ] + " " + theHits[ i ] );
     }
     if( theCIDs.length == theHits.length && theCIDs.length > 0 ) {
       var postData = { 'cids' : theCIDs.join(),
@@ -183,7 +192,9 @@ i#{extends 'main.html' /}
 
       // construct AContribution objects
       $( '.gradeA' ).each( function() {
-          var tempCont = new AContribution( this.id.toLowerCase(), $(this).children('.contValidity').text() )
+          var tempCont = new AContribution( this.id.toLowerCase(), 
+                                            $(this).children( '.contType' ).text(), 
+                                            $(this).children( '.contValidity' ).text() );
           aContributions.push( tempCont );
       } );
       
@@ -192,7 +203,9 @@ i#{extends 'main.html' /}
 
         // assess each contribution
         for( var i = 0; i < aContributions.length; i++ ) {
-          aContributions[ i ].Aresult = aContributions[ i ].assess( simplifiedTargetEq );
+
+          aContributions[ i ].assess( simplifiedTargetEq );
+          aContributions[ i ].toLog();
         }
 
         // update database

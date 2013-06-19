@@ -98,7 +98,7 @@
     	  } else {
 
             if( curCol == 'drawGGB' ) {
-              toggleGraph( $(this), curRow ); // toggleGraph() defined in graphicVisualizer.html
+              toggleGraph( $(this), curRow );
 	    }  else {
               // open popup for editing codings or annots
               hoverlocked = true;
@@ -116,7 +116,7 @@
             $( '.gradeA' ).each( function() {
                 if( $(this).children( '.contValidity').text().toLowerCase() == "true" ) {
                     var curRow = this.id.toLowerCase();
-                    drawGraph( $(this), curRow ); // drawGraph() defined in graphicVisualizer.html
+                    drawGraph( $(this), curRow );
 	        }
 
             } );
@@ -124,7 +124,7 @@
 
         // hide all VALID contributions in the GGB panel
         $( '#clearall' ).click( function() {
-            clearAllGraphs(); // defined in graphicVisualizer.html
+            clearAllGraphs();
         } );
 
 
@@ -164,6 +164,70 @@
           str = str.substring( str.indexOf( "(x)=" ) + 4, str.length ); 
           return str;
         }
+
+
+
+
+        function toggleGraph( target, trIdLowercased ) { 
+        // sends contribution to GGB to be graphed
+        // if contribution is already graphed, hide it
+            var functiondef = getFDef( trIdLowercased );
+            var fname = getFName( functiondef ); 
+            //send to ggb
+	    document.ggbApplet.evalCommand(functiondef);
+
+	    var cl = target.attr("class");
+	    if ( cl.indexOf("row_selected") > 0 ) {
+	        //was visible, going to be made invisible
+	        document.ggbApplet.setVisible(fname, false);
+	    } else {
+	        //was invisible, going to be made visible
+	        document.ggbApplet.setVisible(fname, true)
+	    }
+            target.toggleClass('row_selected');
+        }
+
+
+
+
+        function drawGraph( target, trIdLowercased ) { 
+            var functiondef = getFDef( trIdLowercased );
+            var fname = getFName( functiondef ); 
+         
+	    document.ggbApplet.evalCommand(functiondef);
+            // show the graph in GGBPanel
+            document.ggbApplet.setVisible(fname, true);
+            // update table
+            target.addClass('row_selected');
+        }
+
+
+
+
+        function clearGraph( target, trIdLowercased ) {
+            var functiondef = getFDef( trIdLowercased );
+            var fname = getFName( functiondef );
+           
+            document.ggbApplet.evalCommand( functiondef );
+            // delete the graph in GGBPanel
+            document.ggbApplet.evalCommand( "Delete[" + fname + "]" );
+            // update table
+            target.removeClass( 'row_selected' );
+        }
+
+
+
+
+      function clearAllGraphs() {
+            $( '.gradeA' ).each( function() {
+                if( $(this).children( '.contValidity' ).text().toLowerCase() == "true" ) {
+                    var curRow = this.id.toLowerCase();
+                    clearGraph( $(this), curRow );
+                }
+            } );
+
+      }
+
 
 
 
@@ -223,6 +287,7 @@
                                /*SecsIn*/               null,
                                /*Label*/                null,
                                /*Contribution*/         null,
+			       /*ContributionType*/	null,
                                /*CodingsShorthand*/     { 'bSearchable' : false,
                                                           'bVisible'    : false },
                                /*Codings*/              null,
@@ -460,6 +525,7 @@
 			<th>SecsIn</th>
 			<th>Label</th>
 			<th>Contribution</th>
+                        <th>Type</th>
                         <th>CodingsShorthand</th>
 			<th>Codings</th>
                         <th>AnnotationsShorthand</th>
@@ -478,6 +544,7 @@
             <td class = "drawGGB">${cont.secondsIn}</td>
             <td class = "drawGGB">${cont.objectID}</td> 
             <td class = "drawGGB">${cont.body}</td>
+            <td class = "drawGGB contType">${cont.type}</td>
             <td class = "codingsSH">${cont.codingsShorthand()}</td>
             <td class = "codings">${cont.codingsShorthand()}</td>
             <td class = "annotsSH">${cont.annotationsShorthand()}</td>

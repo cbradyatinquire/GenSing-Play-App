@@ -287,6 +287,7 @@
                                /*SecsIn*/               null,
                                /*Label*/                null,
                                /*Contribution*/         null,
+			       /*ContributionType*/	null,
                                /*CodingsShorthand*/     { 'bSearchable' : false,
                                                           'bVisible'    : false },
                                /*Codings*/              null,
@@ -524,6 +525,7 @@
 			<th>SecsIn</th>
 			<th>Label</th>
 			<th>Contribution</th>
+                        <th>Type</th>
                         <th>CodingsShorthand</th>
 			<th>Codings</th>
                         <th>AnnotationsShorthand</th>
@@ -542,6 +544,7 @@
             <td class = "drawGGB">${cont.secondsIn}</td>
             <td class = "drawGGB">${cont.objectID}</td> 
             <td class = "drawGGB">${cont.body}</td>
+            <td class = "drawGGB contType">${cont.type}</td>
             <td class = "codingsSH">${cont.codingsShorthand()}</td>
             <td class = "codings">${cont.codingsShorthand()}</td>
             <td class = "annotsSH">${cont.annotationsShorthand()}</td>
