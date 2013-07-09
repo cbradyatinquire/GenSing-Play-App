@@ -98,7 +98,9 @@
     	  } else {
 
             if( curCol == 'drawGGB' ) {
-              toggleGraph( $(this), curRow );
+              var cType = $(this).children( '.contType' ).text();
+              toggleGraph( $(this), curRow, cType );
+    
 	    }  else {
               // open popup for editing codings or annots
               hoverlocked = true;
@@ -137,6 +139,38 @@
 
 
 
+        function getPDef( aRow ) {
+        // from sid___cid115_{s08_69.9220}(x)=xcoor:-14 ycoor:1 
+        // to s08{69.9220}=Point[{-14,1}]
+        // remove sid_ 
+        // replace double uncerscore in cid with single underscore
+        // remove trailing "(x)"
+           aRow = aRow.substring( aRow.indexOf( "_" ) + 1, aRow.length );
+           aRow = aRow.replace( "__", "_");
+
+           var aRowHead = aRow.substring( 0, aRow.indexOf( "(" ) );
+           aRowHead = aRowHead.substring( aRowHead.indexOf( "{" ) + 1, aRowHead.indexOf( "}" ) );
+           var part1 = aRowHead.substring( 0, aRowHead.indexOf( "_" ) + 1 );
+           var part2 = aRowHead.substring( aRowHead.indexOf( "_" ) + 1, aRowHead.length );
+           aRowHead = part1 + "{" + part2 + "}";
+
+           var aRowTail = aRow.substring(  aRow.indexOf( ")" ) + 1 , aRow.length );
+           
+           var xVal = aRowTail.substring( aRowTail.indexOf( "xcoor:" ) + 6, aRowTail.indexOf( "ycoor" ) );
+           
+           var yVal = aRowTail.substring( aRowTail.indexOf( "ycoor:" ) + 6, aRowTail.length );
+           
+           aRow = aRowHead + "=Point[{" + xVal + "," + yVal + "}]";
+           console.log( aRow );
+           return aRow;
+        }
+
+
+
+        function getPName( str ) {
+            return str.substring( 0, str.indexOf( "=" ) );
+        }
+
 
 
 
@@ -168,21 +202,36 @@
 
 
 
-        function toggleGraph( target, trIdLowercased ) { 
+        function toggleGraph( target, trIdLowercased, theType ) { 
         // sends contribution to GGB to be graphed
         // if contribution is already graphed, hide it
-            var functiondef = getFDef( trIdLowercased );
-            var fname = getFName( functiondef ); 
+            var ggbObjDef = "";
+            var ggbObjName = "";
+
+            if( theType == "POINT" ) {
+                var pointdef = getPDef( trIdLowercased );
+                console.log( pointdef );
+                var pointname = getPName( pointdef );
+                ggbObjDef = pointdef;
+                ggbObjName = pointname;
+            }
+
+            if( theType == "EQUATION" ) {
+                var functiondef = getFDef( trIdLowercased );
+                var fname = getFName( functiondef ); 
+                ggbObjDef = functiondef;
+                ggbObjName = fname;
+            }
             //send to ggb
-	    document.ggbApplet.evalCommand(functiondef);
+	    document.ggbApplet.evalCommand(ggbObjDef);
 
 	    var cl = target.attr("class");
 	    if ( cl.indexOf("row_selected") > 0 ) {
 	        //was visible, going to be made invisible
-	        document.ggbApplet.setVisible(fname, false);
+	        document.ggbApplet.setVisible(ggbObjName, false);
 	    } else {
 	        //was invisible, going to be made visible
-	        document.ggbApplet.setVisible(fname, true)
+	        document.ggbApplet.setVisible(ggbObjName, true)
 	    }
             target.toggleClass('row_selected');
         }
@@ -287,7 +336,6 @@
                                /*SecsIn*/               null,
                                /*Label*/                null,
                                /*Contribution*/         null,
-			       /*ContributionType*/	null,
                                /*CodingsShorthand*/     { 'bSearchable' : false,
                                                           'bVisible'    : false },
                                /*Codings*/              null,
@@ -296,7 +344,8 @@
                                /*Annotations*/          null,
 			       /*Target*/		null,
 			       /*isHit*/		null,
-                               /*Valid*/                null
+                               /*Valid*/                null,
+			       /*ContributionType*/	null
                 ] 
         } );
 
@@ -525,7 +574,6 @@
 			<th>SecsIn</th>
 			<th>Label</th>
 			<th>Contribution</th>
-                        <th>Type</th>
                         <th>CodingsShorthand</th>
 			<th>Codings</th>
                         <th>AnnotationsShorthand</th>
@@ -533,6 +581,7 @@
                         <th>TargetEquation</th>
                         <th>Hit</th>
 			<th>Valid</th>
+                        <th>Type</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -544,7 +593,6 @@
             <td class = "drawGGB">${cont.secondsIn}</td>
             <td class = "drawGGB">${cont.objectID}</td> 
             <td class = "drawGGB">${cont.body}</td>
-            <td class = "drawGGB contType">${cont.type}</td>
             <td class = "codingsSH">${cont.codingsShorthand()}</td>
             <td class = "codings">${cont.codingsShorthand()}</td>
             <td class = "annotsSH">${cont.annotationsShorthand()}</td>
@@ -552,6 +600,7 @@
             <td class = "drawGGB">${cont.target}</td>
             <td class = "drawGGB">${cont.isHit}</td>
             <td class = "drawGGB contValidity">${cont.isValid}</td>
+            <td class = "contType">${cont.type}</td>
           </tr>
           #{/list}
 	</tbody>
