@@ -5,8 +5,10 @@
 # /app/models/Contribution.java
  
 # --- !Ups
-ALTER TABLE Contribution ALTER body VARCHAR(511);
+ALTER TABLE contribution MODIFY body VARCHAR(512);
 
 # --- !Downs
-ALTER TABLE Contribution ALTER body VARCHAR(255);
+ALTER TABLE contribution MODIFY body VARCHAR(256);
+
+
 
