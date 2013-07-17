@@ -58,6 +58,18 @@ i#{extends 'main.html' /}
       // "POINT" or "EQUATION" - see /app/models/ContributionType.java
       this.contType = cType;
 
+      // fix equation by inserting "*" in "xx", "x\d" and "x\("
+      this.fixEq = function ( theEq ) {
+          var thePos = theEq.search( /(x\d)|(xx)|(x\()/gi );
+          if( thePos > -1 ) {
+              var head = theEq.substring( 0, thePos + 1 );
+              var tail = theEq.substring( thePos + 1, theEq.length );
+              theEq = head + "*" + tail;
+              theEq = this.fixEq( theEq );
+          }
+          return theEq;
+      }
+
       // simple function definition
       this.fdef = this.getFdef( fullid ); 
 
@@ -74,7 +86,7 @@ i#{extends 'main.html' /}
       this.fnameA = this.fname + "A";
 
       // function definition for assessment purposes only
-      this.fdefA = this.fnameA + "(x)=" + this.fbody;
+      this.fdefA = this.fnameA + "(x)=" + this.fixEq( this.fbody );
 
       // function name Simplified by ggbApplet, for assessment purposes only
       this.fnameS = this.fname + "S";
@@ -102,6 +114,7 @@ i#{extends 'main.html' /}
                               }
 
       this.assess = function( simpTargetEq ) {
+   
           if( this.contType == "POINT" ) {
               this.Aresult = "N/A";
 
@@ -205,7 +218,7 @@ i#{extends 'main.html' /}
         for( var i = 0; i < aContributions.length; i++ ) {
 
           aContributions[ i ].assess( simplifiedTargetEq );
-          aContributions[ i ].toLog();
+          //aContributions[ i ].toLog();
         }
 
         // update database
