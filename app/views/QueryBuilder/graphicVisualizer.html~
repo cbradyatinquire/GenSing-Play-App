@@ -136,6 +136,7 @@
 
       $('#sliderButton').click( function() {
         if( $(this).val() == 'Load Data Into Table' ) {
+          ggbApplet.reset();
           ggT();
           $(this).val('Select New Data From Tree');
           $('#tree').slideUp();
@@ -146,20 +147,7 @@
       } );
 
       $( '#assessConts' ).click( function() {
-        /*
-        var postData = { 'cids' : '1,2,3',
-                         'eq' : 'just for testing',
-                         'hits' : 'HIT, NO-HIT, HIT' };
-        $.post( "/assessContributions", postData, function( data ) {
-          alert( data );
-        }, "HTML" );
-        document.ggbApplet.evalCommand( 'a(x)=3x+3x' );
-        console.log( document.ggbApplet.getValueString( "a" ) ); 
-        document.ggbApplet.evalCommand( "b(x)=Simplify[a(x)]+2" );
-        console.log( document.ggbApplet.getValueString( "b" ) );
-        */ 
-        floatADiv( $( '#assessContributionsFD' ), '/assessContributionsFD' );
-              
+        floatADiv( $( '#assessContributionsFD' ), '/assessContributionsFD');          
       } );
 
       $( '#manageCodes' ).click( function() {

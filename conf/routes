@@ -9,6 +9,8 @@ POST	/login									Application.login
 
 POST 	/contribution							Application.logContribution
 
+POST	/bufferredContributions						Application.logBufferredPoints
+
 POST	/startActivity							Application.startActivity
 
 POST	/nameActivity							Application.nameActivity

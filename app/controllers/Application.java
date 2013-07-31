@@ -161,6 +161,42 @@ public class Application extends Controller {
     		}
     	}
     }
+
+    public static void logBufferredPoints( Long actid, String rawBuffer ) {
+    	System.err.println("buffered points logged" );
+    	Session act = Session.getActivitySession(actid);
+
+    	if (act == null )
+    	{
+    		renderJSON("FAILURE-no  session with id = " + actid);
+    	}
+    	else
+    	{
+    		Classroom croom = act.classroom;
+                
+               String[] rawContribs = rawBuffer.split( ";" );
+               // rawContribs[i] = "studendID,xVal,yVal"
+               
+               for( int i = 0; i < rawContribs.length; i++ ) {
+                   //System.err.println( "-----" + rawContribs[ i ] );
+                   String[] chunks = rawContribs[ i ].split( "," );
+                   String username = chunks[ 0 ];
+                   String contribution = "Xcoor:" + chunks[ 1 ] + " Ycoor:" + chunks[ 2 ];
+    		
+                   StudentUser theGuy = StudentUser.connect(username, croom);
+    		   if ( theGuy == null )
+    		   {
+    			renderJSON("FAILURE-STUDENT -- no student '" + username + "' in classroom '" + croom.toString() + "'");
+    		   }
+    		   else
+    		   {
+    			ContributionType ct = ContributionType.POINT;
+                        Contribution c = new Contribution(ct, theGuy, act, "0", contribution, true );
+    			c.save();
+    		   }
+               } // end for rc : rawContribs
+    	}
+    }
     
     
     public static void getAllActivities()
