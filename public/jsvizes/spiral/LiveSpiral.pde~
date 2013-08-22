@@ -1756,7 +1756,7 @@ class LVActivity extends Activity {
     int now = millis();
     if( now - lastRequestTime > 5000 ) {
       String s = makeNextURLAddress( baseURLAddress );
-      //println( "About to poll database on this address: " + s );
+      println( "About to poll database on this address: " + s );
       if( myAjaxObject == null ) {
         myAjaxObject = new AjaxObject();
       }
@@ -1777,7 +1777,7 @@ class LVActivity extends Activity {
       //}
       //else
       //  ret = adetails;
-      //println( "baseURLAddress is now: " + ret );
+      println( "baseURLAddress is now: " + ret );
       return ret;
     } // end makeBaseURLAddress()
     
@@ -1797,7 +1797,7 @@ class LVActivity extends Activity {
   void buildCodeCabinet() {
   // populates the ArrayLists and HashMaps that facilitate usage of Codes
   //     
-    //println( "BUILDING CODECABINET : " );
+    println( "BUILDING CODECABINET : " );
     String[] dbGetCodeD = loadStrings( "/getCodeDictionary" );  //change
     //String[] dbGetCodeD = loadStrings( "http://localhost:9914/dbGetCodeD" );
     String codeCatStamp = "";
@@ -1826,7 +1826,7 @@ class LVActivity extends Activity {
           codeCatStamp = dbCodeDPieces[ i ] [ 1 ];  
           if( codeCatStamp.equals( "UNCATEGORIZED" ) == false ) { // if category is concrete
             stampObject = new CodeCategory( codeCatStamp );
-            //println( "\tAdded " + stampObject );
+            println( "\tAdded " + stampObject );
             codeCabinet.codeCategoriesList.add( stampObject );
             codeCabinet.codeCategoriesDictionary.put( codeCatStamp, stampObject );
           }
@@ -1837,14 +1837,14 @@ class LVActivity extends Activity {
           CodeItem ctemp = null;
           if( codeCatStamp.equals( "UNCATEGORIZED" ) == false ) { // if category is concrete
             ctemp = new CodeItem( stampObject, codeItemStamp );
-            //println( "\t\tAdded: " + ctemp );
+            println( "\t\tAdded: " + ctemp );
             codeCabinet.codeBook.put( ctemp, stampObject );
             stampObject.addCodeItem( ctemp );
           } else {
             // dont put in codeBook HashMap coz ctemp's owner is null, 
             // the owner is  NOT an instance of CodeCategory with dispName="UNCATEGORIZED"
             ctemp = new CodeItem( codeItemStamp );
-            //println( "\tAdded: " + ctemp ); 
+            println( "\tAdded: " + ctemp ); 
           }
           codeCabinet.codeItemsList.add( ctemp );
           codeCabinet.codeItemsDictionary.put( codeItemStamp, ctemp );
@@ -1916,7 +1916,7 @@ class LVActivity extends Activity {
     lastRequestTime = millis();
     myAjaxObject.request.open( "GET", s + makeNoCache(), true );
     myAjaxObject.request.send( null );
-    //println( "connecting to DB @ " + s + makeNoCache() );
+    println( "connecting to DB @ " + s + makeNoCache() );
   } // end connectDB()
 
 
@@ -1979,8 +1979,8 @@ class LVActivity extends Activity {
 	nextPosCleaned++;
       }
     }
-    //println( "VERIFY IF INDEED CLEANED:" );
-    //println( cleaned );
+    println( "VERIFY IF INDEED CLEANED:" );
+    println( cleaned );
     return cleaned; 
   }  // end cleanRows()
   
@@ -2731,7 +2731,7 @@ Post_Time (int tempPostTime, String startTime) {
   postM= floor(tempPostTime/60);
   postH = floor(postM/60);
   postS = tempPostTime%60;
-  //println( "startTime is : " + startTime );
+  println( "startTime is : " + startTime );
   if ( (startTime.charAt(2) == ':') && (startTime.length() == 8)) {
     startH = int(startTime.charAt(0)-'0')*10 + int(+startTime.charAt(1)-'0');
     startM = int(startTime.charAt(3)-'0')*10 + int(+startTime.charAt(4)-'0');
@@ -3351,12 +3351,12 @@ class Section {
     //lastCountForFuncs = funcs.size();
     updateHasData();
     updateMinMaxPostTime();
-    //println( "funcs count is now: " + funcs.size() + " maxPostTime is now: " + maxPostTime + " [ DONE ]" );
+    println( "funcs count is now: " + funcs.size() + " maxPostTime is now: " + maxPostTime + " [ DONE ]" );
 
-    //println( "\t \t PRINTING FUNCTIONS: " );
+    println( "\t \t PRINTING FUNCTIONS: " );
     for( int i = 0; i < funcs.size(); i++ ) {
       Function f = (Function) funcs.get( i );
-      //println( "\t \t " + f.serialNum + " " + f.funcString );
+      println( "\t \t " + f.serialNum + " " + f.funcString );
     } 
   } // end populateFuncs()
 
@@ -3559,7 +3559,7 @@ class SpiralActivity extends LVActivity {
     //dummyDatabaseStream = new Table ( dummyRows );
     hasNewValidDatastream = false;
     //processDatastream( dummyDatabaseStream );
-    //println( "[DONE]" );
+    println( "[DONE]" );
 
   } // end startSpiral()
 
@@ -3594,8 +3594,8 @@ class SpiralActivity extends LVActivity {
       s.computeCRVScore( spiral.stats.plusWt, spiral.stats.minusWt, spiral.stats.timesWt, spiral.stats.dividesWt, spiral.stats.squareWt, spiral.stats.negativeWt );
     }
     spiral.computeCRVTotal();
-    //println( "Showing contents of spiral: " );
-    //println( spiral );
+    println( "Showing contents of spiral: " );
+    println( spiral );
   } // end processDatastream()
 
 
@@ -3718,7 +3718,7 @@ class Spiral extends Section {
     updateHasData();
     String tempExerciseStart = t.getString( 0, 0 );
     updateTimings( tempExerciseStart, minPostTime, maxPostTime );
-    //println( "Spiral spoke count is now " + spokes.size() + " [ DONE ]" );
+    println( "Spiral spoke count is now " + spokes.size() + " [ DONE ]" );
   }  // end growSpokes()
 
 
@@ -3816,7 +3816,7 @@ class Spiral extends Section {
             if( tf.postTime < s.genesis ) {
               s.genesis = tf.postTime;
               s.cGenesis = new Post_Time( s.genesis, "00:00:00" );
-              //println( "\t\t\t Check Spoke data accuracy: " + s );
+              println( "\t\t\t Check Spoke data accuracy: " + s );
             } // end of checking
           }
           sumDup += dup;
@@ -3826,7 +3826,7 @@ class Spiral extends Section {
           Spoke newS = ( Spoke ) spokes.get( spokes.size() - 1 );
           newS.genesis = tf.postTime;
           newS.cGenesis = new Post_Time( newS.genesis, "00:00:00" );
-          //println( "check newS Sopke accuracy: " + newS );
+          println( "check newS Sopke accuracy: " + newS );
         } // end if sumDup == 0
       } // end else
     } // end for i
