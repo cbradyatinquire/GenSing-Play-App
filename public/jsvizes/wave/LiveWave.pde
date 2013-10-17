@@ -250,11 +250,11 @@ void executeChosenCodes( String[] pcs ) {
 
 
 void executeNewSelEqs( String[] pcs ) {
-  println( "pcs.length is: " + pcs.length );
+  //println( "pcs.length is: " + pcs.length );
   ArrayList<String> newSelEqs = new ArrayList<String>();
-  println( "newSelEqs.size is: " + newSelEqs.size() );
+  //println( "newSelEqs.size is: " + newSelEqs.size() );
   for( int i = 0; i < pcs.length; i++ ) {
-    println( pcs[ i ] );
+    //println( pcs[ i ] );
     newSelEqs.add( pcs[ i ] );
   }
   
@@ -265,7 +265,7 @@ void executeNewSelEqs( String[] pcs ) {
 
 
 void executeAnnotation( String[] pcs ) {
-  println( "annotation executed." );
+  //println( "annotation executed." );
 } // end executeAnnotation()
 
 
@@ -337,9 +337,9 @@ void setStartTimeTrimmed( String s ) {
 void buildNewWva() {
   wva = new WaveActivity( this );
   wva.startWave( aDetails, parseInt( actid ), hostip );
-  println( "calling display for the first time..." );
+  //println( "calling display for the first time..." );
   wva.display();
-  println( "end first display" );
+  //println( "end first display" );
 
   // waveUI display to reflect loading
   //int count=0;
@@ -359,7 +359,7 @@ void buildNewWva() {
   //  wva.wvaUI.view.putText( "LOADING ... ", 40+count, 60 );
   //  println( "end while not yet matching" );        
   //}
-  println( "end buildNewWva" );
+  //println( "end buildNewWva" );
 } // end buildNewWva()
 
 
@@ -4193,7 +4193,7 @@ class Wave extends Section {
 
   void setStateID( long newID ) {
     this.stateID = newID;
-    println( stateID );
+    //println( stateID );
   } // end setStateID()
 
 
@@ -4423,7 +4423,7 @@ class Section {
 
   void populateFuncs( Table t ) {
   // Only used with live database "streaming"
-    print( "populating funcs with Datastream ... " );
+    //print( "populating funcs with Datastream ... " );
     for( int i = 1; i < t.getRowCount(); i++ )
       funcs.add( new Function ( t, i, getFuncsCount() ) );
     updateHasData();
@@ -5735,8 +5735,8 @@ class StudentComparator extends SComparator {
     if( s2.countDisplayedWps() > 0 && s1.countDisplayedWps() == 0 )
       return +1;
     if( s1.getEarliestPostTimeForSelEqs( eqs ) < s2.getEarliestPostTimeForSelEqs( eqs ) ) {
-      println( s1.studentID + " earliest post time for selected eqs is: " + s1.getEarliestPostTimeForSelEqs(eqs) );
-      println( s2.studentID + " earliest post time for selected eqs is: " + s2.getEarliestPostTimeForSelEqs(eqs) );
+      //println( s1.studentID + " earliest post time for selected eqs is: " + s1.getEarliestPostTimeForSelEqs(eqs) );
+      //println( s2.studentID + " earliest post time for selected eqs is: " + s2.getEarliestPostTimeForSelEqs(eqs) );
       
       return -1;
     }
@@ -5940,7 +5940,7 @@ class PopUpTestUI extends ProtoUI {
       int whichOne = getPressedArrSpButton();
 
       if( whichOne == 0 ) { // Pop!
-        println( arrTextBoxes.get( 0 ).actualText );
+        //println( arrTextBoxes.get( 0 ).actualText );
         owner.selfDestruct();
       }
 

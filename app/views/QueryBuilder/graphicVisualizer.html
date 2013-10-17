@@ -122,10 +122,7 @@
 
 
     function refreshGraphVizTable() {
-
-      // refreshing by 'clicking' on the #sliderButton two times
-      $( '#sliderButton' ).trigger( 'click' );
-      $( '#sliderButton' ).trigger( 'click' );
+      ggT(); 
     } // end refreshGraphVizTable()
 
 
@@ -136,6 +133,9 @@
 
       $('#sliderButton').click( function() {
         if( $(this).val() == 'Load Data Into Table' ) {
+          // clear all currently graphed equations
+          $( '#clearall' ).trigger( 'click' );
+
           //ggbApplet.reset();
           ggT();
           $(this).val('Select New Data From Tree');
